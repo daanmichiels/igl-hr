@@ -5,24 +5,14 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
-//#include <iostream>
-//#include <fstream>
-//#include <string>
+#include <iostream>
+#include <fstream>
+#include <string>
 
-/*
-//Test the linked-in shader source.
-extern char binary_src_shaders_vs_c_start[];
-extern char binary_src_shaders_vs_c_end[];
-
-int main(void)
-{
-	for(char* p = binary_src_shaders_vs_c_start; p < binary_src_shaders_vs_c_end; p++)
-	{
-		putchar(*p);
-	}
-}
-*/
-
+extern char vs_start[];
+extern char vs_end[];
+extern char fs_start[];
+extern char fs_end[];
 
 static void error_callback(int error, const char* description)
 {
@@ -35,6 +25,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main(void)
 {
+	std::cout << "------- VERTEX SHADER -------\n";
+	for(char* p = vs_start; p < vs_end; p++)
+	{
+		putchar(*p);
+	}
+	std::cout << "\n\n------ FRAGMENT SHADER ------\n";
+	for(char* p = fs_start; p < fs_end; p++)
+	{
+		putchar(*p);
+	}
+
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())

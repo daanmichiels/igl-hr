@@ -5,6 +5,25 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <stdio.h>
+//#include <iostream>
+//#include <fstream>
+//#include <string>
+
+/*
+//Test the linked-in shader source.
+extern char binary_src_shaders_vs_c_start[];
+extern char binary_src_shaders_vs_c_end[];
+
+int main(void)
+{
+	for(char* p = binary_src_shaders_vs_c_start; p < binary_src_shaders_vs_c_end; p++)
+	{
+		putchar(*p);
+	}
+}
+*/
+
+
 static void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);

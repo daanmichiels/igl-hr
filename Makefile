@@ -1,6 +1,10 @@
 #
 # Makefile for igl-hr
+# This file is made for windows
 #
+
+CXXFLAGS=-g -Wall
+INCLUDES=-I"glfw-3.0.4.bin.WIN32\include"
 
 all: bin/hr.exe
 
@@ -9,7 +13,7 @@ bin/hr.exe: obj/hr.o \
 			obj/shaders.o \
 	        obj/shaders/vs.o \
 	        obj/shaders/fs.o
-	g++ -o bin/hr.exe obj/hr.o \
+	$(CXX) $(CXXFLAGS) -o bin/hr.exe obj/hr.o \
 	                  obj/shaders.o \
 	                  obj/shaders/vs.o \
 	                  obj/shaders/fs.o \
@@ -23,9 +27,8 @@ obj/shaders/%.o: src/shaders/%.c
 	        --redefine-sym _binary_src_shaders_$*_c_end=_source_$*_end \
 	        obj/shaders/$*.o
 
-obj/shaders.o: src/shaders.cpp
-	g++ -c -o obj/shaders.o src/shaders.cpp
+obj/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
-obj/hr.o: src/hr.cpp
-	g++ -g -c -I"glfw-3.0.4.bin.WIN32\include" -o obj/hr.o src/hr.cpp
-
+clean:
+	del /S obj\*.o

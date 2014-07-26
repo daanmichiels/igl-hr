@@ -4,38 +4,21 @@
 
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-
-extern char vs_start[];
-extern char vs_end[];
-extern char fs_start[];
-extern char fs_end[];
+#include "shaders.h"
 
 static void error_callback(int error, const char* description)
 {
-	fputs(description, stderr);
+	std::cerr << description;
 }
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
-int main(void)
+int main()
 {
-	std::cout << "------- VERTEX SHADER -------\n";
-	for(char* p = vs_start; p < vs_end; p++)
-	{
-		putchar(*p);
-	}
-	std::cout << "\n\n------ FRAGMENT SHADER ------\n";
-	for(char* p = fs_start; p < fs_end; p++)
-	{
-		putchar(*p);
-	}
-
+	print_shader_source();
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())

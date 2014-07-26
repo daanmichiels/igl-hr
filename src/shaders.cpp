@@ -4,8 +4,10 @@
 // Shaders will be linked to these
 extern char source_vs_start[];
 extern char source_vs_end[];
+extern char source_vs_size[];
 extern char source_fs_start[];
 extern char source_fs_end[];
+extern char source_fs_size[];
 
 // Just testing whether the shaders get embedded correctly
 void print_shader_source() {
@@ -19,4 +21,7 @@ void print_shader_source() {
 	{
 		std::cout << *p;
 	}
+
+	std::cout << ((int)source_vs_size);
 }
+

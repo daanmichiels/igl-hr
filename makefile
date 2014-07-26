@@ -27,5 +27,5 @@ obj/shaders.o: src/shaders.cpp
 	g++ -c -o obj/shaders.o src/shaders.cpp
 
 obj/hr.o: src/hr.cpp
-	g++ -c -I"glfw-3.0.4.bin.WIN32\include" -o obj/hr.o src/hr.cpp
+	g++ -g -c -I"glfw-3.0.4.bin.WIN32\include" -o obj/hr.o src/hr.cpp
 

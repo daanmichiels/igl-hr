@@ -5,6 +5,7 @@
 
 CXXFLAGS=-g -Wall
 INCLUDES=-I"glfw-3.0.4.bin.WIN32\include"
+LINKLIBES=-L"glfw-3.0.4.bin.WIN32\lib-mingw" -lglfw3 -lgdi32 -lglu32 -lopengl32
 
 all: bin/hr.exe
 
@@ -13,11 +14,12 @@ bin/hr.exe: obj/hr.o \
 			obj/shaders.o \
 	        obj/shaders/vs.o \
 	        obj/shaders/fs.o
-	$(CXX) $(CXXFLAGS) -o bin/hr.exe obj/hr.o \
+	$(CXX) $(CXXFLAGS) -o bin/hr.exe \
+	                  obj/hr.o \
 	                  obj/shaders.o \
 	                  obj/shaders/vs.o \
 	                  obj/shaders/fs.o \
-	                  -I"glfw-3.0.4.bin.WIN32\include" -L"glfw-3.0.4.bin.WIN32\lib-mingw" -lglfw3 -lgdi32 -lglu32 -lopengl32
+	                  $(INCLUDES) $(LINKLIBES)
 
 # shaders are a bit special
 obj/shaders/%.o: src/shaders/%.c

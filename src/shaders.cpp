@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
@@ -26,10 +27,8 @@ void print_information()
 	std::cout << source_fs << "\n";
 
 	std::cout << "\n\n------ OPENGL VERSION -------\n";
-	std::cout << ((char*)glGetString(GL_VERSION)) << " ()\n";
+	std::cout << ((char*)glGetString(GL_VERSION)) << "\n";
 }
-
-/*
 
 // Create and compile a shader
 GLuint compile_shader(std::string source, GLenum shaderType)
@@ -60,6 +59,4 @@ GLuint build_program()
 
 	return program;
 }
-
-*/
 

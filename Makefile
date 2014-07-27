@@ -3,7 +3,7 @@
 # This file is made for windows
 #
 
-CXXFLAGS=-g -Wall
+CXXFLAGS=-g -Wall -DGLEW_STATIC
 INCLUDES=-I"glfw-3.0.4.bin.WIN32/include" -I"glew-1.10.0/include"
 LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN32/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
 

@@ -6,12 +6,12 @@
 #include "shaders.h"
 
 // Shaders will be linked to these
-extern char source_vs_start[];
-extern char source_vs_end[];
-extern char source_vs_size[];
-extern char source_fs_start[];
-extern char source_fs_end[];
-extern char source_fs_size[];
+extern char _source_vs_start[];
+extern char _source_vs_end[];
+extern char _source_vs_size[];
+extern char _source_fs_start[];
+extern char _source_fs_end[];
+extern char _source_fs_size[];
 
 // Create and compile a shader
 GLuint compile_shader(std::string source, GLenum shaderType)
@@ -29,8 +29,8 @@ GLuint compile_shader(std::string source, GLenum shaderType)
 // Compile shaders and link program
 GLuint build_program()
 {
-	std::string source_vs(source_vs_start, (size_t)source_vs_size);
-	std::string source_fs(source_fs_start, (size_t)source_fs_size);
+	std::string source_vs(_source_vs_start, (size_t)_source_vs_size);
+	std::string source_fs(_source_fs_start, (size_t)_source_fs_size);
 
 	GLuint vs = compile_shader(source_vs, GL_VERTEX_SHADER);
 	GLuint fs = compile_shader(source_fs, GL_FRAGMENT_SHADER);

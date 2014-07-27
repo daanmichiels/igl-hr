@@ -4,8 +4,8 @@
 #
 
 CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11
-INCLUDES=-I"glfw-3.0.4.bin.WIN32/include" -I"glew-1.10.0/include"
-LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN32/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
+INCLUDES=-I"glfw-3.0.4.bin.WIN64/include" -I"glew-1.10.0/include"
+LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN64/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
 
 # the object files we need are
 #  - one from every .cpp in src
@@ -33,5 +33,5 @@ obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
 clean:
-	del /S obj\*.o
-	del /S bin\*.exe
+	rm -rf obj/*.o
+	rm -rf bin/*.exe

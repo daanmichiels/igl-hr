@@ -31,7 +31,8 @@ int main()
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
 
-	// needs to be called after getting an OpenGL context
+	// we have an OpenGL context
+	//GLenum err = glewInit();
 	print_information();
 
 	while (!glfwWindowShouldClose(window))

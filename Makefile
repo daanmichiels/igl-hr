@@ -4,8 +4,8 @@
 #
 
 CXXFLAGS=-g -Wall
-INCLUDES=-I"glfw-3.0.4.bin.WIN32\include"
-LINKLIBES=-L"glfw-3.0.4.bin.WIN32\lib-mingw" -lglfw3 -lgdi32 -lglu32 -lopengl32
+INCLUDES=-I"glfw-3.0.4.bin.WIN32/include" -I"glew-1.10.0/include"
+LINKLIBES=-L"glfw-3.0.4.bin.WIN32/lib-mingw" -lglfw3 -lgdi32 -lglu32 -lopengl32
 
 # the object files we need are
 #  - one from every .cpp in src

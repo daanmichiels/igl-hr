@@ -2,6 +2,8 @@
 // code taken from
 // http://www.glfw.org/docs/latest/quick.html
 
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
@@ -32,7 +34,7 @@ int main()
 	glfwSetKeyCallback(window, key_callback);
 
 	// we have an OpenGL context
-	//GLenum err = glewInit();
+	glewInit();
 	print_information();
 
 	while (!glfwWindowShouldClose(window))

@@ -3,7 +3,7 @@
 # This file is made for windows
 #
 
-CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -static-libstdc++
+CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -static-libstdc++ -Wl,-static
 INCLUDES=-I"glfw-3.0.4.bin.WIN64/include" -I"glew-1.10.0/include"
 LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN64/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
 

@@ -13,23 +13,6 @@ extern char source_fs_start[];
 extern char source_fs_end[];
 extern char source_fs_size[];
 
-// Just printing some information
-// Requires an OpenGL context
-void print_information()
-{
-	std::string source_vs(source_vs_start, (int)source_vs_size);
-	std::string source_fs(source_fs_start, (int)source_fs_size);
-
-	std::cout << "------- VERTEX SHADER -------\n";
-	std::cout << source_vs << "\n";
-
-	std::cout << "\n\n------ FRAGMENT SHADER ------\n";
-	std::cout << source_fs << "\n";
-
-	std::cout << "\n\n------ OPENGL VERSION -------\n";
-	std::cout << ((char*)glGetString(GL_VERSION)) << "\n";
-}
-
 // Create and compile a shader
 GLuint compile_shader(std::string source, GLenum shaderType)
 {

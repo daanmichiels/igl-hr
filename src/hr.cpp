@@ -33,8 +33,16 @@ int main()
 	glfwSetKeyCallback(window, key_callback);
 
 	// we have an OpenGL context
-	glewInit();
-	print_information();
+	// print some information
+	GLenum error = glewInit();
+	if(error != GLEW_OK)
+	{
+		std::cout << "Error: " << glewGetErrorString(error) << "\n";
+		exit(EXIT_SUCCESS);
+	}
+	std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
+	std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
+	build_program();
 
 	while (!glfwWindowShouldClose(window))
 	{

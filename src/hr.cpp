@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <iostream>
+#include <string>
 #include "shaders.h"
 
 static void error_callback(int error, const char* description)
@@ -38,14 +39,18 @@ int main()
 	if(error != GLEW_OK)
 	{
 		std::cout << "Error: " << glewGetErrorString(error) << "\n";
-		exit(EXIT_SUCCESS);
+		glfwTerminate();
+		exit(EXIT_FAILURE);
 	}
 	std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
 	std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
 	build_program();
 
+	int frames_this_second = 0;
+	double previoustime = 0;
 	while (!glfwWindowShouldClose(window))
 	{
+		double t = glfwGetTime();
 		float ratio;
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
@@ -57,7 +62,7 @@ int main()
 		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
+		glRotatef((float) t * 50.f, 0.f, 0.f, 1.f);
 		glBegin(GL_TRIANGLES);
 		glColor3f(1.f, 0.f, 0.f);
 		glVertex3f(-0.6f, -0.4f, 0.f);
@@ -68,6 +73,14 @@ int main()
 		glEnd();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		frames_this_second++;
+		if(t >= previoustime + 1.0)
+		{
+			previoustime += 1.0;
+			glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
+			frames_this_second = 0;
+		}
 	}
 	glfwDestroyWindow(window);
 	glfwTerminate();

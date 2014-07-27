@@ -32,6 +32,10 @@ obj/shaders/%.o: src/shaders/%.c
 obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
-clean:
-	rm -rf obj/*.o
-	rm -rf bin/*.exe
+# this could be more elegant, maybe
+# (I don't seem to have the find command in my msys install... weird)
+clean: 
+	rm -f obj/*.o
+	rm -f obj/shaders/*.o
+	rm -f bin/*.exe
+

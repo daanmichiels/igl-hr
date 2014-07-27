@@ -18,7 +18,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main()
 {
-	print_shader_source();
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
@@ -31,6 +30,10 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+
+	// needs to be called after getting an OpenGL context
+	print_information();
+
 	while (!glfwWindowShouldClose(window))
 	{
 		float ratio;

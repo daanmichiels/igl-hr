@@ -24,9 +24,11 @@ int main()
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
 	if (!window)
 	{
+		std::cout << "Failed to create window. Do you have OpenGL 3.0 or higher?\n";
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}

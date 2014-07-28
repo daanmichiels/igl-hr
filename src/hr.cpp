@@ -24,8 +24,7 @@ int main()
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
-	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-	window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, "Hyperbolic space on the Rift", monitor, NULL);
+	window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();

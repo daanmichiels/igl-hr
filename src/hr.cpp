@@ -24,7 +24,8 @@ int main()
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
-	window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, "Hyperbolic space on the Rift", monitor, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -79,6 +80,7 @@ int main()
 		{
 			previoustime += 1.0;
 			glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
+			std::cout << std::to_string(frames_this_second) << "\n";
 			frames_this_second = 0;
 		}
 	}

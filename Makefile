@@ -6,6 +6,7 @@
 CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -static-libstdc++ -Wl,-static
 INCLUDES=-I"glfw-3.0.4.bin.WIN64/include" -I"glew-1.10.0/include"
 LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN64/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
+EXECUTABLE=bin/hr.exe
 
 # the object files we need are
 #  - one from every .cpp in src
@@ -13,11 +14,11 @@ LINKLIBES=-L"glew-1.10.0/lib" -L"glfw-3.0.4.bin.WIN64/lib-mingw" -lglew32 -lglfw
 OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp)) \
         $(patsubst src/shaders/%.c,obj/shaders/%.o,$(wildcard src/shaders/*.c))
 
-all: bin/hr.exe
+all: $(EXECUTABLE)
 
 # for linking to a windows executable without console in the background, add option -mwindows (where?)
 bin/hr.exe: $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o bin/hr.exe \
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) \
 	                  $(OBJECTS) \
 	                  $(INCLUDES) $(LINKLIBES)
 
@@ -32,10 +33,7 @@ obj/shaders/%.o: src/shaders/%.c
 obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
-# this could be more elegant, maybe
-# (I don't seem to have the find command in my msys install... weird)
 clean: 
-	rm -f obj/*.o
-	rm -f obj/shaders/*.o
-	rm -f bin/*.exe
+	rm -f $(OBJECTS)
+	rm -f $(EXECUTABLE)
 

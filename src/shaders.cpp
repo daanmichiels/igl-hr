@@ -23,6 +23,16 @@ GLuint compile_shader(std::string source, GLenum shaderType)
 	glShaderSource(shader, 1, src, NULL);
 	glCompileShader(shader);
 
+	GLint compiled;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+	if(!compiled)
+	{
+		char error[100];
+		glGetShaderInfoLog(shader, 100, NULL, error);
+		std::cout << "Shader compilation failed: " << error << "\n";
+		return 0;
+	}
+
 	return shader;
 }
 
@@ -33,12 +43,25 @@ GLuint build_program()
 	std::string source_fs(_source_fs_start, (size_t)_source_fs_size);
 
 	GLuint vs = compile_shader(source_vs, GL_VERTEX_SHADER);
+	if(!vs)
+		return 0;
 	GLuint fs = compile_shader(source_fs, GL_FRAGMENT_SHADER);
+	if(!fs)
+		return 0;
 
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vs);
 	glAttachShader(program, fs);
 	glLinkProgram(program);
+	GLint linked;
+	glGetProgramiv(program, GL_LINK_STATUS, &linked);
+	if(!linked)
+	{
+		char error[100];
+		glGetProgramInfoLog(program, 100, NULL, error);
+		std::cout << "Program linking failed: " << error << "\n";
+		return 0;
+	}
 
 	return program;
 }

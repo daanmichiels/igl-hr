@@ -45,7 +45,11 @@ int main()
 	}
 	std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
 	std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
-	build_program();
+	if(!build_program())
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
 
 	int frames_this_second = 0;
 	double previoustime = 0;

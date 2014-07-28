@@ -44,37 +44,48 @@ int main()
 	}
 	std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
 	std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
-	if(!build_program())
+	GLuint program = build_program();
+	if(!program)
 	{
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	// generate a buffer
+	const float vertices[] = {
+		0.75f, 0.75f, 0.0f, 1.0f,
+		0.75f, -0.75f, 0.0f, 1.0f,
+		-0.75f, -0.75f, 0.0f, 1.0f,
+	};
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	int frames_this_second = 0;
 	double previoustime = 0;
 	while (!glfwWindowShouldClose(window))
 	{
 		double t = glfwGetTime();
-		float ratio;
+
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
-		ratio = width / (float) height;
 		glViewport(0, 0, width, height);
+
+		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glRotatef((float) t * 50.f, 0.f, 0.f, 1.f);
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.f, 0.f, 0.f);
-		glVertex3f(-0.6f, -0.4f, 0.f);
-		glColor3f(0.f, 1.f, 0.f);
-		glVertex3f(0.6f, -0.4f, 0.f);
-		glColor3f(0.f, 0.f, 1.f);
-		glVertex3f(0.f, 0.6f, 0.f);
-		glEnd();
+		
+		glUseProgram(program);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDisableVertexAttribArray(0);
+		glUseProgram(0);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 

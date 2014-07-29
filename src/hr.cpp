@@ -53,16 +53,22 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-	// generate a buffer
-	const float vertices[] = {
+	// generate a buffer and fill it
+	const float buffer_data[] = {
+		// positions
 		0.75f, 0.75f, 0.0f, 1.0f,
 		0.75f, -0.75f, 0.0f, 1.0f,
 		-0.75f, -0.75f, 0.0f, 1.0f,
+
+		// colors
+		1.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.5f,
+		0.0f, 0.0f, 1.0f,
 	};
 	GLuint buffer;
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	int frames_this_second = 0;
@@ -81,11 +87,14 @@ int main()
 		glUseProgram(program);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(12*sizeof(float)));
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 		glUseProgram(0);
 
 		glfwSwapBuffers(window);

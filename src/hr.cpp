@@ -7,7 +7,21 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
+#include <math.h>
 #include "shaders.h"
+
+// fov is the full vertical angle in degrees
+static void fill_projection_matrix(float* proj, float near, float far, float fov, float ratio)
+{
+	// use the half vertical angle in radians
+	float top = near * tan(90 * fov / 3.1415927); // this is good enough for now, I guess
+	float right = top * ratio;
+	float matrix[] = {near/right, 0.0f, 0.0f, 0.0f,
+	        0.0f, near/top, 0.0f, 0.0f,
+	        0.0f, 0.0f, -(far+near)/(far-near), -2*far*near/(far-near),
+	        0.0f, 0.0f, -1.0f, 0.0f};
+	std::copy(matrix, matrix+16, proj);
+}
 
 static void error_callback(int error, const char* description)
 {
@@ -20,6 +34,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main()
 {
+	// test the projection matrix
+	float proj[16];
+	fill_projection_matrix(proj, 0.05, 50.0, 60.0, 1.0); // this ratio is wrong
+	for(int i=0; i<16; i++)
+	{
+		std::cout << std::to_string(proj[i]) << " \t";
+		if((i+1)%4 == 0)
+			std::cout << "\n";
+	}
+
+
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())

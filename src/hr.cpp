@@ -31,6 +31,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main()
 {
+	// set up projection matrix
+	float proj[16];
+	fill_projection_matrix(proj, 0.05, 50.0, 60.0, 1.0); // this ratio is wrong
+
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())

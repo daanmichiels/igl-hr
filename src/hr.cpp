@@ -31,6 +31,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main()
 {
+	// try out some math to set up translations
+	std::cout << std::to_string(acosh(2)) << "\n";
+
 	// set up projection matrix
 	float proj[16];
 	fill_projection_matrix(proj, 0.05, 50.0, 60.0, 1.0); // this ratio is wrong

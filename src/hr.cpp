@@ -14,12 +14,14 @@
 static void fill_projection_matrix(float* proj, float near, float far, float fov, float ratio)
 {
 	// use the half vertical angle in radians
-	float top = near * tan(90 * fov / 3.1415927); // this is good enough for now, I guess
+	float top = near * tan(fov * 3.1415927 / 360.0); // this is good enough for now, I guess
+	std::cout << "Top: " << std::to_string(top) << "\n";
 	float right = top * ratio;
+	std::cout << "Right: " << std::to_string(top) << "\n";
 	float matrix[] = {near/right, 0.0f, 0.0f, 0.0f,
 	        0.0f, near/top, 0.0f, 0.0f,
-	        0.0f, 0.0f, -(far+near)/(far-near), -2*far*near/(far-near),
-	        0.0f, 0.0f, -1.0f, 0.0f};
+	        0.0f, 0.0f, -(far+near)/(far-near), -1.0f,
+	        0.0f, 0.0f, -2*far*near/(far-near), 0.0f};
 	std::copy(matrix, matrix+16, proj);
 }
 
@@ -43,7 +45,6 @@ int main()
 		if((i+1)%4 == 0)
 			std::cout << "\n";
 	}
-
 
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
@@ -81,13 +82,13 @@ int main()
 	// generate a buffer and fill it
 	const float buffer_data[] = {
 		// positions
-		0.75f, 0.75f, 0.0f, 1.0f,
-		0.75f, -0.75f, 0.0f, 1.0f,
-		-0.75f, -0.75f, 0.0f, 1.0f,
+		0.0f, 0.0f, -1.0f, 1.0f,
+		0.5f, -0.50f, -1.0f, 1.0f,
+		-0.5f, -0.5f, -1.0f, 1.0f,
 
 		// colors
-		1.0f, 1.0f, 0.0f,
-		0.0f, 1.0f, 0.5f,
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 1.0f,
 	};
 	GLuint buffer;
@@ -110,6 +111,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(program);
+		glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 1, GL_FALSE, proj);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

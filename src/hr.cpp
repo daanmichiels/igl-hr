@@ -5,7 +5,9 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include "../thirdparty/glm/glm/glm.hpp"
 #include "shaders.h"
+#include "hypermath.h"
 
 // fov is the full vertical angle in degrees
 static void fill_projection_matrix(float* proj, float near, float far, float fov, float ratio)
@@ -33,6 +35,8 @@ int main()
 {
 	// try out some math to set up translations
 	std::cout << std::to_string(acosh(2)) << "\n";
+	glm::vec4 position = exp0(glm::vec3(0.0f,1.0f,0.0f));
+	std::cout << "After walking up (+y) for a distance of 1, you end up at (" << std::to_string(position.x) << ", " << std::to_string(position.y) << ", " << std::to_string(position.z) << ", " << std::to_string(position.w) << ")" << "\n";
 
 	// set up projection matrix
 	float proj[16];

@@ -1,0 +1,1 @@
+glm::vec4 exp0(glm::vec3 direction);

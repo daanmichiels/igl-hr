@@ -27,8 +27,8 @@ GLuint compile_shader(std::string source, GLenum shaderType)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 	if(!compiled)
 	{
-		char error[100];
-		glGetShaderInfoLog(shader, 100, NULL, error);
+		char error[200];
+		glGetShaderInfoLog(shader, 200, NULL, error);
 		std::cout << "Shader compilation failed: " << error << "\n";
 		return 0;
 	}
@@ -57,8 +57,8 @@ GLuint build_program()
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	if(!linked)
 	{
-		char error[100];
-		glGetProgramInfoLog(program, 100, NULL, error);
+		char error[200];
+		glGetProgramInfoLog(program, 200, NULL, error);
 		std::cout << "Program linking failed: " << error << "\n";
 		return 0;
 	}

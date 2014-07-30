@@ -6,6 +6,7 @@
 #include <string>
 #include <math.h>
 #include "../thirdparty/glm/glm/glm.hpp"
+#include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 #include "shaders.h"
 #include "hypermath.h"
 
@@ -40,7 +41,29 @@ int main()
 
 	// set up projection matrix
 	float proj[16];
-	fill_projection_matrix(proj, 0.05, 50.0, 60.0, 1.0); // this ratio is wrong
+	fill_projection_matrix(proj, 0.05f, 50.0f, 60.0f, 1.0f); // this ratio is wrong
+
+	// compare to glm's projection
+	glm::mat4 glmproj = glm::perspective(60.0f, 1.0f, 0.05f, 50.0f); // this ratio is wrong
+	std::cout << proj[0] << "\t" << glmproj[0][0] << "\n";
+	std::cout << proj[1] << "\t" << glmproj[0][1] << "\n";
+	std::cout << proj[2] << "\t" << glmproj[0][2] << "\n";
+	std::cout << proj[3] << "\t" << glmproj[0][3] << "\n";
+
+	std::cout << proj[4] << "\t" << glmproj[1][0] << "\n";
+	std::cout << proj[5] << "\t" << glmproj[1][1] << "\n";
+	std::cout << proj[6] << "\t" << glmproj[1][2] << "\n";
+	std::cout << proj[7] << "\t" << glmproj[1][3] << "\n";
+
+	std::cout << proj[8] << "\t" << glmproj[2][0] << "\n";
+	std::cout << proj[9] << "\t" << glmproj[2][1] << "\n";
+	std::cout << proj[10] << "\t" << glmproj[2][2] << "\n";
+	std::cout << proj[11] << "\t" << glmproj[2][3] << "\n";
+
+	std::cout << proj[12] << "\t" << glmproj[3][0] << "\n";
+	std::cout << proj[13] << "\t" << glmproj[3][1] << "\n";
+	std::cout << proj[14] << "\t" << glmproj[3][2] << "\n";
+	std::cout << proj[15] << "\t" << glmproj[3][3] << "\n";
 
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);

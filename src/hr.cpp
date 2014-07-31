@@ -3,12 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
-#include <math.h>
-#define GLM_FORCE_RADIANS
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 #include "shaders.h"
-#include "hypermath.h"
 #include "camera.h"
 
 static void error_callback(int error, const char* description)

@@ -19,6 +19,7 @@ Camera::Camera(float fov, float ratio, float near, float far)
 void Camera::use(GLuint program)
 {
 	// eventually, we'll want to have a modelview matrix (premultiplied)
+	// so we'll have to think about that
 	glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(_proj));
 	glUniformMatrix4fv(glGetUniformLocation(program, "view"      ), 1, GL_FALSE, glm::value_ptr(_view));
 }

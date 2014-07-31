@@ -5,18 +5,26 @@
 #include <string>
 #include "shaders.h"
 #include "camera.h"
+#include "hypermath.h"
 
 static void error_callback(int error, const char* description)
 {
 	std::cerr << description;
 }
+
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
+
 int main()
 {
+	// test hypermath
+	glm::vec4 p1(0,0.1,0,sqrt(1+0.1*0.1));
+	glm::vec4 p2(0.1,0,0.2,sqrt(1+0.1*0.1+0.2*0.2));
+	std::cout << "Distance: " << std::to_string(hypermath::dist(p1,p2)) << "\n";
+
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
@@ -69,7 +77,7 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	Camera cam(1.2f, 1.0f, 0.01f, 10.0f);
+	Camera cam(1.2f, 800.0f/600.0f, 0.01f, 10.0f);
 
 	int frames_this_second = 0;
 	double previoustime = 0;

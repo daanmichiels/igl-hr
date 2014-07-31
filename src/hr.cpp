@@ -21,9 +21,19 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 int main()
 {
 	// test hypermath
+	glm::vec4 p0(0,0,0,1);
 	glm::vec4 p1(0,0.1,0,sqrt(1+0.1*0.1));
 	glm::vec4 p2(0.1,0,0.2,sqrt(1+0.1*0.1+0.2*0.2));
 	std::cout << "Distance: " << std::to_string(hypermath::dist(p1,p2)) << "\n";
+
+	glm::vec4 p3 = hypermath::exp(p0, glm::vec4(1,1,0,0));
+	std::cout << "          Point after exp: (" << std::to_string(p3.x) << ", " << std::to_string(p3.y) << ", " << std::to_string(p3.z) << ", " << std::to_string(p3.w) << ")\n";
+	p3 = hypermath::correct_point(p3);
+	std::cout << "Corrected point after exp: (" << std::to_string(p3.x) << ", " << std::to_string(p3.y) << ", " << std::to_string(p3.z) << ", " << std::to_string(p3.w) << ")\n";
+	std::cout << "Distance: " << std::to_string(hypermath::dist(p0,p3)) << "\n";
+	glm::vec4 direction = hypermath::expinv(p0,p3);
+	std::cout << "Direction vector: (" << std::to_string(direction.x) << ", " << std::to_string(direction.y) << ", " << std::to_string(direction.z) << ", " << std::to_string(direction.w) << ")\n";
+	std::cout << "\n";
 
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);

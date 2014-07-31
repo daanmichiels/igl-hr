@@ -1,27 +1,15 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <math.h>
+#define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 #include "shaders.h"
 #include "hypermath.h"
-
-// fov is the full vertical angle in degrees
-static void fill_projection_matrix(float* proj, float near, float far, float fov, float ratio)
-{
-	// use the half vertical angle in radians
-	float top = near * tan(fov * 3.1415927 / 360.0); // this is good enough for now, I guess
-	float right = top * ratio;
-	float matrix[] = {near/right, 0.0f, 0.0f, 0.0f,
-	        0.0f, near/top, 0.0f, 0.0f,
-	        0.0f, 0.0f, -(far+near)/(far-near), -1.0f,
-	        0.0f, 0.0f, -2*far*near/(far-near), 0.0f};
-	std::copy(matrix, matrix+16, proj);
-}
+#include "camera.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -34,37 +22,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 int main()
 {
-	// try out some math to set up translations
-	std::cout << std::to_string(acosh(2)) << "\n";
-	glm::vec4 position = exp0(glm::vec3(0.0f,1.0f,0.0f));
-	std::cout << "After walking up (+y) for a distance of 1, you end up at (" << std::to_string(position.x) << ", " << std::to_string(position.y) << ", " << std::to_string(position.z) << ", " << std::to_string(position.w) << ")" << "\n";
-
-	// set up projection matrix
-	float proj[16];
-	fill_projection_matrix(proj, 0.05f, 50.0f, 60.0f, 1.0f); // this ratio is wrong
-
-	// compare to glm's projection
-	glm::mat4 glmproj = glm::perspective(60.0f, 1.0f, 0.05f, 50.0f); // this ratio is wrong
-	std::cout << proj[0] << "\t" << glmproj[0][0] << "\n";
-	std::cout << proj[1] << "\t" << glmproj[0][1] << "\n";
-	std::cout << proj[2] << "\t" << glmproj[0][2] << "\n";
-	std::cout << proj[3] << "\t" << glmproj[0][3] << "\n";
-
-	std::cout << proj[4] << "\t" << glmproj[1][0] << "\n";
-	std::cout << proj[5] << "\t" << glmproj[1][1] << "\n";
-	std::cout << proj[6] << "\t" << glmproj[1][2] << "\n";
-	std::cout << proj[7] << "\t" << glmproj[1][3] << "\n";
-
-	std::cout << proj[8] << "\t" << glmproj[2][0] << "\n";
-	std::cout << proj[9] << "\t" << glmproj[2][1] << "\n";
-	std::cout << proj[10] << "\t" << glmproj[2][2] << "\n";
-	std::cout << proj[11] << "\t" << glmproj[2][3] << "\n";
-
-	std::cout << proj[12] << "\t" << glmproj[3][0] << "\n";
-	std::cout << proj[13] << "\t" << glmproj[3][1] << "\n";
-	std::cout << proj[14] << "\t" << glmproj[3][2] << "\n";
-	std::cout << proj[15] << "\t" << glmproj[3][3] << "\n";
-
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
@@ -117,6 +74,8 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	Camera cam(1.2f, 1.0f, 0.01f, 10.0f);
+
 	int frames_this_second = 0;
 	double previoustime = 0;
 	while (!glfwWindowShouldClose(window))
@@ -131,7 +90,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(program);
-		glUniformMatrix4fv(glGetUniformLocation(program, "proj"), 1, GL_FALSE, proj);
+		cam.use(program);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

@@ -7,6 +7,8 @@
 #include "camera.h"
 #include "hypermath.h"
 
+#include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+
 static void error_callback(int error, const char* description)
 {
 	std::cerr << description;
@@ -27,13 +29,15 @@ int main()
 	std::cout << "Distance: " << std::to_string(hypermath::dist(p1,p2)) << "\n";
 
 	glm::vec4 p3 = hypermath::exp(p0, glm::vec4(1,1,0,0));
-	std::cout << "          Point after exp: (" << std::to_string(p3.x) << ", " << std::to_string(p3.y) << ", " << std::to_string(p3.z) << ", " << std::to_string(p3.w) << ")\n";
+	std::cout << "          Point after exp: " << glm::to_string(p3) << "\n";
 	p3 = hypermath::correct_point(p3);
-	std::cout << "Corrected point after exp: (" << std::to_string(p3.x) << ", " << std::to_string(p3.y) << ", " << std::to_string(p3.z) << ", " << std::to_string(p3.w) << ")\n";
+	std::cout << "Corrected point after exp: " << glm::to_string(p3) << "\n";
 	std::cout << "Distance: " << std::to_string(hypermath::dist(p0,p3)) << "\n";
 	glm::vec4 direction = hypermath::expinv(p0,p3);
-	std::cout << "Direction vector: (" << std::to_string(direction.x) << ", " << std::to_string(direction.y) << ", " << std::to_string(direction.z) << ", " << std::to_string(direction.w) << ")\n";
+	std::cout << "Direction vector: (" << glm::to_string(direction) << "\n";
 	std::cout << "\n";
+
+	std::cout << "Boost matrix: " << glm::to_string(hypermath::translation0(p1)) << "\n";
 
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);

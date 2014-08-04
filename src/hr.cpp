@@ -37,7 +37,17 @@ int main()
 	std::cout << "Direction vector: (" << glm::to_string(direction) << "\n";
 	std::cout << "\n";
 
-	std::cout << "Boost matrix: " << glm::to_string(hypermath::translation0(p1)) << "\n";
+	std::cout << "Boost matrix: " << glm::to_string(hypermath::translation0(p3)) << "\n";
+
+	// Let's test the translation0 a bit.
+	std::cout << "\nTesting whether exp gives a 1-parameter subgroup:\n";
+	glm::mat4 a = hypermath::translation0(hypermath::exp(p0, glm::vec4(1,2,3,0)));
+	glm::mat4 a2 = hypermath::translation0(hypermath::exp(p0, glm::vec4(2,4,6,0)));
+	glm::mat4 ainv = hypermath::translation0(hypermath::exp(p0, glm::vec4(-1,-2,-3,0)));
+	std::cout << "\nMatrix A:\n" << glm::to_string(a) << "\n";
+	std::cout << "\nMatrix A^2 (first version):\n" << glm::to_string(a2) << "\n";
+	std::cout << "\nMatrix A^2 (second version):\n" << glm::to_string(a*a) << "\n";
+	std::cout << "\nThis should be Id:\n" << glm::to_string(ainv*a) << "\n";
 
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);

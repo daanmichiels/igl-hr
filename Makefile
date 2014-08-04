@@ -1,6 +1,6 @@
 #
 # Makefile for igl-hr
-# This file is made for windows
+# This file is made for msys
 #
 
 CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -static-libstdc++ -Wl,-static
@@ -36,4 +36,3 @@ obj/%.o: src/%.cpp
 clean: 
 	rm -f $(OBJECTS)
 	rm -f $(EXECUTABLE)
-

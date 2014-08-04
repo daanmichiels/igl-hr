@@ -27,7 +27,7 @@ namespace hypermath
 		return ((float)(r/sinh(r))) * u;
 	}
 
-	// translation (I suppose I should call this a boost; I mean
+	// translation (I suppose I should call this a boost?; I mean
 	// inverse of exponential at starting point, parallel transport
 	// along geodesic, exponential map at target)
 	// this one is a translation starting at (0,0,0,1)

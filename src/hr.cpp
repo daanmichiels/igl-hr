@@ -36,6 +36,8 @@ int main()
 	std::cout << "\nMatrix A^2 (first version):\n" << glm::to_string(a2) << "\n";
 	std::cout << "\nMatrix A^2 (second version):\n" << glm::to_string(a*a) << "\n";
 	std::cout << "\nThis should be Id:\n" << glm::to_string(ainv*a) << "\n";
+	glm::mat4 b = hypermath::translation1(hypermath::exp(p0, glm::vec4(1,2,3,0)));
+	std::cout << "\nMatrix B:\n" << glm::to_string(b) << "\n";
 
 	// End test hypermath
 

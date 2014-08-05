@@ -33,28 +33,21 @@ namespace hypermath
 	// this one is a translation starting at (0,0,0,1)
 	glm::mat4 translation0(glm::vec4 target)
 	{
-		float r = dist(glm::vec4(0,0,0,1),target);
-		if(r==0) //should probably be more careful with this
-		{
-			return glm::mat4(); //return identity
-		}
-		float gamma = cosh(r);
-		glm::vec3 u = glm::vec3(target.x,target.y,target.z);
-		u = glm::normalize(u);
-
-		// formula from http://en.wikipedia.org/wiki/Lorentz_transformation#Boost_in_any_direction
-		// should check that this is the correct one
 		glm::mat4 result = glm::mat4(); // start with id
 		for(int i=0; i<3; i++)
 		{
 			for(int j=0; j<3; j++)
 			{
-				result[i][j] += (gamma-1)*u[i]*u[j];
+				result[i][j] += target[i]*target[j]/(target.w + 1);
 			}
-			result[3][i] = -gamma*u[i];
-			result[i][3] = -gamma*u[i];
 		}
-		result[3][3] = gamma;
+		result[3][0] = target.x;
+		result[3][1] = target.y;
+		result[3][2] = target.z;
+		result[0][3] = target.x;
+		result[1][3] = target.y;
+		result[2][3] = target.z;
+		result[3][3] = target.w;
 
 		return result;
 	}

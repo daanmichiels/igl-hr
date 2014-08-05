@@ -52,6 +52,39 @@ namespace hypermath
 		return result;
 	}
 
+	// returns the inverse matrix of the one calculated by
+	// translation0
+	glm::mat4 translation0inv(glm::vec4 target)
+	{
+		glm::mat4 result = glm::mat4(); // start with id
+		for(int i=0; i<3; i++)
+		{
+			for(int j=0; j<3; j++)
+			{
+				result[i][j] += target[i]*target[j]/(target.w + 1);
+			}
+		}
+		result[3][0] = -target.x;
+		result[3][1] = -target.y;
+		result[3][2] = -target.z;
+		result[0][3] = -target.x;
+		result[1][3] = -target.y;
+		result[2][3] = -target.z;
+		result[3][3] = target.w;
+
+		return result;
+	}
+
+	// Returns the translation that maps source to target
+	// (in matrix form). This is the generalization of translation0
+	// for arbitrary starting point.
+	glm::mat4 translation(glm::vec4 source, glm::vec4 target)
+	{
+		glm::mat4 Q = translation0inv(source);
+		glm::vec4 intermediate_target = Q*target;
+		return translation0(source) * translation0(intermediate_target) * Q;
+	}
+
 	// When doing a lot of transformations on a point of the hyperboloid,
 	// it will slowly drift away from it due to rounding errors.
 	// We can use this to put it back on the hyperboloid.

@@ -29,16 +29,10 @@ int main()
 	std::cout << "\nThis is the target: " << glm::to_string(hypermath::exp(p0, glm::vec4(1,2,3,0))) << "\n";
 	std::cout << "\nTesting whether exp gives a 1-parameter subgroup:\n";
 	glm::mat4 a = hypermath::translation0(hypermath::exp(p0, glm::vec4(1,2,3,0)));
-	glm::mat4 a2 = hypermath::translation0(hypermath::exp(p0, glm::vec4(2,4,6,0)));
-	glm::mat4 ainv = hypermath::translation0(hypermath::exp(p0, glm::vec4(-1,-2,-3,0)));
+	glm::mat4 ainv = hypermath::translation0inv(hypermath::exp(p0, glm::vec4(1,2,3,0)));
 	std::cout << "\nMatrix A:\n" << glm::to_string(a) << "\n";
-	std::cout << "\nMatrix A^2 (first version):\n" << glm::to_string(a2) << "\n";
-	std::cout << "\nMatrix A^2 (second version):\n" << glm::to_string(a*a) << "\n";
 	std::cout << "\nWalking in opposite direction:\n" << glm::to_string(ainv) << "\n";
 	std::cout << "\nInverse of A:\n" << glm::to_string(glm::inverse(a)) << "\n";
-	std::cout << "\nDeterminant of A:\n" << std::to_string(glm::determinant(a)) << "\n";
-	std::cout << "\nShould be Id:\n" << glm::to_string(a*ainv) << "\n";
-	std::cout << "\nShould be Id:\n" << glm::to_string(a*glm::inverse(a)) << "\n";
 
 	// End test hypermath
 

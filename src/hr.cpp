@@ -23,7 +23,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 int main()
 {
 	// Test hypermath
-
 	glm::vec4 p0(0,0,0,1);
 
 	// Let's test the translation0 a bit.
@@ -35,9 +34,11 @@ int main()
 	std::cout << "\nMatrix A:\n" << glm::to_string(a) << "\n";
 	std::cout << "\nMatrix A^2 (first version):\n" << glm::to_string(a2) << "\n";
 	std::cout << "\nMatrix A^2 (second version):\n" << glm::to_string(a*a) << "\n";
-	std::cout << "\nThis should be Id:\n" << glm::to_string(ainv*a) << "\n";
-	glm::mat4 b = hypermath::translation1(hypermath::exp(p0, glm::vec4(1,2,3,0)));
-	std::cout << "\nMatrix B:\n" << glm::to_string(b) << "\n";
+	std::cout << "\nWalking in opposite direction:\n" << glm::to_string(ainv) << "\n";
+	std::cout << "\nInverse of A:\n" << glm::to_string(glm::inverse(a)) << "\n";
+	std::cout << "\nDeterminant of A:\n" << std::to_string(glm::determinant(a)) << "\n";
+	std::cout << "\nShould be Id:\n" << glm::to_string(a*ainv) << "\n";
+	std::cout << "\nShould be Id:\n" << glm::to_string(a*glm::inverse(a)) << "\n";
 
 	// End test hypermath
 

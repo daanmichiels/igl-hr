@@ -24,7 +24,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-int main()
+// creates the window and gets an OpenGL context for it
+GLFWwindow* create_window()
 {
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
@@ -40,9 +41,13 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+	return window;
+}
 
-	// we have an OpenGL context
-	// print some information
+// prints some information about the OpenGL context
+// requires a currect OpenGL context
+void print_info()
+{
 	GLenum error = glewInit();
 	if(error != GLEW_OK)
 	{
@@ -52,6 +57,14 @@ int main()
 	}
 	std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
 	std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
+}
+
+int main()
+{
+	GLFWwindow* window = create_window();
+	print_info();
+
+	// build and link the shading program
 	GLuint program = build_program();
 	if(!program)
 	{
@@ -59,14 +72,16 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-	// pff, this is an inefficient method (to code)
+	// create a triangle
 	glm::vec4 a = glm::vec4(0.0f, 0.0f, -1.0f, 1.414213f);
 	glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
 	glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
 	GLuint vao_triangle = primitives::triangle(a,b,c);
 
+	// create a camera
 	Camera cam(1.2f, 800.0f/600.0f, 0.01f, 10.0f);
 
+	// let's go!
 	int frames_this_second = 0;
 	double previoustime = 0;
 	while (!glfwWindowShouldClose(window))
@@ -105,6 +120,8 @@ int main()
 			frames_this_second = 0;
 		}
 	}
+
+	// done
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);

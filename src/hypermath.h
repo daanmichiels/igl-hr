@@ -1,6 +1,9 @@
 // provides some useful functions related to the hyperboloid model
 // of hyperbolic 3-space
 
+#ifndef HYPERMATH_H
+#define HYPERMATH_H
+
 namespace hypermath
 {
 	// inner product of two tangent vectors
@@ -107,3 +110,5 @@ namespace hypermath
 		return translation0(source) * translation0(intermediate_target) * Q;
 	}
 }
+
+#endif

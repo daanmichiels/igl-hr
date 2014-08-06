@@ -6,7 +6,10 @@
 #include "shaders.h"
 #include "camera.h"
 #include "hypermath.h"
+#include "primitives.h"
 
+#define GLM_FORCE_RADIANS
+#include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 
@@ -60,25 +63,7 @@ int main()
 	glm::vec4 a = glm::vec4(0.0f, 0.0f, -1.0f, 1.414213f);
 	glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
 	glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
-
-	// generate a buffer and fill it
-	const float buffer_data[] = {
-		// positions
-		// (yeah, we're looking in the negative z-direction)
-		a.x, a.y, a.z, a.w,
-		b.x, b.y, b.z, b.w,
-		c.x, c.y, c.z, c.w,
-
-		// colors
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-	};
-	GLuint buffer;
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(buffer_data), buffer_data, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	GLuint vao_triangle = primitives::triangle(a,b,c);
 
 	Camera cam(1.2f, 800.0f/600.0f, 0.01f, 10.0f);
 
@@ -103,16 +88,9 @@ int main()
 		glUseProgram(program);
 		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(modelview));
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(12*sizeof(float)));
-
+		glBindVertexArray(vao_triangle);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
 		glUseProgram(0);
 
 		glfwSwapBuffers(window);

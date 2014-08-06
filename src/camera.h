@@ -13,7 +13,8 @@ class Camera
 		glm::mat4 _view;
 	public:
 		Camera(float fov, float ratio, float near, float far);
-		void use(GLuint program);
+		glm::mat4 get_projection();
+		glm::mat4 get_view();
 };
 
 #endif

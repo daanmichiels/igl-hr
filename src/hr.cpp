@@ -8,6 +8,7 @@
 #include "hypermath.h"
 
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -104,7 +105,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(program);
-		cam.use(program);
+		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(cam.get_projection()));
+		glUniformMatrix4fv(glGetUniformLocation(program, "view"),       1, GL_FALSE, glm::value_ptr(cam.get_view()));
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

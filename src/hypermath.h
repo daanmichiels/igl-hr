@@ -91,6 +91,9 @@ namespace hypermath
 	// The corrected point is not the closest to the given one, but
 	// that shouldn't matter much (this should all be of the order of machine
 	// precision anyway), and it's simple.
+	// Idea for later: we could replace this by a simpler (faster) formula
+	// that gives a good approximation if p is already close to the hyper-
+	// boloid. We could for example do one step of Newton's method.
 	glm::vec4 correct_point(glm::vec4 p)
 	{
 		return glm::vec4(p.x, p.y, p.z, sqrt(1+p.x*p.x+p.y*p.y+p.z*p.z));

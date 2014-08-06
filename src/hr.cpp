@@ -74,9 +74,9 @@ int main()
 	const float buffer_data[] = {
 		// positions
 		// (yeah, we're looking in the negative z-direction)
-		0.0f, 0.0f, -1.0f, 1.0f,
-		0.5f, -0.50f, -1.0f, 1.0f,
-		-0.5f, -0.5f, -1.0f, 1.0f,
+		0.0f, 0.0f, -1.0f, 1.414213f,
+		0.5f, -0.50f, -1.0f, 1.581138f,
+		-0.5f, -0.5f, -1.0f, 1.581138f,
 
 		// colors
 		1.0f, 0.0f, 0.0f,
@@ -97,6 +97,11 @@ int main()
 	{
 		double t = glfwGetTime();
 
+		glm::mat4 model = hypermath::translation0(glm::vec4(0,0.5*sin(t),0,sqrt(1+0.5*sin(t)*0.5*sin(t))));
+		glm::mat4 view = cam.get_view();
+		glm::mat4 projection = cam.get_projection();
+		glm::mat4 modelview = view * model;
+
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
@@ -105,8 +110,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		glUseProgram(program);
-		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(cam.get_projection()));
-		glUniformMatrix4fv(glGetUniformLocation(program, "view"),       1, GL_FALSE, glm::value_ptr(cam.get_view()));
+		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),       1, GL_FALSE, glm::value_ptr(modelview));
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

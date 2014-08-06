@@ -1,19 +1,40 @@
 // provides some useful functions related to the hyperboloid model
 // of hyperbolic 3-space
+
 namespace hypermath
 {
+	// inner product of two tangent vectors
+	// note that the basepoint is irrelevant
+	float dot(glm::vec4 v, glm::vec4 w)
+	{
+		return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
+	}
+
+	// returns the length of a tangent vector
+	float length(glm::vec4 v)
+	{
+		return sqrt(dot(v,v));
+	}
+
+	// normalizes a vector
+	glm::vec4 normalize(glm::vec4 v)
+	{
+		return v / length(v);
+	}
+
 	// distance between two points
 	float dist(glm::vec4 p1, glm::vec4 p2)
 	{
-		return acosh(- p1.x*p2.x - p1.y*p2.y - p1.z*p2.z + p1.w*p2.w);
+		return acosh(-dot(p1,p2));
 	}
 
 	// exponential map
 	glm::vec4 exp(glm::vec4 basepoint, glm::vec4 direction)
 	{
-		float r = glm::length(direction);
-		glm::vec4 unit = glm::normalize(direction);
-		return ((float)cosh(r)) * basepoint + ((float)sinh(r)) * unit;
+		float r = length(direction);
+		// is this numerically stable enough?
+		// maybe we should do something about the sinh(r)/r
+		return ((float)cosh(r)) * basepoint + ((float)(sinh(r)/r)) * direction;
 	}
 
 	// inverse of the exponential map
@@ -23,6 +44,7 @@ namespace hypermath
 		if(r==0)
 			return glm::vec4(0,0,0,0);
 		// is this numerically stable enough?
+		// maybe we should do something about the r/sinh(r)
 		glm::vec4 u = target - ((float)cosh(r)) * basepoint;
 		return ((float)(r/sinh(r))) * u;
 	}
@@ -83,30 +105,5 @@ namespace hypermath
 		glm::mat4 Q = translation0inv(source);
 		glm::vec4 intermediate_target = Q*target;
 		return translation0(source) * translation0(intermediate_target) * Q;
-	}
-
-	// Returns the point halfway between the given points.
-	// This seems like a pretty expensive operation,
-	// and I don't know whether there is a much better way
-	// to do this.
-	glm::vec4 midpoint(glm::vec4 a, glm::vec4 b)
-	{
-		glm::vec4 v = expinv(a,b);
-		v = v/2.0f;
-		return exp(a,v);
-	}
-
-	// When doing a lot of transformations on a point of the hyperboloid,
-	// it will slowly drift away from it due to rounding errors.
-	// We can use this to put it back on the hyperboloid.
-	// The corrected point is not the closest to the given one, but
-	// that shouldn't matter much (this should all be of the order of machine
-	// precision anyway), and it's simple.
-	// Idea for later: we could replace this by a simpler (faster) formula
-	// that gives a good approximation if p is already close to the hyper-
-	// boloid. We could for example do one step of Newton's method.
-	glm::vec4 correct_point(glm::vec4 p)
-	{
-		return glm::vec4(p.x, p.y, p.z, sqrt(1+p.x*p.x+p.y*p.y+p.z*p.z));
 	}
 }

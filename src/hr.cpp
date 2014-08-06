@@ -23,20 +23,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 int main()
 {
-	// Test hypermath
-	glm::vec4 p0(0,0,0,1);
-
-	// Let's test the translation0 a bit.
-	std::cout << "\nThis is the target: " << glm::to_string(hypermath::exp(p0, glm::vec4(1,2,3,0))) << "\n";
-	std::cout << "\nTesting whether exp gives a 1-parameter subgroup:\n";
-	glm::mat4 a = hypermath::translation0(hypermath::exp(p0, glm::vec4(1,2,3,0)));
-	glm::mat4 ainv = hypermath::translation0inv(hypermath::exp(p0, glm::vec4(1,2,3,0)));
-	std::cout << "\nMatrix A:\n" << glm::to_string(a) << "\n";
-	std::cout << "\nWalking in opposite direction:\n" << glm::to_string(ainv) << "\n";
-	std::cout << "\nInverse of A:\n" << glm::to_string(glm::inverse(a)) << "\n";
-
-	// End test hypermath
-
 	GLFWwindow* window;
 	glfwSetErrorCallback(error_callback);
 	if (!glfwInit())
@@ -70,13 +56,18 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
+	// pff, this is an inefficient method (to code)
+	glm::vec4 a = glm::vec4(0.0f, 0.0f, -1.0f, 1.414213f);
+	glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
+	glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
+
 	// generate a buffer and fill it
 	const float buffer_data[] = {
 		// positions
 		// (yeah, we're looking in the negative z-direction)
-		0.0f, 0.0f, -1.0f, 1.414213f,
-		0.5f, -0.50f, -1.0f, 1.581138f,
-		-0.5f, -0.5f, -1.0f, 1.581138f,
+		a.x, a.y, a.z, a.w,
+		b.x, b.y, b.z, b.w,
+		c.x, c.y, c.z, c.w,
 
 		// colors
 		1.0f, 0.0f, 0.0f,
@@ -111,7 +102,7 @@ int main()
 		
 		glUseProgram(program);
 		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),       1, GL_FALSE, glm::value_ptr(modelview));
+		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(modelview));
 		glBindBuffer(GL_ARRAY_BUFFER, buffer);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);

@@ -85,6 +85,17 @@ namespace hypermath
 		return translation0(source) * translation0(intermediate_target) * Q;
 	}
 
+	// Returns the point halfway between the given points.
+	// This seems like a pretty expensive operation,
+	// and I don't know whether there is a much better way
+	// to do this.
+	glm::vec4 midpoint(glm::vec4 a, glm::vec4 b)
+	{
+		glm::vec4 v = expinv(a,b);
+		v = v/2.0f;
+		return exp(a,v);
+	}
+
 	// When doing a lot of transformations on a point of the hyperboloid,
 	// it will slowly drift away from it due to rounding errors.
 	// We can use this to put it back on the hyperboloid.

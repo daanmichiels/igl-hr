@@ -15,6 +15,7 @@ class Camera
 		Camera(float fov, float ratio, float near, float far);
 		glm::mat4 get_projection();
 		glm::mat4 get_view();
+		void set_ratio(float ratio);
 };
 
 #endif

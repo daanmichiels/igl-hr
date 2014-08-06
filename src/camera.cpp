@@ -24,3 +24,12 @@ glm::mat4 Camera::get_view()
 {
 	return _view;
 }
+
+void Camera::set_ratio(float ratio)
+{
+	if(_ratio == ratio)
+		return;
+
+	_ratio = ratio;
+	_proj = glm::perspective(_fov, _ratio, _near, _far);
+}

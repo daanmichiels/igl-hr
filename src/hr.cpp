@@ -88,14 +88,15 @@ int main()
 	{
 		double t = glfwGetTime();
 
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(0, 0, width, height);
+		cam.set_ratio(((float)width)/height);
+
 		glm::mat4 model = hypermath::translation0(glm::vec4(0,0.5*sin(t),0,sqrt(1+0.5*sin(t)*0.5*sin(t))));
 		glm::mat4 view = cam.get_view();
 		glm::mat4 projection = cam.get_projection();
 		glm::mat4 modelview = view * model;
-
-		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
-		glViewport(0, 0, width, height);
 
 		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);

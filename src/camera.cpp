@@ -42,5 +42,5 @@ void Camera::set_ratio(float ratio)
 // start for many isometries.
 void Camera::transform(glm::mat4 transforminv)
 {
-	_view = transforminv * _view;
+	_view = _view * transforminv;
 }

@@ -32,6 +32,7 @@ GLFWwindow* create_window()
 	if (!glfwInit())
 		exit(EXIT_FAILURE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
 	if (!window)
 	{
@@ -41,6 +42,9 @@ GLFWwindow* create_window()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 	return window;
 }
 
@@ -77,10 +81,14 @@ int main()
 	glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
 	glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
 	GLuint vao_triangle = primitives::triangle(a,b,c);
+	GLuint vao_plane = primitives::rectangle(1.0, 10.0, 1, 1);
 
 	// create a camera
-	Camera cam(1.2f, 800.0f/600.0f, 0.01f, 10.0f);
-	cam.transform(hypermath::translation0inv(glm::vec4(0,0.5,0,sqrt(1+0.25))));
+	Camera cam(1.2f, 800.0f/600.0f, 0.001f, 10.0f);
+	cam.transform(hypermath::translation0inv(glm::vec4(0,0.2,0,sqrt(1+0.2*0.2))));
+
+
+	std::cout << "View matrix: " << glm::to_string(cam.get_view()) << "\n";
 
 	// let's go!
 	int frames_this_second = 0;
@@ -94,19 +102,26 @@ int main()
 		glViewport(0, 0, width, height);
 		cam.set_ratio(((float)width)/height);
 
-		glm::mat4 model = hypermath::translation0(glm::vec4(0,0.5*sin(t),0,sqrt(1+0.5*sin(t)*0.5*sin(t))));
+		glm::mat4 model = hypermath::translation0(glm::vec4(0,0.05*sin(t),0,sqrt(1+0.05*sin(t)*0.05*sin(t))));
 		glm::mat4 view = cam.get_view();
 		glm::mat4 projection = cam.get_projection();
 		glm::mat4 modelview = view * model;
 
 		glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 		
 		glUseProgram(program);
 		glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
 		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(modelview));
 		glBindVertexArray(vao_triangle);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(view));
+		glBindVertexArray(vao_plane);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
 		glBindVertexArray(0);
 		glUseProgram(0);
 

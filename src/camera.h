@@ -16,6 +16,7 @@ class Camera
 		glm::mat4 get_projection();
 		glm::mat4 get_view();
 		void set_ratio(float ratio);
+		void transform(glm::mat4 transforminv);
 };
 
 #endif

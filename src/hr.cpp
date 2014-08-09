@@ -80,6 +80,7 @@ int main()
 
 	// create a camera
 	Camera cam(1.2f, 800.0f/600.0f, 0.01f, 10.0f);
+	cam.transform(hypermath::translation0inv(glm::vec4(0,0.5,0,sqrt(1+0.25))));
 
 	// let's go!
 	int frames_this_second = 0;

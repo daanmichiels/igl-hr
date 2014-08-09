@@ -33,3 +33,14 @@ void Camera::set_ratio(float ratio)
 	_ratio = ratio;
 	_proj = glm::perspective(_fov, _ratio, _near, _far);
 }
+
+// Applies a transformation to the camera, like moving
+// or rotating.
+// The matrix supplied must be the *inverse* of the trans-
+// formation you want to apply. This avoids explicitly inverting
+// the matrix, which is inferior to generating the inverse from the
+// start for many isometries.
+void Camera::transform(glm::mat4 transforminv)
+{
+	_view = transforminv * _view;
+}

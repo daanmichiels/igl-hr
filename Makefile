@@ -1,11 +1,14 @@
 #
 # Makefile for igl-hr
-# This file is made for msys
+# 
+# This file assumes that you have prebuilt the third-party
+# libraries, and that they can be found under thirparty/libraryname/lib.
+# The library headers should be in thirdparty/libraryname/include.
 #
 
-CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -static-libstdc++ -Wl,-static
-INCLUDES=-I"thirdparty/glfw-3.0.4.bin.WIN64/include" -I"thirdparty/glew-1.10.0/include"
-LINKLIBES=-L"thirdparty/glew-1.10.0/lib" -L"thirdparty/glfw-3.0.4.bin.WIN64/lib-mingw" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
+CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -Wl,-static
+INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
+LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
 EXECUTABLE=bin/hr.exe
 
 # the object files we need are
@@ -16,13 +19,14 @@ OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp)) \
 
 all: $(EXECUTABLE)
 
-# for linking to a windows executable without console in the background, add option -mwindows (where?)
 bin/hr.exe: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) \
 	                  $(OBJECTS) \
 	                  $(INCLUDES) $(LINKLIBES)
 
 # shaders are a bit special
+# note that these names are compiler-dependent, since
+# different compiler mangle names differently
 obj/shaders/%.o: src/shaders/%.c
 	ld -r -b binary -o $@ $<
 	objcopy --redefine-sym _binary_src_shaders_$*_c_start=_source_$*_start \

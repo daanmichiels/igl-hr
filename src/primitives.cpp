@@ -1,4 +1,3 @@
-// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 #include <vector>
 
@@ -7,7 +6,7 @@
 
 namespace primitives
 {
-    GLuint triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
+    mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
     {
         GLuint vao;
         glGenVertexArrays(1, &vao);
@@ -33,10 +32,15 @@ namespace primitives
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        return vao;
+        mesh result;
+        result.vao = vao;
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = 3;
+        return result;
     }
 
-    GLuint rectangle(float width, float depth, int m, int n)
+    mesh rectangle(float width, float depth, int m, int n)
     {
         GLuint vao;
         glGenVertexArrays(1, &vao);
@@ -125,6 +129,11 @@ namespace primitives
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        return vao;
+        mesh result;
+        result.vao = vao;
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = 6;
+        return result;
     }
 }

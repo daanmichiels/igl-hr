@@ -6,10 +6,16 @@
 # The library headers should be in thirdparty/libraryname/include.
 #
 
-CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++0x -static-libgcc -Wl,-static
+CXXFLAGS=-g -Wall -std=c++11 -static-libgcc -Wl,-static
 INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
-LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
-EXECUTABLE=bin/hr.exe
+
+ifeq ($(shell uname -s),MINGW32_NT-6.2)
+        CXXFLAGS+= -DGLEW_STATIC
+        LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
+        EXECUTABLE=bin/hr.exe
+else
+        $(error Unknown platform.)
+endif
 
 # the object files we need are
 #  - one from every .cpp in src
@@ -40,3 +46,6 @@ obj/%.o: src/%.cpp
 clean: 
 	rm -f $(OBJECTS)
 	rm -f $(EXECUTABLE)
+
+.PHONY: all clean
+

@@ -132,7 +132,7 @@ int main()
 		if(t >= previoustime + 1.0)
 		{
 			previoustime += 1.0;
-			glfwSetWindowTitle(window, std::to_string(static_cast<long long>(frames_this_second)).c_str());
+			glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
 			std::cout << std::to_string(frames_this_second) << "\n";
 			frames_this_second = 0;
 		}

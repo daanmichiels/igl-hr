@@ -6,12 +6,12 @@
 #include "shaders.h"
 
 // Shaders will be linked to these
-extern char _source_vs_start[];
-extern char _source_vs_end[];
-extern char _source_vs_size[];
-extern char _source_fs_start[];
-extern char _source_fs_end[];
-extern char _source_fs_size[];
+extern char _source_vertex_start[];
+extern char _source_vertex_end[];
+extern char _source_vertex_size[];
+extern char _source_fragment_start[];
+extern char _source_fragment_end[];
+extern char _source_fragment_size[];
 
 // Create and compile a shader
 GLuint compile_shader(std::string source, GLenum shaderType)
@@ -39,19 +39,19 @@ GLuint compile_shader(std::string source, GLenum shaderType)
 // Compile shaders and link program
 GLuint build_program()
 {
-	std::string source_vs(_source_vs_start, (size_t)_source_vs_size);
-	std::string source_fs(_source_fs_start, (size_t)_source_fs_size);
+	std::string source_vertex(_source_vertex_start, (size_t)_source_vertex_size);
+	std::string source_fragment(_source_fragment_start, (size_t)_source_fragment_size);
 
-	GLuint vs = compile_shader(source_vs, GL_VERTEX_SHADER);
-	if(!vs)
+	GLuint vertex = compile_shader(source_vertex, GL_VERTEX_SHADER);
+	if(!vertex)
 		return 0;
-	GLuint fs = compile_shader(source_fs, GL_FRAGMENT_SHADER);
-	if(!fs)
+	GLuint fragment = compile_shader(source_fragment, GL_FRAGMENT_SHADER);
+	if(!fragment)
 		return 0;
 
 	GLuint program = glCreateProgram();
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
+	glAttachShader(program, vertex);
+	glAttachShader(program, fragment);
 	glLinkProgram(program);
 	GLint linked;
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);

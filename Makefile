@@ -15,7 +15,7 @@ EXECUTABLE=bin/hr.exe
 #  - one from every .cpp in src
 #  - one from every .c in src/shaders
 OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp)) \
-        $(patsubst src/shaders/%.c,obj/shaders/%.o,$(wildcard src/shaders/*.c))
+        $(patsubst src/shaders/%.glsl,obj/shaders/%.o,$(wildcard src/shaders/*.glsl))
 
 all: $(EXECUTABLE)
 
@@ -27,11 +27,11 @@ bin/hr.exe: $(OBJECTS)
 # shaders are a bit special
 # note that these names are compiler-dependent, since
 # different compiler mangle names differently
-obj/shaders/%.o: src/shaders/%.c
+obj/shaders/%.o: src/shaders/%.glsl
 	ld -r -b binary -o $@ $<
-	objcopy --redefine-sym _binary_src_shaders_$*_c_start=_source_$*_start \
-	        --redefine-sym _binary_src_shaders_$*_c_size=_source_$*_size \
-	        --redefine-sym _binary_src_shaders_$*_c_end=_source_$*_end \
+	objcopy --redefine-sym _binary_src_shaders_$*_glsl_start=_source_$*_start \
+	        --redefine-sym _binary_src_shaders_$*_glsl_size=_source_$*_size \
+	        --redefine-sym _binary_src_shaders_$*_glsl_end=_source_$*_end \
 	        obj/shaders/$*.o
 
 obj/%.o: src/%.cpp

@@ -6,7 +6,7 @@
 # The library headers should be in thirdparty/libraryname/include.
 #
 
-CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++11 -static-libgcc -Wl,-static
+CXXFLAGS=-g -Wall -DGLEW_STATIC -std=c++0x -static-libgcc -Wl,-static
 INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
 LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
 EXECUTABLE=bin/hr.exe

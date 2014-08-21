@@ -1,3 +1,6 @@
+#ifndef MESH_H
+#define MESH_H
+
 struct mesh
 {
     GLuint vao;
@@ -10,4 +13,6 @@ struct mesh
         glDrawArrays(mode, first, count);
     }
 };
+
+#endif /* MESH_H */
 

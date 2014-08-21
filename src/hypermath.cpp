@@ -1,5 +1,5 @@
 
-#define GLM_FORCE_RADIANS
+// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 
 namespace hypermath
@@ -11,7 +11,7 @@ namespace hypermath
         return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
     }
 
-    // returns the length of a tangent vector
+    // length of a tangent vector
     float length(glm::vec4 v)
     {
         return sqrt(dot(v,v));
@@ -58,9 +58,7 @@ namespace hypermath
         return ((float)(r/sinh(r))) * u;
     }
 
-    // translation (I suppose I should call this a boost?; I mean
-    // inverse of exponential at starting point, parallel transport
-    // along geodesic, exponential map at target)
+    // translation (see wiki for definition)
     // this one is a translation starting at (0,0,0,1)
     glm::mat4 translation0(glm::vec4 target)
     {
@@ -83,7 +81,7 @@ namespace hypermath
         return result;
     }
 
-    // returns the inverse matrix of the one calculated by
+    // inverse matrix of the one calculated by
     // translation0
     glm::mat4 translation0inv(glm::vec4 target)
     {
@@ -106,7 +104,7 @@ namespace hypermath
         return result;
     }
 
-    // Returns the translation that maps source to target
+    // translation that maps source to target
     // (in matrix form). This is the generalization of translation0
     // for arbitrary starting point.
     glm::mat4 translation(glm::vec4 source, glm::vec4 target)

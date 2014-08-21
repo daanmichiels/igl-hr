@@ -8,7 +8,7 @@
 #include "hypermath.h"
 #include "primitives.h"
 
-#define GLM_FORCE_RADIANS
+// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"

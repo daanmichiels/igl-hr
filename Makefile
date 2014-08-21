@@ -7,6 +7,7 @@
 #
 
 CXXFLAGS=-g -Wall -std=c++11 -static-libgcc -Wl,-static
+CXXFLAGS+= -DGLM_FORCE_RADIANS
 INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
 
 ifeq ($(shell uname -s),MINGW32_NT-6.2)

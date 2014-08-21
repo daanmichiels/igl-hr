@@ -27,6 +27,7 @@ GLuint compile_shader(std::string source, GLenum shaderType)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
     if(!compiled)
     {
+        // For simplicity, we only print the first 200 characters of the error.
         char error[200];
         glGetShaderInfoLog(shader, 200, NULL, error);
         std::cout << "Shader compilation failed: " << error << "\n";
@@ -36,7 +37,8 @@ GLuint compile_shader(std::string source, GLenum shaderType)
     return shader;
 }
 
-// Compile shaders and link program
+// Compile shaders and link program.
+// Returns 0 on fail.
 GLuint build_program()
 {
     std::string source_vertex(_source_vertex_start, (size_t)_source_vertex_size);

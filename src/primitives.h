@@ -2,7 +2,7 @@
 #define PRIMITIVES_H
 
 #include <GL/glew.h>
-#define GLM_FORCE_RADIANS
+// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 
 namespace primitives

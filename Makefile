@@ -10,7 +10,7 @@ CXXFLAGS=-g -Wall -std=c++11 -static-libgcc -Wl,-static
 CXXFLAGS+= -DGLM_FORCE_RADIANS
 INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
 
-ifeq ($(shell uname -s),MINGW32_NT-6.2)
+ifneq (,$(findstring MINGW,$(shell uname -s)))
         CXXFLAGS+= -DGLEW_STATIC
         LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
         EXECUTABLE=bin/hr.exe

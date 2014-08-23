@@ -47,7 +47,7 @@ namespace primitives
         glBindVertexArray(vao);
 
         // interleaved vertex coordinates and colors
-        // should we just use an array?
+        // should we just use an array? probably
         std::vector<float> data;
         // m*n cells, 2 triangles each, 24 floats per triangle
         data.reserve(24*2*m*n);

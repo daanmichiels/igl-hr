@@ -46,7 +46,16 @@ void Camera::set_ratio(float ratio)
 // formation you want to apply. This avoids explicitly inverting
 // the matrix, which is inferior to generating the inverse from the
 // start.
-void Camera::transform(glm::mat4 transforminv)
+void Camera::transform(glm::mat4 transformationinv)
 {
-    _view = _view * transforminv;
+    _view = _view * transformationinv;
 }
+
+// Sets the transformation of the camera.
+// The matrix supplied must be the *inverse* of the trans-
+// formation you want.
+void Camera::set_transformation(glm::mat4 transformationinv)
+{
+    _view = transformationinv;
+}
+

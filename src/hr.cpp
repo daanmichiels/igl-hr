@@ -3,10 +3,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "shaders.h"
 #include "camera.h"
 #include "hypermath.h"
 #include "primitives.h"
+#include "scene.h"
+#include "object.h"
+#include "mesh.h"
 
 // #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
@@ -76,19 +80,34 @@ int main()
         exit(EXIT_FAILURE);
     }
 
-    // create a triangle
+    // create some meshes
     glm::vec4 a = glm::vec4(0.0f, 0.0f, -1.0f, 1.414213f);
     glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
     glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
     mesh mesh_triangle = primitives::triangle(a,b,c);
-    mesh mesh_plane = primitives::rectangle(1.0, 10.0, 1, 1);
+    mesh mesh_plane = primitives::rectangle(1.0, 2.0, 1, 1);
+
+    // create some objects
+    object o1, o2, o3;
+    o1.meshes.push_back(mesh_triangle);
+    o1.transform(hypermath::translation0(glm::vec4(0,0.2,-1,0)));
+    o2.meshes.push_back(mesh_triangle);
+    o2.transform(hypermath::translation0(glm::vec4(0,0,-1,0)));
+    o3.meshes.push_back(mesh_plane);
+
+    // relations between the objects
+    o1.children.push_back(&o2);
 
     // create a camera
     Camera cam(1.2f, 800.0f/600.0f, 0.001f, 10.0f);
     cam.transform(hypermath::translation0inv(glm::vec4(0,0.2,0,sqrt(1+0.2*0.2))));
 
-
-    std::cout << "View matrix: " << glm::to_string(cam.get_view()) << "\n";
+    // set up the scene
+    Scene s = Scene();
+    s.objects.push_back(&o1);
+    s.objects.push_back(&o3);
+    s.camera = cam;
+    s.program = program;
 
     // let's go!
     int frames_this_second = 0;
@@ -102,26 +121,14 @@ int main()
         glViewport(0, 0, width, height);
         cam.set_ratio(((float)width)/height);
 
-        glm::mat4 model = hypermath::translation0(glm::vec4(0,0.05*sin(t),0,sqrt(1+0.05*sin(t)*0.05*sin(t))));
-        glm::mat4 view = cam.get_view();
-        glm::mat4 projection = cam.get_projection();
-        glm::mat4 modelview = view * model;
+        // movement
+        o1.transformation = hypermath::translation0(glm::vec4(sin(t),0,-1,0));
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
         
-        glUseProgram(program);
-        glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-        glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(modelview));
-        mesh_triangle.render();
-
-        glUniformMatrix4fv(glGetUniformLocation(program, "modelview"),  1, GL_FALSE, glm::value_ptr(view));
-        mesh_plane.render();
-
-        glBindVertexArray(0);
-        glUseProgram(0);
+        s.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -12,11 +12,12 @@ class Camera
         glm::mat4 _proj;
         glm::mat4 _view;
     public:
-        Camera(float fov, float ratio, float near, float far);
+        Camera(float fov=1.2f, float ratio=1.0f, float near=0.01f, float far=10.0f);
         glm::mat4 get_projection();
         glm::mat4 get_view();
         void set_ratio(float ratio);
-        void transform(glm::mat4 transforminv);
+        void transform(glm::mat4 transformationinv);
+        void set_transformation(glm::mat4 transformationinv);
 };
 
 #endif

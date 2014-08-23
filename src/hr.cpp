@@ -85,7 +85,7 @@ int main()
     glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
     glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
     mesh mesh_triangle = primitives::triangle(a,b,c);
-    mesh mesh_plane = primitives::rectangle(1.0, 2.0, 1, 1);
+    mesh mesh_plane = primitives::rectangle(1.0, 2.0, glm::vec4(1,0,0,1));
 
     // create some objects
     object o1, o2, o3;

@@ -39,87 +39,40 @@ namespace primitives
         result.count = 3;
         return result;
     }
-
-    mesh rectangle(float width, float depth, int m, int n)
+    
+    // Create a rectangle.
+    // Lies in the xz-plane, and is centered at the origin.
+    // It's uniformly colored.
+    mesh rectangle(float width, float depth, glm::vec4 color)
     {
         GLuint vao;
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
 
         // interleaved vertex coordinates and colors
-        // should we just use an array? probably
-        std::vector<float> data;
-        // m*n cells, 2 triangles each, 24 floats per triangle
-        data.reserve(24*2*m*n);
-        for(int i=0; i<m; i++)
+        float data[32];
+        float w = width / 2;
+        float d = depth / 2;
+        glm::vec4 points[4] = {hypermath::exp0(glm::vec4(-w,0, d,0)), \
+            hypermath::exp0(glm::vec4( w,0, d,0)), \
+            hypermath::exp0(glm::vec4(-w,0,-d,0)), \
+            hypermath::exp0(glm::vec4( w,0,-d,0))};
+        for(int i=0; i<4; i++)
         {
-            for(int j=0; j<n; j++)
-            {
-                glm::vec4 a = hypermath::exp0(glm::vec4(-width/2.0f+width/m*i,     0, depth/2.0f-depth/n*j,     0));
-                glm::vec4 b = hypermath::exp0(glm::vec4(-width/2.0f+width/m*(i+1), 0, depth/2.0f-depth/n*j,     0));
-                glm::vec4 c = hypermath::exp0(glm::vec4(-width/2.0f+width/m*i,     0, depth/2.0f-depth/n*(j+1), 0));
-                glm::vec4 d = hypermath::exp0(glm::vec4(-width/2.0f+width/m*(i+1), 0, depth/2.0f-depth/n*(j+1), 0));
-
-                // *cough elegant cough*
-                data.push_back(a.x);
-                data.push_back(a.y);
-                data.push_back(a.z);
-                data.push_back(a.w);
-                data.push_back(1.0f);
-                data.push_back(1.0f);
-                data.push_back(1.0f);
-                data.push_back(1.0f);
-
-                data.push_back(b.x);
-                data.push_back(b.y);
-                data.push_back(b.z);
-                data.push_back(b.w);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-
-                data.push_back(c.x);
-                data.push_back(c.y);
-                data.push_back(c.z);
-                data.push_back(c.w);
-                data.push_back(1.0f);
-                data.push_back(0.0f);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-
-                data.push_back(c.x);
-                data.push_back(c.y);
-                data.push_back(c.z);
-                data.push_back(c.w);
-                data.push_back(1.0f);
-                data.push_back(0.0f);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-
-                data.push_back(b.x);
-                data.push_back(b.y);
-                data.push_back(b.z);
-                data.push_back(b.w);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-
-                data.push_back(d.x);
-                data.push_back(d.y);
-                data.push_back(d.z);
-                data.push_back(d.w);
-                data.push_back(0.0f);
-                data.push_back(0.0f);
-                data.push_back(1.0f);
-                data.push_back(1.0f);
-            }
+            data[8*i+0] = points[i].x;
+            data[8*i+1] = points[i].y;
+            data[8*i+2] = points[i].z;
+            data[8*i+3] = points[i].w;
+            data[8*i+4] = color.r;
+            data[8*i+5] = color.g;
+            data[8*i+6] = color.b;
+            data[8*i+7] = color.a;
         }
+
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24*2*m*n, &data[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 48, &data[0], GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -131,9 +84,10 @@ namespace primitives
 
         mesh result;
         result.vao = vao;
-        result.mode = GL_TRIANGLES;
+        result.mode = GL_TRIANGLE_STRIP;
         result.first = 0;
-        result.count = 6;
+        result.count = 4;
         return result;
     }
 }
+

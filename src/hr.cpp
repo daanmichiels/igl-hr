@@ -81,31 +81,34 @@ int main()
     }
 
     // create some meshes
-    glm::vec4 a = glm::vec4(0.0f, 0.0f, -1.0f, 1.414213f);
-    glm::vec4 b = glm::vec4(0.5f, -0.50f, -1.0f, 1.581138f);
-    glm::vec4 c = glm::vec4(-0.5f, -0.5f, -1.0f, 1.581138f);
+    glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
+    glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
+    glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
     mesh mesh_triangle = primitives::triangle(a,b,c);
     mesh mesh_plane = primitives::rectangle(1.0, 2.0, glm::vec4(1,0,0,1));
 
     // create some objects
     object o1, o2, o3;
     o1.meshes.push_back(mesh_triangle);
-    o1.transform(hypermath::translation0(glm::vec4(0,0.2,-1,0)));
     o2.meshes.push_back(mesh_triangle);
-    o2.transform(hypermath::translation0(glm::vec4(0,0,-1,0)));
-    o3.meshes.push_back(mesh_plane);
+    o3.meshes.push_back(mesh_triangle);
+    glm::vec4 location1 = hypermath::exp0(glm::vec4(0.04,0,-0.1,0));
+    glm::vec4 location2 = hypermath::exp0(glm::vec4(0,0,-0.2,0));
+    glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.04,0));
+    o1.transform(hypermath::translation0(location1));
+    o2.transform(hypermath::translation0(location2));
+    o3.transform(hypermath::translation0(location3));
 
     // relations between the objects
-    o1.children.push_back(&o2);
+    o2.children.push_back(&o3);
 
     // create a camera
-    Camera cam(1.2f, 800.0f/600.0f, 0.001f, 10.0f);
-    cam.transform(hypermath::translation0inv(glm::vec4(0,0.2,0,sqrt(1+0.2*0.2))));
+    Camera cam(1.2f, 800.0f/600.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
     s.objects.push_back(&o1);
-    s.objects.push_back(&o3);
+    s.objects.push_back(&o2);
     s.camera = cam;
     s.program = program;
 
@@ -122,7 +125,8 @@ int main()
         cam.set_ratio(((float)width)/height);
 
         // movement
-        o1.transformation = hypermath::translation0(glm::vec4(sin(t),0,-1,0));
+        location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.6*t),-0.2,0));
+        o2.transformation = hypermath::translation0(location2);
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);

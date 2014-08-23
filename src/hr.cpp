@@ -12,10 +12,10 @@
 #include "object.h"
 #include "mesh.h"
 
-// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
+#include "../thirdparty/glm/glm/gtx/transform.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -85,16 +85,16 @@ int main()
     glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
     glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
     mesh mesh_triangle = primitives::triangle(a,b,c);
-    mesh mesh_plane = primitives::rectangle(1.0, 2.0, glm::vec4(1,0,0,1));
+    mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
     object o1, o2, o3;
     o1.meshes.push_back(mesh_triangle);
-    o2.meshes.push_back(mesh_triangle);
-    o3.meshes.push_back(mesh_triangle);
+    o2.meshes.push_back(mesh_tetra);
+    o3.meshes.push_back(mesh_tetra);
     glm::vec4 location1 = hypermath::exp0(glm::vec4(0.04,0,-0.1,0));
     glm::vec4 location2 = hypermath::exp0(glm::vec4(0,0,-0.2,0));
-    glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.04,0));
+    glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.07,0));
     o1.transform(hypermath::translation0(location1));
     o2.transform(hypermath::translation0(location2));
     o3.transform(hypermath::translation0(location3));
@@ -122,11 +122,17 @@ int main()
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
-        cam.set_ratio(((float)width)/height);
+        s.camera.set_ratio(((float)width)/height);
+        // cam.set_ratio wouldn't work, since the scene refers to it
+        // by value, not by reference
+        // (should we change this?)
 
         // movement
-        location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.6*t),-0.2,0));
-        o2.transformation = hypermath::translation0(location2);
+        glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
+        glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
+        location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
+        o1.transformation = rotation1 * hypermath::translation0(location1);
+        o2.transformation = hypermath::translation0(location2) * rotation2;
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);

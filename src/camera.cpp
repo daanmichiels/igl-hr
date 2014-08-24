@@ -1,4 +1,3 @@
-// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 

@@ -112,6 +112,28 @@ int main()
     s.camera = cam;
     s.program = program;
 
+    // make it more interesting
+    object grid[240];
+    int count = 0;
+    for(int i=0; i<10; i++)
+    {
+        float x = -0.2+0.04*i;
+        for(int j=0; j<6; j++)
+        {
+            float y = -0.2 + 0.07 * j;
+            for(int k=0; k<4; k++)
+            {
+                float z = -0.8 + k*0.1;
+                grid[count].meshes.push_back(mesh_tetra);
+                glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
+                grid[count].transform(hypermath::translation0(location));
+                s.objects.push_back(&(grid[count]));
+                count++;
+            }
+        }
+    }
+                
+
     // let's go!
     int frames_this_second = 0;
     double previoustime = 0;

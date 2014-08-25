@@ -1,0 +1,119 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      3152,        109]
+NotebookOptionsPosition[      2727,         91]
+NotebookOutlinePosition[      3069,        106]
+CellTagsIndexPosition[      3026,        103]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dot", "[", 
+   RowBox[{"v_", ",", "w_"}], "]"}], " ", ":=", " ", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"v", "[", "1", "]"}], "*", 
+    RowBox[{"w", "[", "1", "]"}]}], "+", 
+   RowBox[{
+    RowBox[{"v", "[", "2", "]"}], "*", 
+    RowBox[{"w", "[", "2", "]"}]}], "+", 
+   RowBox[{
+    RowBox[{"v", "[", "3", "]"}], "*", 
+    RowBox[{"w", "[", "3", "]"}]}], "-", 
+   RowBox[{
+    RowBox[{"v", "[", "4", "]"}], "*", 
+    RowBox[{"w", "[", "4", "]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.6179135864355125`*^9, 3.617913652165263*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"length", "[", "v_", "]"}], " ", ":=", " ", 
+  RowBox[{"Sqrt", "[", 
+   RowBox[{"dot", "[", 
+    RowBox[{"v", ",", "v"}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6179137173686695`*^9, 3.617913736016904*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"normalize", "[", "v_", "]"}], " ", ":=", " ", 
+  RowBox[{"v", " ", "/", " ", 
+   RowBox[{"length", "[", "v", "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.6179137967586355`*^9, 3.6179138225139256`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dist", "[", 
+   RowBox[{"p_", ",", "q_"}], "]"}], ":=", 
+  RowBox[{"ArcCosh", "[", 
+   RowBox[{"-", 
+    RowBox[{"dot", "[", 
+     RowBox[{"p", ",", "q"}], "]"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6179137470978146`*^9, 3.6179137816573944`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"exp", "[", 
+   RowBox[{"p_", ",", "v_"}], "]"}], ":=", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Cosh", "[", 
+     RowBox[{"length", "[", "v", "]"}], "]"}], "*", "p"}], "+", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"Sinh", "[", 
+       RowBox[{"length", "[", "v", "]"}], "]"}], "/", 
+      RowBox[{"length", "[", "v", "]"}]}], ")"}], "*", "v"}]}]}]], "Input",
+ CellChangeTimes->{{3.6179139056170325`*^9, 3.6179139363859253`*^9}, {
+  3.617913975206529*^9, 3.6179140329800177`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"exp0", "[", "v_", "]"}], " ", ":=", " ", 
+  RowBox[{"exp", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "0", ",", "1"}], "}"}], ",", "v"}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.617914089571268*^9, 3.6179141082195325`*^9}}]
+},
+WindowSize->{784, 769},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (January 25, 2013)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 563, 17, 31, "Input"],
+Cell[1123, 39, 249, 6, 31, "Input"],
+Cell[1375, 47, 234, 5, 31, "Input"],
+Cell[1612, 54, 288, 8, 31, "Input"],
+Cell[1903, 64, 528, 15, 31, "Input"],
+Cell[2434, 81, 289, 8, 31, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
+

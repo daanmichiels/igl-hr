@@ -3,6 +3,8 @@
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 
+// Renders the objects (and their children, and ...)
+// using the provided camera and program.
 void Scene::render()
 {
     glUseProgram(program);

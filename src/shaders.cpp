@@ -13,7 +13,9 @@ extern char _source_fragment_start[];
 extern char _source_fragment_end[];
 extern char _source_fragment_size[];
 
-// Create and compile a shader
+// Create and compile a shader.
+// This is not supposed to be called by other files, and
+// should somehow be made inaccessible (TODO).
 GLuint compile_shader(std::string source, GLenum shaderType)
 {
     const char* src [1];

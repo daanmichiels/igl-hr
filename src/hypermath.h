@@ -13,6 +13,8 @@ namespace hypermath
     glm::vec4 exp(glm::vec4 basepoint, glm::vec4 direction);
     glm::vec4 exp0(glm::vec4 direction);
     glm::vec4 expinv(glm::vec4 basepoint, glm::vec4 target);
+    float angle(glm::vec4 v, glm::vec4 w);
+    float angle(glm::vec4 a, glm::vec4 b, glm::vec4 c);
     glm::mat4 translation0(glm::vec4 target);
     glm::mat4 translation0inv(glm::vec4 target);
     glm::mat4 translation(glm::vec4 source, glm::vec4 target);

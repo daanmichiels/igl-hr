@@ -1,5 +1,4 @@
 
-// #define GLM_FORCE_RADIANS
 #include "../thirdparty/glm/glm/glm.hpp"
 
 namespace hypermath
@@ -18,6 +17,7 @@ namespace hypermath
     }
 
     // normalizes a vector
+    // basepoint is irrelevant
     glm::vec4 normalize(glm::vec4 v)
     {
         return v / length(v);
@@ -56,6 +56,19 @@ namespace hypermath
         // maybe we should do something about the r/sinh(r)
         glm::vec4 u = target - ((float)cosh(r)) * basepoint;
         return ((float)(r/sinh(r))) * u;
+    }
+
+    // the angle between two tangent vectors
+    float angle(glm::vec4 v, glm::vec4 w)
+    {
+        return acos(dot(normalize(v),normalize(w)));
+    }
+
+    // the angle determined by three points
+    // it's measured at the point b
+    float angle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
+    {
+        return angle(expinv(b,a),expinv(b,c));
     }
 
     // translation (see wiki for definition)

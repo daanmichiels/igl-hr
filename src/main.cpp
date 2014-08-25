@@ -17,18 +17,20 @@
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 
+// Called on GLFW error.
 static void error_callback(int error, const char* description)
 {
     std::cerr << description;
 }
 
+// Handle keypresses.
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-// creates the window and gets an OpenGL context for it
+// Creates the window and gets an OpenGL context for it.
 GLFWwindow* create_window()
 {
     GLFWwindow* window;
@@ -52,8 +54,8 @@ GLFWwindow* create_window()
     return window;
 }
 
-// prints some information about the OpenGL context
-// requires a currect OpenGL context
+// Prints some information about the OpenGL context.
+// Requires a currect OpenGL context.
 void print_info()
 {
     GLenum error = glewInit();

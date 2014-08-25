@@ -13,7 +13,7 @@ INCLUDES=-I"thirdparty/glfw/include" -I"thirdparty/glew/include"
 ifneq (,$(findstring MINGW,$(shell uname -s)))
         CXXFLAGS+= -DGLEW_STATIC
         LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
-        EXECUTABLE=bin/hr.exe
+        EXECUTABLE=bin/hyperbolic-space-on-oculus-rift.exe
 else
         $(error Unknown platform.)
 endif
@@ -26,7 +26,7 @@ OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp)) \
 
 all: $(EXECUTABLE)
 
-bin/hr.exe: $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) \
 	                  $(OBJECTS) \
 	                  $(INCLUDES) $(LINKLIBES)

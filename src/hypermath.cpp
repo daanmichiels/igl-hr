@@ -34,7 +34,9 @@ namespace hypermath
     {
         float r = length(direction);
         if(r==0)
+        {
             return basepoint;
+        }
         // is this numerically stable enough?
         // maybe we should do something about the sinh(r)/r
         return ((float)cosh(r)) * basepoint + ((float)(sinh(r)/r)) * direction;
@@ -51,7 +53,9 @@ namespace hypermath
     {
         float r = dist(basepoint, target);
         if(r==0)
+        {
             return glm::vec4(0,0,0,0);
+        }
         // is this numerically stable enough?
         // maybe we should do something about the r/sinh(r)
         glm::vec4 u = target - ((float)cosh(r)) * basepoint;

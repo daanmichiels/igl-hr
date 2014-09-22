@@ -54,6 +54,9 @@ namespace hypermath
             return glm::vec4(0,0,0,0);
         // is this numerically stable enough?
         // maybe we should do something about the r/sinh(r)
+        // the sinh(r) can be calculated nicer, since it's
+        // arccosh of something
+        // same for cosh(r)
         glm::vec4 u = target - ((float)cosh(r)) * basepoint;
         return ((float)(r/sinh(r))) * u;
     }

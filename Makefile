@@ -15,7 +15,16 @@ ifneq (,$(findstring MINGW,$(shell uname -s)))
         LINKLIBES=-L"thirdparty/glfw/lib" -L"thirdparty/glew/lib" -lglew32 -lglfw3 -lgdi32 -lglu32 -lopengl32
         EXECUTABLE=bin/hyperbolic-space-on-oculus-rift.exe
 else
-        $(error Unknown platform.)
+	uname_s := $(shell uname -s)
+	ifeq ($(uname_s),Linux)
+		LINKLIBES=-L/usr/lib -lglfw3 -pthread -lGLEW -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11  
+	     	INCLUDES=-I/usr/include -I/usr/local/include
+		CXXFLAGS = -g -Wall -std=c++11 -DGLM_FORCE_RADIANS
+		EXECUTABLE=bin/HSOR
+	endif
+	
+       #$(error Unknown platform.)
+
 endif
 
 # the object files we need are

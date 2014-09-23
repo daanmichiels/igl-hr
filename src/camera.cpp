@@ -3,7 +3,7 @@
 
 #include <GL/glew.h>
 #include "camera.h"
-
+using namespace glm;
 // By default, the camera is at (0,0,0,1) and looking in the
 // negative z-direction (0,0,-1,0).
 Camera::Camera(float fov, float ratio, float near, float far)
@@ -56,5 +56,71 @@ void Camera::transform(glm::mat4 transformationinv)
 void Camera::set_transformation(glm::mat4 transformationinv)
 {
     _view = transformationinv;
+}
+void Camera::rotx(double xang){
+mat4 rxI;
+double hsin=sinh(xang);
+double hcos=cosh(xang);
+rxI[0][0]=1.0;
+rxI[0][1]=0.0;
+rxI[0][2]=0.0;
+rxI[0][3]=0.0;
+rxI[1][0]=0.0;
+rxI[1][1]=hcos;
+rxI[1][2]=0.0-hsin;
+rxI[1][3]=0.0;
+rxI[2][0]=0.0;
+rxI[2][1]=hsin;
+rxI[2][2]=hcos;
+rxI[2][3]=0.0;
+rxI[3][0]=0.0;
+rxI[3][1]=0.0;
+rxI[3][2]=0.0;
+rxI[3][3]=1.0;
+Camera::transform(rxI);
+}
+void Camera::roty(double yang){
+mat4 ryI;
+double hsin=sinh(yang);
+double hcos=cosh(yang);
+ryI[0][0]=hcos;
+ryI[0][1]=0.0;
+ryI[0][2]=hsin;
+ryI[0][3]=0.0;
+ryI[1][0]=0.0;
+ryI[1][1]=1.0;
+ryI[1][2]=0.0;
+ryI[1][3]=0.0;
+ryI[2][0]=-1*hsin;
+ryI[2][1]=0.0;
+ryI[2][2]=hcos;
+ryI[2][3]=0.0;
+ryI[3][0]=0.0;
+ryI[3][1]=0.0;
+ryI[3][2]=0.0;
+ryI[3][3]=1.0;
+Camera::transform(ryI);
+}
+void Camera::rotz(double zang){
+mat4 rzI;
+double hsin=sinh(zang);
+double hcos=cosh(zang);
+rzI[0][0]=hcos;
+rzI[0][1]=-1*hsin;
+rzI[0][2]=0.0;
+rzI[0][3]=0.0;
+rzI[1][0]=hsin;
+rzI[1][1]=hcos;
+rzI[1][2]=0.0;
+rzI[1][3]=0.0;
+rzI[2][0]=0.0;
+rzI[2][1]=0.0;
+rzI[2][2]=1.0;
+rzI[2][3]=0.0;
+rzI[3][0]=0.0;
+rzI[3][1]=0.0;
+rzI[3][2]=0.0;
+rzI[3][3]=1.0;
+Camera::transform(rzI);
 }
 

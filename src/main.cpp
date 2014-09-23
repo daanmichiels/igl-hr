@@ -23,7 +23,7 @@ static void error_callback(int error, const char* description)
     std::cerr << description;
 }
 
-// Handle keypresses.
+// Bind ESC to window close 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -68,6 +68,9 @@ void print_info()
     std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
     std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
 }
+
+
+
 
 int main()
 {
@@ -135,23 +138,31 @@ int main()
         }
     }
                 
-
+//setup deltatime (must be outside of main loop)
+    double currentTime = glfwGetTime();
+    double lastTime = currentTime;
+    double deltaTime;
     // let's go!
     int frames_this_second = 0;
     double previoustime = 0;
     while (!glfwWindowShouldClose(window))
     {
-        double t = glfwGetTime();
-
-        int width, height;
+	double t = glfwGetTime();
+	int width, height;
         glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        s.camera.set_ratio(((float)width)/height);
+        float initialFoV = ((float)width)/height;
+
+	s.camera.set_ratio(initialFoV);
+
+	glViewport(0, 0, width, height);
         // cam.set_ratio wouldn't work, since the scene refers to it
         // by value, not by reference
         // (should we change this?)
 
-        // movement
+	//get current deltaTime
+	currentTime = glfwGetTime();
+	deltaTime = currentTime - lastTime;
+        // obj movement
         glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
         glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
         location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
@@ -163,18 +174,32 @@ int main()
         glClear(GL_DEPTH_BUFFER_BIT);
         
         s.render();
-
         glfwSwapBuffers(window);
         glfwPollEvents();
-
+	
+	//set variables for camera movement. but first, set cursor mode invisible
+	glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
+	double horizontalAngle = 0.0;
+	double verticalAngle = 0.0;
+	double mouseSpeed = 0.05;	//Leave as a variable for implementation of user mouse-speed control.
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	//reset mouse then grab some angles for mouse-camera movement
+	glfwSetCursorPos(window, (int)floor(width/2),(int)floor(height/2));
+	horizontalAngle += mouseSpeed * deltaTime * float(width/2-xpos);
+	verticalAngle += mouseSpeed * deltaTime * float(height/2-ypos);
+	s.camera.rotx(verticalAngle);
+	s.camera.roty(horizontalAngle);
+	
         frames_this_second++;
         if(t >= previoustime + 1.0)
         {
             previoustime += 1.0;
             glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
             std::cout << std::to_string(frames_this_second) << "\n";
-            frames_this_second = 0;
+	    frames_this_second = 0;
         }
+
     }
 
     // done

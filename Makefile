@@ -22,9 +22,9 @@ else
 		CXXFLAGS = -g -Wall -std=c++11 -DGLM_FORCE_RADIANS
 		EXECUTABLE=bin/HSOR
 	endif
-	ifeq($(uname_s),Darwin)
-		$(error OSX not yet supported.)
-	endif
+#	ifeq($(uname_s),Darwin)
+#		$(error OSX not yet supported.)
+#	endif
 #$(error Unknown platform.)
 
 endif

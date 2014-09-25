@@ -30,24 +30,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
-
-
-
-/*    if(glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_S ) == GLFW_PRESS)
-    {
-
-    }
-
-    if(glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_A ) == GLFW_PRESS)
-    {
-
-    }
-
-    if(glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_D ) == GLFW_PRESS)
-    {
-
-    }
-*/
 }
 
 // Creates the window and gets an OpenGL context for it.

@@ -27,7 +27,27 @@ static void error_callback(int error, const char* description)
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+
+
+
+/*    if(glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_S ) == GLFW_PRESS)
+    {
+
+    }
+
+    if(glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_A ) == GLFW_PRESS)
+    {
+
+    }
+
+    if(glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS || glfwGetKey( GLFW_KEY_D ) == GLFW_PRESS)
+    {
+
+    }
+*/
 }
 
 // Creates the window and gets an OpenGL context for it.
@@ -36,7 +56,9 @@ GLFWwindow* create_window()
     GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
+     {
         exit(EXIT_FAILURE);
+     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
     window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
@@ -181,7 +203,7 @@ int main()
 	glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);
 	double horizontalAngle = 0.0;
 	double verticalAngle = 0.0;
-	double mouseSpeed = 0.05;	//Leave as a variable for implementation of user mouse-speed control.
+	double mouseSpeed = 0.0005;	//Leave as a variable for implementation of user mouse-speed control.
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 	//reset mouse then grab some angles for mouse-camera movement
@@ -190,7 +212,36 @@ int main()
 	verticalAngle += mouseSpeed * deltaTime * float(height/2-ypos);
 	s.camera.rotx(verticalAngle);
 	s.camera.roty(horizontalAngle);
-	
+
+
+    //set WASD & U/L/L/R to movement ** not correct WIP 9.21.14
+    if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
+    {
+        glm::vec4 zpos(0,0,-.01,1);
+        s.camera.transform(hypermath::translation0inv(zpos));
+    }
+    if( glfwGetKey(window, GLFW_KEY_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_S ) == 1)
+    {
+        glm::vec4 zpos(0,0,.01,1);
+        s.camera.transform(hypermath::translation0inv(zpos));
+    }    
+    if( glfwGetKey(window, GLFW_KEY_LEFT) == 1 || glfwGetKey(window, GLFW_KEY_A ) == 1)
+    {
+        glm::vec4 zpos(-.01,0,0,1);
+        s.camera.transform(hypermath::translation0inv(zpos));
+    }
+    if( glfwGetKey(window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(window, GLFW_KEY_D ) == 1)
+    {
+        glm::vec4 zpos(.01,0,0,1);
+        s.camera.transform(hypermath::translation0inv(zpos));
+    }
+
+
+
+
+
+
+
         frames_this_second++;
         if(t >= previoustime + 1.0)
         {

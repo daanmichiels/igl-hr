@@ -196,7 +196,7 @@ int main()
         s.camera.roty(horizontalAngle);
 
 
-        //set WASD & U/L/L/R to movement ** not correct WIP 9.21.14
+        //set WASD & U/D/L/R to movement ** not correct WIP 9.21.14
         if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
         {
             glm::vec4 zpos(0,0,-.01,1);

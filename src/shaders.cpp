@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include "shaders.h"
-#include "shaders/fragments.h"
+#include "shaders/fragment.h"
 #include "shaders/vertex.h"
 
 // Shaders will be linked to these

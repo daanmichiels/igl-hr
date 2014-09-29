@@ -18,6 +18,10 @@ namespace hypermath
     glm::mat4 translation0(glm::vec4 target);
     glm::mat4 translation0inv(glm::vec4 target);
     glm::mat4 translation(glm::vec4 source, glm::vec4 target);
+    glm::mat4 rotation0(glm::quat rotation);
+    glm::mat4 rotation0inv(glm::quat rotation);
+    glm::mat4 rotation(glm::vec4 basepoint, glm::quat rotate);
+    glm::mat4 movement(glm::vec4 basepoint, glm::vec4 target, glm::quat rotate);
 }
 
 #endif

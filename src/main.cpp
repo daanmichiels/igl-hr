@@ -16,13 +16,13 @@
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
+#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 
 // Called on GLFW error.
 static void error_callback(int error, const char* description)
 {
     std::cerr << description;
 }
-
 // Bind ESC to window close 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -183,20 +183,23 @@ int main()
 	
         //set variables for camera movement. but first, set cursor mode invisible
         glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   
-        double horizontalAngle = 0.0;
-        double verticalAngle = 0.0;
+        float y_ang = 0.0;
+        float x_ang = 0.0;
+        float z_ang = 0.0;
         double mouseSpeed = 0.0005;	//Leave as a variable for implementation of user mouse-speed control.
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
         //reset mouse then grab some angles for mouse-camera movement
         glfwSetCursorPos(window, (int)floor(width/2),(int)floor(height/2));
-        horizontalAngle += mouseSpeed * deltaTime * float(width/2-xpos);
-        verticalAngle += mouseSpeed * deltaTime * float(height/2-ypos);
-        s.camera.rotx(verticalAngle);
-        s.camera.roty(horizontalAngle);
+        y_ang += mouseSpeed * deltaTime * float(width/2-xpos);
+        x_ang += mouseSpeed * deltaTime * float(height/2-ypos);
+        //define z_ang in future with oculus
+        glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
+        glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
+        glm::quat z_quat = glm::angleAxis(float(z_ang), glm::vec3(0, 0, 1));
+        s.camera.transform(hypermath::rotation0inv(x_quat*y_quat));
 
 
-        //set WASD & U/D/L/R to movement ** not correct WIP 9.21.14
         if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
         {
             glm::vec4 zpos(0,0,-.01,1);
@@ -205,8 +208,8 @@ int main()
         if( glfwGetKey(window, GLFW_KEY_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_S ) == 1)
         {
             glm::vec4 zpos(0,0,.01,1);
-           s.camera.transform(hypermath::translation0inv(zpos));
-           }    
+            s.camera.transform(hypermath::translation0inv(zpos));
+        }    
         if( glfwGetKey(window, GLFW_KEY_LEFT) == 1 || glfwGetKey(window, GLFW_KEY_A ) == 1)
         {
             glm::vec4 zpos(-.01,0,0,1);
@@ -217,6 +220,12 @@ int main()
             glm::vec4 zpos(.01,0,0,1);
             s.camera.transform(hypermath::translation0inv(zpos));
         }
+
+
+
+
+
+
 
         frames_this_second++;
         if(t >= previoustime + 1.0)

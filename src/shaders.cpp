@@ -4,14 +4,16 @@
 #include <iostream>
 #include <string>
 #include "shaders.h"
+#include "shaders/fragments.h"
+#include "shaders/vertex.h"
 
 // Shaders will be linked to these
-extern char _source_vertex_start[];
-extern char _source_vertex_end[];
-extern char _source_vertex_size[];
-extern char _source_fragment_start[];
-extern char _source_fragment_end[];
-extern char _source_fragment_size[];
+extern char _binary_src_shaders_vertex_glsl_start[];
+extern char _binary_src_shaders_vertex_glsl_end[];
+extern char _binary_src_shaders_vertex_glsl_size[];
+extern char _binary_src_shaders_fragment_glsl_start[];
+extern char _binary_src_shaders_fragment_glsl_end[];
+extern char _binary_src_shaders_fragment_glsl_size[];
 
 // Create and compile a shader.
 // This is not supposed to be called by other files, and
@@ -43,8 +45,8 @@ GLuint compile_shader(std::string source, GLenum shaderType)
 // Returns 0 on fail.
 GLuint build_program()
 {
-    std::string source_vertex(_source_vertex_start, (size_t)_source_vertex_size);
-    std::string source_fragment(_source_fragment_start, (size_t)_source_fragment_size);
+    std::string source_vertex(_binary_src_shaders_vertex_glsl_start);
+    std::string source_fragment(_binary_src_shaders_fragment_glsl_start);
 
     GLuint vertex = compile_shader(source_vertex, GL_VERTEX_SHADER);
     if(!vertex)

@@ -56,7 +56,10 @@ $(EXECUTABLE): $(OBJECTS)
 #	        --redefine-sym _binary_src_shaders_$*_glsl_end=_source_$*_end \
 #	        obj/shaders/$*.o
 
-obj/%.o: src/%.cpp
+src/shaders/%.h: src/shaders/%.glsl
+	python shaderwriter.py
+
+obj/%.o: src/%.cpp $(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
 clean: 

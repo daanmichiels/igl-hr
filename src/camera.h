@@ -17,9 +17,6 @@ class Camera
         void set_ratio(float ratio);
         void transform(glm::mat4 transformationinv);
         void set_transformation(glm::mat4 transformationinv);
-	void rotx(double xang);
-	void roty(double yang);
-	void rotz(double zang);
 };
 
 #endif

@@ -42,6 +42,9 @@ GLFWwindow* create_window()
         exit(EXIT_FAILURE);
      }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
     window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
     if (!window)
@@ -62,6 +65,7 @@ GLFWwindow* create_window()
 // Requires a currect OpenGL context.
 void print_info()
 {
+    glewExperimental = GL_TRUE;
     GLenum error = glewInit();
     if(error != GLEW_OK)
     {

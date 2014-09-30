@@ -62,6 +62,13 @@ src/shaders/%.h: src/shaders/%.glsl
 obj/%.o: src/%.cpp $(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
+obj/object_converter/objconverter.o: src/object_converter/objconverter.cpp
+	$(CXX) $(CXXFLAGS) -c -o src/object_converter/objconverter.cpp
+
+objconverter: obj/object_converter/objconverter.o obj/hypermath.o
+	$(CXX) $(CXXFLAGS) -o bin/objconverter \
+										obj/object_converter/objconverter.o obj/hypermath.o
+
 clean: 
 	rm -f $(OBJECTS)
 	rm -f $(EXECUTABLE)

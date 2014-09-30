@@ -146,6 +146,8 @@ int main()
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
+    double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
+
     // let's go!
     int frames_this_second = 0;
     double previoustime = 0;
@@ -164,6 +166,7 @@ int main()
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
         //get current delta_time
+        last_time = current_time;
         current_time = glfwGetTime();
         delta_time = current_time - last_time;
         // obj movement
@@ -202,6 +205,16 @@ int main()
             glm::vec4 x_trans(.01,0,0,1);
             s.camera.transform(hypermath::translation0inv(x_trans));
         }
+        if( glfwGetKey(window, GLFW_KEY_PAGE_UP) == 1)
+        {
+            glm::vec4 y_trans(0,.01,0,1);
+            s.camera.transform(hypermath::translation0inv(y_trans));
+        }
+        if( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == 1)
+        {
+            glm::vec4 y_trans(0,-.01,0,1);
+            s.camera.transform(hypermath::translation0inv(y_trans));
+        }
 
 	
         //set variables for camera movement. but first, set cursor mode invisible
@@ -209,7 +222,6 @@ int main()
         float y_ang = 0.0;
         float x_ang = 0.0;
         float z_ang = 0.0;
-        double mouse_speed = 0.0005;	//Leave as a variable for implementation of user mouse-speed control.
         double mouse_x_pos, mouse_y_pos;
         glfwGetCursorPos(window, &mouse_x_pos, &mouse_y_pos);
         //reset mouse then grab some angles for mouse-camera movement

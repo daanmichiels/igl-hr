@@ -47,7 +47,7 @@ void Camera::set_ratio(float ratio)
 // start.
 void Camera::transform(glm::mat4 transformationinv)
 {
-    _view = _view * transformationinv;
+    _view =  transformationinv * _view;
 }
 
 // Sets the transformation of the camera.

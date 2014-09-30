@@ -1,5 +1,6 @@
 
 #include "../thirdparty/glm/glm/glm.hpp"
+#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 
 namespace hypermath
 {
@@ -133,5 +134,48 @@ namespace hypermath
         glm::vec4 intermediate_target = Q*target;
         return translation0(source) * translation0(intermediate_target) * Q;
     }
+	
+	// rotation around a quaternion starting at origin. 
+	// At origin, x,y,z have rotational symmetry and we can use regular Eulerian rotation.
+	// Quaternion defines axis of rotation and degrees of rotation.
+	glm::mat4 rotation0(glm::quat rotation)
+	{
+		glm::mat3 rotate3d = glm::mat3_cast(rotation);
+		glm::mat4 result = glm::mat4();
+		for(int i=0; i<3; i++)
+        {
+            for(int j=0; j<3; j++)
+            {
+                result[i][j] = rotate3d[i][j];
+            }
+        }
+		return result;
+	}
+	
+	//just invert the quaternion to get the inverse rotation.
+	glm::mat4 rotation0inv(glm::quat rotation)
+	{
+		glm::quat rotateinv = glm::inverse(rotation);
+		return rotation0(rotateinv);
+	}
+	
+	//need to rotate our final position since we're also rotating space
+	glm::mat4 rotation(glm::vec4 basepoint, glm::quat rotate)
+	{
+		glm::mat4 rMatrix = rotation0(rotate);
+		glm::vec4 target = rMatrix*basepoint;
+		return translation0(target)*rMatrix*translation0inv(basepoint);
+	}
+	
+	//now allows to rotate space while moving.
+	//not sure if this works completely correctly.
+	//simple changes will fix. but if this works its faster than a multiplication 
+	//of our rmatrix and translation functions by a couple calculations
+	glm::mat4 movement(glm::vec4 basepoint, glm::vec4 target, glm::quat rotate)
+	{
+		glm::mat4 rMatrix = rotation0(rotate);
+		glm::vec4 newTarget = rMatrix*target;
+		return translation0(newTarget)*rMatrix*translation0inv(basepoint);
+	}
 }
 

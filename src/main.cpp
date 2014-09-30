@@ -16,13 +16,13 @@
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
+#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 
 // Called on GLFW error.
 static void error_callback(int error, const char* description)
 {
     std::cerr << description;
 }
-
 // Bind ESC to window close 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -146,10 +146,12 @@ int main()
         }
     }
                 
-//setup deltatime (must be outside of main loop)
-    double currentTime = glfwGetTime();
-    double lastTime = currentTime;
-    double deltaTime;
+//setup delta_time (must be outside of main loop)
+    double current_time = glfwGetTime();
+    double last_time = current_time;
+    double delta_time;
+    double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
+
     // let's go!
     int frames_this_second = 0;
     double previoustime = 0;
@@ -167,9 +169,10 @@ int main()
         glViewport(0, 0, width, height);
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
-        //get current deltaTime
-        currentTime = glfwGetTime();
-        deltaTime = currentTime - lastTime;
+        //get current delta_time
+        last_time = current_time;
+        current_time = glfwGetTime();
+        delta_time = current_time - last_time;
         // obj movement
         glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
         glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
@@ -184,44 +187,59 @@ int main()
         s.render();
         glfwSwapBuffers(window);
         glfwPollEvents();
-	
-        //set variables for camera movement. but first, set cursor mode invisible
-        glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   
-        double horizontalAngle = 0.0;
-        double verticalAngle = 0.0;
-        double mouseSpeed = 0.0005;	//Leave as a variable for implementation of user mouse-speed control.
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-        //reset mouse then grab some angles for mouse-camera movement
-        glfwSetCursorPos(window, (int)floor(width/2),(int)floor(height/2));
-        horizontalAngle += mouseSpeed * deltaTime * float(width/2-xpos);
-        verticalAngle += mouseSpeed * deltaTime * float(height/2-ypos);
-        s.camera.rotx(verticalAngle);
-        s.camera.roty(horizontalAngle);
 
-
-        //set WASD & U/D/L/R to movement ** not correct WIP 9.21.14
+        /*Keyboard Mapping*/
         if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
         {
-            glm::vec4 zpos(0,0,-.01,1);
-            s.camera.transform(hypermath::translation0inv(zpos));
+            glm::vec4 z_trans(0,0,-.01,1);
+            s.camera.transform(hypermath::translation0inv(z_trans));
         }
         if( glfwGetKey(window, GLFW_KEY_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_S ) == 1)
         {
-            glm::vec4 zpos(0,0,.01,1);
-           s.camera.transform(hypermath::translation0inv(zpos));
-           }    
+            glm::vec4 z_trans(0,0,.01,1);
+            s.camera.transform(hypermath::translation0inv(z_trans));
+        }    
         if( glfwGetKey(window, GLFW_KEY_LEFT) == 1 || glfwGetKey(window, GLFW_KEY_A ) == 1)
         {
-            glm::vec4 zpos(-.01,0,0,1);
-            s.camera.transform(hypermath::translation0inv(zpos));
+            glm::vec4 x_trans(-.01,0,0,1);
+            s.camera.transform(hypermath::translation0inv(x_trans));
         }
         if( glfwGetKey(window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(window, GLFW_KEY_D ) == 1)
         {
-            glm::vec4 zpos(.01,0,0,1);
-            s.camera.transform(hypermath::translation0inv(zpos));
+            glm::vec4 x_trans(.01,0,0,1);
+            s.camera.transform(hypermath::translation0inv(x_trans));
+        }
+        if( glfwGetKey(window, GLFW_KEY_PAGE_UP) == 1)
+        {
+            glm::vec4 y_trans(0,.01,0,1);
+            s.camera.transform(hypermath::translation0inv(y_trans));
+        }
+        if( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == 1)
+        {
+            glm::vec4 y_trans(0,-.01,0,1);
+            s.camera.transform(hypermath::translation0inv(y_trans));
         }
 
+	
+        //set variables for camera movement. but first, set cursor mode invisible
+        glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   
+        float y_ang = 0.0;
+        float x_ang = 0.0;
+        float z_ang = 0.0;
+        double mouse_x_pos, mouse_y_pos;
+        glfwGetCursorPos(window, &mouse_x_pos, &mouse_y_pos);
+        //reset mouse then grab some angles for mouse-camera movement
+        glfwSetCursorPos(window, (int)floor(width/2),(int)floor(height/2));
+        y_ang += mouse_speed * delta_time * float(width/2-mouse_x_pos);
+        x_ang += mouse_speed * delta_time * float(height/2-mouse_y_pos);
+        //define z_ang in future with oculus
+        
+
+        glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
+        glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
+        glm::quat z_quat = glm::angleAxis(float(z_ang), glm::vec3(0, 0, 1));
+        s.camera.transform(hypermath::rotation0inv(x_quat*y_quat));
+        
         frames_this_second++;
         if(t >= previoustime + 1.0)
         {

@@ -3,7 +3,9 @@
 
 #include <GL/glew.h>
 #include "camera.h"
+
 using namespace glm;
+
 // By default, the camera is at (0,0,0,1) and looking in the
 // negative z-direction (0,0,-1,0).
 Camera::Camera(float fov, float ratio, float near, float far)

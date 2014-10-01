@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "object.h"
 #include "mesh.h"
+#include "fpscounter.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -44,6 +45,7 @@ GLFWwindow* create_window()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 
     // This should not be included on Windows
+    // Is this a platform-issue or a hardware/driver-issue?
     #ifndef _WIN32
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -157,11 +159,7 @@ int main()
     double delta_time;
     double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
 
-    // let's go!
-    int frames_this_second = 0;
-    double previoustime = 0;
-
-
+    FpsCounter fps = FpsCounter(true);
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
@@ -245,15 +243,7 @@ int main()
         glm::quat z_quat = glm::angleAxis(float(z_ang), glm::vec3(0, 0, 1));
         s.camera.transform(hypermath::rotation0inv(x_quat*y_quat));
         
-        frames_this_second++;
-        if(t >= previoustime + 1.0)
-        {
-            previoustime += 1.0;
-            glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
-            std::cout << std::to_string(frames_this_second) << "\n";
-	       frames_this_second = 0;
-        }
-
+        fps.update(current_time);
     }
 
     // Finished while loop. Time to destroy the window and exit.

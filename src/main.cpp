@@ -158,8 +158,6 @@ int main()
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
-    double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
-
     FpsCounter fps = FpsCounter(true);
     CameraControls control = CameraControls(window);
 
@@ -195,7 +193,7 @@ int main()
         glfwPollEvents();
 
         /*Keyboard Mapping*/
-        s = control.handle(delta_time, s, width, height, mouse_speed);
+        s = control.handle(delta_time, s, width, height);
 	
         //set variables for camera movement. but first, set cursor mode invisible
         glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   

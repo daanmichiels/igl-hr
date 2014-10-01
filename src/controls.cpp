@@ -15,13 +15,13 @@ CameraControls::CameraControls(GLFWwindow* window)
 	_window = window;
 }
 
-Scene CameraControls::handle(float delta_time, Scene _s, int width, int height, double mouse_speed)
+Scene CameraControls::handle(float delta_time, Scene _s, int width, int height)
 {
 	Scene s_after_keyboard = CameraControls::handle_keyboard(_s);
-	return CameraControls::handle_mouse(delta_time, s_after_keyboard, width, height, mouse_speed);
+	return CameraControls::handle_mouse(delta_time, s_after_keyboard, width, height);
 }
 
-Scene CameraControls::handle_mouse(float delta_time, Scene _s, int width, int height, double mouse_speed)
+Scene CameraControls::handle_mouse(float delta_time, Scene _s, int width, int height)
 {
 	float y_ang = 0.0;
     float x_ang = 0.0;
@@ -29,8 +29,8 @@ Scene CameraControls::handle_mouse(float delta_time, Scene _s, int width, int he
     glfwGetCursorPos(_window, &mouse_x_pos, &mouse_y_pos);
     //reset mouse then grab some angles for mouse-camera movement
     glfwSetCursorPos(_window, (int)floor(width/2),(int)floor(height/2));
-    y_ang += mouse_speed * delta_time * float(width/2-mouse_x_pos);
-    x_ang += mouse_speed * delta_time * float(height/2-mouse_y_pos);
+    y_ang += _mouse_speed * delta_time * float(width/2-mouse_x_pos);
+    x_ang += _mouse_speed * delta_time * float(height/2-mouse_y_pos);
     glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
     glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
     _s.camera.transform(hypermath::rotation0inv(x_quat*y_quat));
@@ -72,3 +72,9 @@ Scene CameraControls::handle_keyboard(Scene _s)
     }
     return _s;
 }
+
+void CameraControls::set_mouse_speed(double speed)
+{
+	_mouse_speed = speed;
+}
+

@@ -12,10 +12,12 @@ class CameraControls
         // glm::vec4 _cam_pos;
         // glm::quat _cam_orientation;
     public:
+        double _mouse_speed = 0.05;
         CameraControls(GLFWwindow* window);
-        Scene handle(float delta_time, Scene _s, int width, int height, double mouse_speed);
-        Scene handle_mouse(float delta_time, Scene _s, int width, int height, double mouse_speed);
+        Scene handle(float delta_time, Scene _s, int width, int height);
+        Scene handle_mouse(float delta_time, Scene _s, int width, int height);
         Scene handle_keyboard(Scene _s);
+        void set_mouse_speed(double speed);
 };
 
 #endif

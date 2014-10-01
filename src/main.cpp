@@ -12,6 +12,7 @@
 #include "object.h"
 #include "mesh.h"
 #include "fpscounter.h"
+#include "controls.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -160,6 +161,8 @@ int main()
     double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
 
     FpsCounter fps = FpsCounter(true);
+    CameraControls control = CameraControls(window);
+
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
@@ -192,56 +195,11 @@ int main()
         glfwPollEvents();
 
         /*Keyboard Mapping*/
-        if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
-        {
-            glm::vec4 z_trans(0,0,-.01,1);
-            s.camera.transform(hypermath::translation0inv(z_trans));
-        }
-        if( glfwGetKey(window, GLFW_KEY_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_S ) == 1)
-        {
-            glm::vec4 z_trans(0,0,.01,1);
-            s.camera.transform(hypermath::translation0inv(z_trans));
-        }    
-        if( glfwGetKey(window, GLFW_KEY_LEFT) == 1 || glfwGetKey(window, GLFW_KEY_A ) == 1)
-        {
-            glm::vec4 x_trans(-.01,0,0,1);
-            s.camera.transform(hypermath::translation0inv(x_trans));
-        }
-        if( glfwGetKey(window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(window, GLFW_KEY_D ) == 1)
-        {
-            glm::vec4 x_trans(.01,0,0,1);
-            s.camera.transform(hypermath::translation0inv(x_trans));
-        }
-        if( glfwGetKey(window, GLFW_KEY_PAGE_UP) == 1)
-        {
-            glm::vec4 y_trans(0,.01,0,1);
-            s.camera.transform(hypermath::translation0inv(y_trans));
-        }
-        if( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == 1)
-        {
-            glm::vec4 y_trans(0,-.01,0,1);
-            s.camera.transform(hypermath::translation0inv(y_trans));
-        }
-
+        s = control.handle(delta_time, s, width, height, mouse_speed);
 	
         //set variables for camera movement. but first, set cursor mode invisible
         glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   
-        float y_ang = 0.0;
-        float x_ang = 0.0;
-        float z_ang = 0.0;
-        double mouse_x_pos, mouse_y_pos;
-        glfwGetCursorPos(window, &mouse_x_pos, &mouse_y_pos);
-        //reset mouse then grab some angles for mouse-camera movement
-        glfwSetCursorPos(window, (int)floor(width/2),(int)floor(height/2));
-        y_ang += mouse_speed * delta_time * float(width/2-mouse_x_pos);
-        x_ang += mouse_speed * delta_time * float(height/2-mouse_y_pos);
-        //define z_ang in future with oculus
         
-
-        glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
-        glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
-        glm::quat z_quat = glm::angleAxis(float(z_ang), glm::vec3(0, 0, 1));
-        s.camera.transform(hypermath::rotation0inv(x_quat*y_quat));
         
         fps.update(current_time);
     }

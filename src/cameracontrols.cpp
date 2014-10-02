@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "hypermath.h"
 #include "scene.h"
-#include "controls.h"
+#include "cameracontrols.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"

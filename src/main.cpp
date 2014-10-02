@@ -12,7 +12,7 @@
 #include "object.h"
 #include "mesh.h"
 #include "fpscounter.h"
-#include "controls.h"
+#include "cameracontrols.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"

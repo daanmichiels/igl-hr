@@ -159,7 +159,7 @@ int main()
     double last_time = current_time;
     double delta_time;
     FpsCounter fps = FpsCounter(true);
-    CameraControls control = CameraControls(window);
+    CameraControls control = CameraControls(window, &s.camera);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -193,7 +193,7 @@ int main()
         glfwPollEvents();
 
         /*Keyboard Mapping*/
-        s = control.handle(delta_time, s, width, height);
+        control.handle(delta_time, width, height);
 	
         //set variables for camera movement. but first, set cursor mode invisible
         glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   

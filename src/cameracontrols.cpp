@@ -12,19 +12,19 @@
 
 CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
-	_window = window;
+    _window = window;
     _camera = camera;
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
 {
-	handle_keyboard(delta_time);
-	handle_mouse(delta_time, width, height);
+    handle_keyboard(delta_time);
+    handle_mouse(delta_time, width, height);
 }
 
 void CameraControls::handle_mouse(float delta_time, int width, int height)
 {
-	float y_ang = 0.0;
+    float y_ang = 0.0;
     float x_ang = 0.0;
     double mouse_x_pos, mouse_y_pos;
     glfwGetCursorPos(_window, &mouse_x_pos, &mouse_y_pos);
@@ -39,40 +39,46 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
 
 void CameraControls::handle_keyboard(float delta_time)
 {
-	if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
+    if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
     {
-        glm::vec4 z_trans(0,0,-.01,1);
+        glm::vec4 z_trans(0,0,-.01,0);
+        z_trans = hypermath::exp0(z_trans);
         _camera->transform(hypermath::translation0inv(z_trans));
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) == 1 || glfwGetKey(_window, GLFW_KEY_S ) == 1)
     {
-        glm::vec4 z_trans(0,0,.01,1);
+        glm::vec4 z_trans(0,0,.01,0);
+        z_trans = hypermath::exp0(z_trans);
         _camera->transform(hypermath::translation0inv(z_trans));
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) == 1 || glfwGetKey(_window, GLFW_KEY_A ) == 1)
     {
-        glm::vec4 x_trans(-.01,0,0,1);
+        glm::vec4 x_trans(-.01,0,0,0);
+        x_trans = hypermath::exp0(x_trans);
         _camera->transform(hypermath::translation0inv(x_trans));
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(_window, GLFW_KEY_D ) == 1)
     {
-        glm::vec4 x_trans(.01,0,0,1);
+        glm::vec4 x_trans(.01,0,0,0);
+        x_trans = hypermath::exp0(x_trans);
         _camera->transform(hypermath::translation0inv(x_trans));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) == 1)
     {
-        glm::vec4 y_trans(0,.01,0,1);
+        glm::vec4 y_trans(0,.01,0,0);
+        y_trans = hypermath::exp0(y_trans);
         _camera->transform(hypermath::translation0inv(y_trans));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) == 1)
-	{
-        glm::vec4 y_trans(0,-.01,0,1);
+    {
+        glm::vec4 y_trans(0,-.01,0,0);
+        y_trans = hypermath::exp0(y_trans);
         _camera->transform(hypermath::translation0inv(y_trans));
     }
 }
 
 void CameraControls::set_mouse_speed(float speed)
 {
-	_mouse_speed = speed;
+    _mouse_speed = speed;
 }
 

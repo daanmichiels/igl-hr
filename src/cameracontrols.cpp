@@ -41,42 +41,42 @@ void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
     {
-        glm::vec4 trans(0,0,-.01,0);
+        glm::vec4 trans(0,0,-.001,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) == 1 || glfwGetKey(_window, GLFW_KEY_S ) == 1)
     {
-        glm::vec4 trans(0,0,.01,0);
+        glm::vec4 trans(0,0,.001,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) == 1 || glfwGetKey(_window, GLFW_KEY_A ) == 1)
     {
-        glm::vec4 trans(-.01,0,0,0);
+        glm::vec4 trans(-.001,0,0,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(_window, GLFW_KEY_D ) == 1)
     {
-        glm::vec4 trans(.01,0,0,0);
+        glm::vec4 trans(.001,0,0,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) == 1)
     {
-        glm::vec4 trans(0,.01,0,0);
+        glm::vec4 trans(0,.001,0,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) == 1)
     {
-        glm::vec4 trans(0,-.01,0,0);
+        glm::vec4 trans(0,-.001,0,0);
         trans += _camera->get_pos();
 		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
         _camera->transform(hypermath::translation(trans,_camera->get_pos()));

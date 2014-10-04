@@ -10,6 +10,7 @@ class Camera
         float _fov, _ratio, _near, _far;
         glm::mat4 _proj;
         glm::mat4 _view;
+		glm::vec4 _pos;
     public:
         Camera(float fov=1.2f, float ratio=1.0f, float near=0.01f, float far=10.0f);
         glm::mat4 get_projection();

@@ -88,7 +88,7 @@ namespace hypermath
         {
             for(int j=0; j<3; j++)
             {
-                result[i][j] += target[i]*target[j]/(target.w + 1);
+                result[i][j] += target[i]*target[j]/(target.w+1);
             }
         }
         result[3][0] = target.x;
@@ -167,6 +167,11 @@ namespace hypermath
 		return translation0(target)*rMatrix*translation0inv(basepoint);
 	}
 	
+	glm::mat4 rotationinv(glm::vec4 basepoint, glm::quat rotate)
+	{
+		return rotation(basepoint, glm::inverse(rotate));
+	}
+		
 	//now allows to rotate space while moving.
 	//not sure if this works completely correctly.
 	//simple changes will fix. but if this works its faster than a multiplication 

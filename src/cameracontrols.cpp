@@ -34,7 +34,7 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     x_ang += _mouse_speed * delta_time * float(height/2-mouse_y_pos);
     glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
     glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
-    _camera->transform(hypermath::rotation0inv(x_quat*y_quat));
+    _camera->transform(hypermath::rotationinv(_camera->get_pos(),x_quat*y_quat));
 }
 
 void CameraControls::handle_keyboard(float delta_time)

@@ -41,39 +41,45 @@ void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
     {
-        glm::vec4 z_trans(0,0,-.01,0);
-        z_trans = hypermath::exp0(z_trans);
-        _camera->transform(hypermath::translation0inv(z_trans));
+        glm::vec4 trans(0,0,-.01,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) == 1 || glfwGetKey(_window, GLFW_KEY_S ) == 1)
     {
-        glm::vec4 z_trans(0,0,.01,0);
-        z_trans = hypermath::exp0(z_trans);
-        _camera->transform(hypermath::translation0inv(z_trans));
+        glm::vec4 trans(0,0,.01,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) == 1 || glfwGetKey(_window, GLFW_KEY_A ) == 1)
     {
-        glm::vec4 x_trans(-.01,0,0,0);
-        x_trans = hypermath::exp0(x_trans);
-        _camera->transform(hypermath::translation0inv(x_trans));
+        glm::vec4 trans(-.01,0,0,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(_window, GLFW_KEY_D ) == 1)
     {
-        glm::vec4 x_trans(.01,0,0,0);
-        x_trans = hypermath::exp0(x_trans);
-        _camera->transform(hypermath::translation0inv(x_trans));
+        glm::vec4 trans(.01,0,0,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) == 1)
     {
-        glm::vec4 y_trans(0,.01,0,0);
-        y_trans = hypermath::exp0(y_trans);
-        _camera->transform(hypermath::translation0inv(y_trans));
+        glm::vec4 trans(0,.01,0,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) == 1)
     {
-        glm::vec4 y_trans(0,-.01,0,0);
-        y_trans = hypermath::exp0(y_trans);
-        _camera->transform(hypermath::translation0inv(y_trans));
+        glm::vec4 trans(0,-.01,0,0);
+        trans += _camera->get_pos();
+		trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
+        _camera->transform(hypermath::translation(trans,_camera->get_pos()));
     }
 }
 

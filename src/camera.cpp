@@ -33,7 +33,7 @@ glm::mat4 Camera::get_view()
 // Return the camera's current position.
 glm::vec4 Camera::get_pos()
 {
-    return _view[4];
+    return _view[3];
 }
 
 // Change the camera's aspect ratio. Useful when resizing

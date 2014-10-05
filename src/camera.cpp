@@ -16,7 +16,6 @@ Camera::Camera(float fov, float ratio, float near, float far)
     _far = far;
     _proj = glm::perspective(fov, ratio, near, far);
     _view = glm::mat4(); //defaults to identity matrix
-	_pos = glm::vec4(0,0,0,1);
 }
 
 // Return the camera's current projection matrix.
@@ -29,12 +28,6 @@ glm::mat4 Camera::get_projection()
 glm::mat4 Camera::get_view()
 {
     return _view;
-}
-
-// Return the camera's current position.
-glm::vec4 Camera::get_pos()
-{
-    return _pos;
 }
 
 // Change the camera's aspect ratio. Useful when resizing
@@ -57,7 +50,6 @@ void Camera::set_ratio(float ratio)
 void Camera::transform(glm::mat4 transformationinv)
 {
     _view =  transformationinv * _view;
-	_pos = inverse(transformationinv)*_pos;
 }
 
 // Sets the transformation of the camera.

@@ -38,15 +38,15 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     _camera->transform(hypermath::rotationinv(_pos,x_quat*y_quat));
 }
 
-glm::mat4 CameraControls::moveCamera(glm::vec4 trans,glm::vec4 _pos) 
+void CameraControls::moveCamera(glm::vec4 trans) 
 {
     trans += _pos;
 	trans.w = sqrt(trans.x*trans.x+trans.y*trans.y+trans.z*trans.z+1);
 	glm::mat4 move = hypermath::translation(trans,_pos);
 	glm::mat4 movinv = hypermath::translation(_pos,trans);
 	_pos = movinv*_pos;
-	_pos.w = _pos.x*_pos.x+_pos.y*_pos.y+_pos.z*_pos.z+1;
-	return move;
+	_pos.w = sqrt(_pos.x*_pos.x+_pos.y*_pos.y+_pos.z*_pos.z+1);
+	_camera->transform(move);
 }
 
 void CameraControls::handle_keyboard(float delta_time)
@@ -54,32 +54,32 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
     {
         glm::vec4 trans(0,0,-.001,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) == 1 || glfwGetKey(_window, GLFW_KEY_S ) == 1)
     {
         glm::vec4 trans(0,0,.001,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) == 1 || glfwGetKey(_window, GLFW_KEY_A ) == 1)
     {
         glm::vec4 trans(-.001,0,0,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(_window, GLFW_KEY_D ) == 1)
     {
         glm::vec4 trans(.001,0,0,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) == 1)
     {
         glm::vec4 trans(0,.001,0,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) == 1)
     {
         glm::vec4 trans(0,-.001,0,0);
-		_camera->transform(moveCamera(trans,_pos));
+		moveCamera(trans);
     }
 }
 

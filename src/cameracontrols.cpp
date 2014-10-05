@@ -15,6 +15,7 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
     _window = window;
     _camera = camera;
 	_pos = glm::vec4(0,0,0,1);
+	_dir = glm::quat(0,glm::vec3(0,0,-1));
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -35,6 +36,7 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     x_ang += _mouse_speed * delta_time * float(height/2-mouse_y_pos);
     glm::quat x_quat = glm::angleAxis(float(x_ang), glm::vec3(1, 0, 0));
     glm::quat y_quat = glm::angleAxis(float(y_ang), glm::vec3(0, 1, 0));
+	_dir = x_quat*y_quat*_dir;
     _camera->transform(hypermath::rotationinv(_pos,x_quat*y_quat));
 }
 
@@ -53,12 +55,14 @@ void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) == 1 || glfwGetKey(_window, GLFW_KEY_W ) == 1)
     {
-        glm::vec4 trans(0,0,-.001,0);
+		glm::vec3 axis = glm::axis(_dir);
+        glm::vec4 trans = glm::vec4(.001*axis.x/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),.001*axis.y/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),.001*axis.z/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),0);
 		moveCamera(trans);
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) == 1 || glfwGetKey(_window, GLFW_KEY_S ) == 1)
     {
-        glm::vec4 trans(0,0,.001,0);
+        glm::vec3 axis = glm::axis(_dir);
+        glm::vec4 trans = glm::vec4(-.001*axis.x/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),-.001*axis.y/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),-.001*axis.z/sqrt(axis.x*axis.x+axis.y*axis.y+axis.z*axis.z),0);
 		moveCamera(trans);
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) == 1 || glfwGetKey(_window, GLFW_KEY_A ) == 1)

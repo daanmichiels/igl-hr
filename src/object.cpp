@@ -8,13 +8,14 @@
 #include <string.h>
 #include <cmath>
 #include "primitives.h"
+#include "hypermath.h"
 
 void object::transform(glm::mat4 transformation)
 {
     this->transformation = transformation * this->transformation;
 }
 
-object::object(const char filename[])
+object::object(const char filename[], bool converted, double scale)
 {
     std::ifstream input(filename);
 
@@ -36,9 +37,19 @@ object::object(const char filename[])
             line = line.substr(index);
 
             z = std::stod(line);
-            line = line.substr(index);
 
-            w = std::stod(line);
+            if (converted) {
+                line = line.substr(index);
+                w = std::stod(line);
+            }
+            else {
+                glm::vec4 conv = hypermath::exp0(glm::vec4(x * scale, y * scale, z * scale, 0));
+
+                x = conv.x;
+                y = conv.y;
+                z = conv.z;
+                w = conv.w;
+            }
 
             vertices.push_back(glm::vec4(x, y, z, w));
             numVertices++;

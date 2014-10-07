@@ -85,8 +85,13 @@ void print_info()
 
 
 
-int main()
+int main(int argc, const char* argv[])
 {
+    const char* filename = "resources/teapot.obj";
+    if (argc > 1) {
+        filename = argv[1];
+    }
+
     GLFWwindow* window = create_window();
     print_info();
 
@@ -106,7 +111,7 @@ int main()
     mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
-    object o1, o2, o3;
+    object o1, o2, o3, t1, t2, t3;
     o1.meshes.push_back(mesh_triangle);
     o2.meshes.push_back(mesh_tetra);
     o3.meshes.push_back(mesh_tetra);
@@ -117,6 +122,10 @@ int main()
     o2.transform(hypermath::translation0(location2));
     o3.transform(hypermath::translation0(location3));
 
+    t1 = object(filename, false, 1);
+    t2 = object(filename, false, 0.1);
+    t3 = object(filename, false, 0.01);
+
     // relations between the objects
     o2.children.push_back(&o3);
 
@@ -125,42 +134,45 @@ int main()
 
     // set up the scene
     Scene s = Scene();
-    s.objects.push_back(&o1);
-    s.objects.push_back(&o2);
+    // s.objects.push_back(&o1);
+    // s.objects.push_back(&o2);
+    s.objects.push_back(&t1);
+    s.objects.push_back(&t2);
+    s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
 
     // make it more interesting
-    object grid[240];
-    int count = 0;
-    for(int i=0; i<10; i++)
-    {
-        float x = -0.2+0.04*i;
-        for(int j=0; j<6; j++)
-        {
-            float y = -0.2 + 0.07 * j;
-            for(int k=0; k<4; k++)
-            {
-                float z = -0.8 + k*0.1;
-                grid[count].meshes.push_back(mesh_tetra);
-                glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
-                grid[count].transform(hypermath::translation0(location));
-                s.objects.push_back(&(grid[count]));
-                count++;
-            }
-        }
-    }
+    // object grid[240];
+    // int count = 0;
+    // for(int i=0; i<10; i++)
+    // {
+    //     float x = -0.2+0.04*i;
+    //     for(int j=0; j<6; j++)
+    //     {
+    //         float y = -0.2 + 0.07 * j;
+    //         for(int k=0; k<4; k++)
+    //         {
+    //             float z = -0.8 + k*0.1;
+    //             grid[count].meshes.push_back(mesh_tetra);
+    //             glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
+    //             grid[count].transform(hypermath::translation0(location));
+    //             s.objects.push_back(&(grid[count]));
+    //             count++;
+    //         }
+    //     }
+    // }
                 
 //setup delta_time (must be outside of main loop)
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
     double mouse_speed = 0.05; //Leave as a variable for implementation of user mouse-speed control.
+    double key_speed = 0.001;
 
     // let's go!
     int frames_this_second = 0;
     double previoustime = 0;
-
 
     while (!glfwWindowShouldClose(window))
     {
@@ -196,33 +208,45 @@ int main()
         /*Keyboard Mapping*/
         if( glfwGetKey(window, GLFW_KEY_UP) == 1 || glfwGetKey(window, GLFW_KEY_W ) == 1)
         {
-            glm::vec4 z_trans(0,0,-.01,1);
+            glm::vec4 z_trans(0,0,-key_speed,1);
             s.camera.transform(hypermath::translation0inv(z_trans));
         }
         if( glfwGetKey(window, GLFW_KEY_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_S ) == 1)
         {
-            glm::vec4 z_trans(0,0,.01,1);
+            glm::vec4 z_trans(0,0,key_speed,1);
             s.camera.transform(hypermath::translation0inv(z_trans));
         }    
         if( glfwGetKey(window, GLFW_KEY_LEFT) == 1 || glfwGetKey(window, GLFW_KEY_A ) == 1)
         {
-            glm::vec4 x_trans(-.01,0,0,1);
+            glm::vec4 x_trans(-key_speed,0,0,1);
             s.camera.transform(hypermath::translation0inv(x_trans));
         }
         if( glfwGetKey(window, GLFW_KEY_RIGHT) == 1 || glfwGetKey(window, GLFW_KEY_D ) == 1)
         {
-            glm::vec4 x_trans(.01,0,0,1);
+            glm::vec4 x_trans(key_speed,0,0,1);
             s.camera.transform(hypermath::translation0inv(x_trans));
         }
-        if( glfwGetKey(window, GLFW_KEY_PAGE_UP) == 1)
+        if( glfwGetKey(window, GLFW_KEY_PAGE_UP) == 1 || glfwGetKey(window, GLFW_KEY_E ) == 1)
         {
-            glm::vec4 y_trans(0,.01,0,1);
+            glm::vec4 y_trans(0,key_speed,0,1);
             s.camera.transform(hypermath::translation0inv(y_trans));
         }
-        if( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == 1)
+        if( glfwGetKey(window, GLFW_KEY_PAGE_DOWN) == 1 || glfwGetKey(window, GLFW_KEY_Q ) == 1)
         {
-            glm::vec4 y_trans(0,-.01,0,1);
+            glm::vec4 y_trans(0,-key_speed,0,1);
             s.camera.transform(hypermath::translation0inv(y_trans));
+        }
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == 1)
+        {
+            std::cout << "position: " << s.camera.get_view()[0][3] << ", "
+                << s.camera.get_view()[1][3] << ", "
+                << s.camera.get_view()[2][3] << ", "
+                << s.camera.get_view()[3][3] << "\n";
+
+            std::cout << "distance from origin: " << sqrt((s.camera.get_view()[0][3] * s.camera.get_view()[0][3])
+                + (s.camera.get_view()[1][3] * s.camera.get_view()[1][3])
+                + (s.camera.get_view()[2][3] * s.camera.get_view()[2][3])
+                + (s.camera.get_view()[3][3] * s.camera.get_view()[3][3])) << '\n';
         }
 
 	
@@ -250,7 +274,7 @@ int main()
         {
             previoustime += 1.0;
             glfwSetWindowTitle(window, std::to_string(frames_this_second).c_str());
-            std::cout << std::to_string(frames_this_second) << "\n";
+            // std::cout << std::to_string(frames_this_second) << "\n";
 	       frames_this_second = 0;
         }
 

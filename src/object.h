@@ -17,7 +17,7 @@ struct object
 
     void transform(glm::mat4 transformation);
     object();
-    object(const char[]);
+    object(const char filename[], bool converted, double scale);
 };
 
 #endif /* OBJECT_H */

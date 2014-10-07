@@ -114,7 +114,7 @@ namespace primitives
     }
 
     // Create a generic mesh based on a list of vertices
-    // The mesh will be a solid color
+    // The mesh will be multicolored
     mesh generic(std::vector<glm::vec4> v)
     {
         std::vector<glm::vec4> colors;

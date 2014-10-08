@@ -12,6 +12,7 @@ class CameraControls
         GLFWwindow* _window;
         Camera* _camera;
         float _mouse_speed = 0.05;
+        bool _mouse_on = true;
 				
         // These can be used later to recompute the view matrix
         // every time (to prevent round-off from transforming the

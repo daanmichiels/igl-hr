@@ -191,7 +191,6 @@ int main()
         control.handle(delta_time, width, height);
 	
         //set variables for camera movement. but first, set cursor mode invisible
-        glfwSetInputMode(window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);   
         
         
         fps.update(current_time);

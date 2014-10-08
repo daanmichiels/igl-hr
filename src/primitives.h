@@ -11,6 +11,7 @@ namespace primitives
     mesh rectangle(float width, float depth, glm::vec4 color);
     mesh tetrahedron(float radius);
     mesh generic(std::vector<glm::vec4> v);
+    mesh object(std::vector<glm::vec4> v);
 }
 
 #endif

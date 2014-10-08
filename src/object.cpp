@@ -21,7 +21,7 @@ object::object(const char filename[], bool converted, double scale)
 
     std::vector<glm::vec4> vertices;
 
-    int numVertices = 0;
+    std::vector<glm::vec4> v;
 
     for(std::string line; getline(input, line); ) {
         if (line[0] == 'v') {
@@ -52,11 +52,9 @@ object::object(const char filename[], bool converted, double scale)
             }
 
             vertices.push_back(glm::vec4(x, y, z, w));
-            numVertices++;
         }
         else if (line[0] == 'f') {
             std::stringstream linestream(line.substr(1));
-            std::vector<glm::vec4> v;
 
             while(1) {
                 int i;
@@ -68,10 +66,10 @@ object::object(const char filename[], bool converted, double scale)
 
                 v.push_back(vertices[i - 1]);
             }
-
-            meshes.push_back(primitives::generic(v));
         }
     }
+
+    meshes.push_back(primitives::object(v));
 }
 
 object::object()

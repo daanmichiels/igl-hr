@@ -26,6 +26,10 @@ void CameraControls::handle(float delta_time, int width, int height)
 
 void CameraControls::handle_mouse(float delta_time, int width, int height)
 {
+    if( glfwGetMouseButton(_window, GLFW_MOUSE_BUTTON_LEFT))
+    {
+        _mouse_on = true;
+    }
     if(_mouse_on)
     {
         float y_ang = 0.0;
@@ -91,13 +95,9 @@ void CameraControls::handle_keyboard(float delta_time)
         glm::vec4 trans(0,-.001,0,0);
         moveCamera(trans);
     }
-    if( glfwGetKey(_window, GLFW_KEY_N))
-    {
-        _mouse_on = false;
-    }
     if( glfwGetKey(_window, GLFW_KEY_M))
     {
-        _mouse_on = true;
+        _mouse_on = false;
     }
 }
 

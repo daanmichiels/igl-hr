@@ -27,6 +27,8 @@ class CameraControls
         void handle_keyboard(float delta_time);
         void set_mouse_speed(float speed);
 		void moveCamera(glm::vec4 trans);
+        glm::vec4 get_pos();
+        glm::quat get_dir();
 };
 
 #endif

@@ -15,6 +15,7 @@ struct object
     std::vector<mesh> meshes;
 
     void transform(glm::mat4 transformation);
+    void set_transformation(glm::mat4 transform);
 };
 
 #endif /* OBJECT_H */

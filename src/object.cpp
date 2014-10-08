@@ -7,4 +7,7 @@ void object::transform(glm::mat4 transformation)
     this->transformation = transformation * this->transformation;
 }
 
-
+void object::set_transformation(glm::mat4 transformation)
+{
+    this->transformation = transformation;
+}

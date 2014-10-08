@@ -91,4 +91,11 @@ void CameraControls::set_mouse_speed(float speed)
 {
     _mouse_speed = speed;
 }
-
+glm::vec4 CameraControls::get_pos()
+{
+    return _pos;
+}
+glm::quat CameraControls::get_dir()
+{
+    return _dir;
+}

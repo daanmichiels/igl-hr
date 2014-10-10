@@ -88,8 +88,13 @@ void print_info()
 
 
 
-int main()
+int main(int argc, const char* argv[])
 {
+    const char* filename = "resources/teapot.obj";
+    if (argc > 1) {
+        filename = argv[1];
+    }
+
     GLFWwindow* window = create_window();
     print_info();
 
@@ -109,7 +114,7 @@ int main()
     mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
-    object o1, o2, o3;
+    object o1, o2, o3, t1, t2, t3;
     o1.meshes.push_back(mesh_triangle);
     o2.meshes.push_back(mesh_tetra);
     o3.meshes.push_back(mesh_tetra);
@@ -120,6 +125,10 @@ int main()
     o2.transform(hypermath::translation0(location2));
     o3.transform(hypermath::translation0(location3));
 
+    t1 = object(filename, false, 1);
+    t2 = object(filename, false, 0.1);
+    t3 = object(filename, false, 0.01);
+
     // relations between the objects
     o2.children.push_back(&o3);
 
@@ -128,36 +137,40 @@ int main()
 
     // set up the scene
     Scene s = Scene();
-    s.objects.push_back(&o1);
-    s.objects.push_back(&o2);
+    // s.objects.push_back(&o1);
+    // s.objects.push_back(&o2);
+    s.objects.push_back(&t1);
+    s.objects.push_back(&t2);
+    s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
 
     // make it more interesting
-    object grid[240];
-    int count = 0;
-    for(int i=0; i<10; i++)
-    {
-        float x = -0.2+0.04*i;
-        for(int j=0; j<6; j++)
-        {
-            float y = -0.2 + 0.07 * j;
-            for(int k=0; k<4; k++)
-            {
-                float z = -0.8 + k*0.1;
-                grid[count].meshes.push_back(mesh_tetra);
-                glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
-                grid[count].transform(hypermath::translation0(location));
-                s.objects.push_back(&(grid[count]));
-                count++;
-            }
-        }
-    }
+    // object grid[240];
+    // int count = 0;
+    // for(int i=0; i<10; i++)
+    // {
+    //     float x = -0.2+0.04*i;
+    //     for(int j=0; j<6; j++)
+    //     {
+    //         float y = -0.2 + 0.07 * j;
+    //         for(int k=0; k<4; k++)
+    //         {
+    //             float z = -0.8 + k*0.1;
+    //             grid[count].meshes.push_back(mesh_tetra);
+    //             glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
+    //             grid[count].transform(hypermath::translation0(location));
+    //             s.objects.push_back(&(grid[count]));
+    //             count++;
+    //         }
+    //     }
+    // }
                 
     //setup delta_time (must be outside of main loop)
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
+
     FpsCounter fps = FpsCounter(true);
     CameraControls control = CameraControls(window, &s.camera);
 
@@ -196,6 +209,7 @@ int main()
         control.handle(delta_time, width, height);
 	
         fps.update(current_time);
+
     }
 
     // Finished while loop. Time to destroy the window and exit.

@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <string.h>
 #include "mesh.h"
 
 struct object
@@ -16,6 +17,8 @@ struct object
 
     void transform(glm::mat4 transformation);
     void set_transformation(glm::mat4 transform);
+    object();
+    object(const char filename[], bool converted, double scale);
 };
 
 #endif /* OBJECT_H */

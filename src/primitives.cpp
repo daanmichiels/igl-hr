@@ -112,5 +112,63 @@ namespace primitives
         result.count = 6;
         return result;
     }
+
+    // Create a generic mesh based on a list of vertices
+    // The mesh will be multicolored
+    mesh generic(std::vector<glm::vec4> v)
+    {
+        std::vector<glm::vec4> colors;
+
+        for (int i = 0; i < v.size(); i++) {
+            switch (i % 3) {
+                case 0 :
+                    colors.push_back(red);
+                    break;
+
+                case 1 :
+                    colors.push_back(green);
+                    break;
+
+                default :
+                    colors.push_back(blue);
+                    break; 
+            }
+        }
+
+        mesh result;
+        result.vao = vao_from_pos_col(v, colors);
+        result.mode = GL_TRIANGLE_FAN;
+        result.first = 0;
+        result.count = v.size();
+        return result;
+    }
+
+    mesh object(std::vector<glm::vec4> v)
+    {
+        std::vector<glm::vec4> colors;
+
+        for (int i = 0; i < v.size(); i++) {
+            switch (i % 3) {
+                case 0 :
+                    colors.push_back(red);
+                    break;
+
+                case 1 :
+                    colors.push_back(green);
+                    break;
+
+                default :
+                    colors.push_back(blue);
+                    break; 
+            }
+        }
+
+        mesh result;
+        result.vao = vao_from_pos_col(v, colors);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = v.size();
+        return result;
+    }
 }
 

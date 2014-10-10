@@ -23,6 +23,7 @@ ifeq ($(uname_s),Linux)
 	EXECUTABLE=bin/HSOR
 else
 ifeq ($(uname_s),Darwin)
+	CXX=clang++
 	LINKLIBES=-L/usr/lib -lglfw3 -pthread -lGLEW 
   INCLUDES=-I/usr/include -I/usr/local/include
 	CXXFLAGS = -g -Wall -std=c++11 -DGLM_FORCE_RADIANS -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
@@ -63,15 +64,15 @@ obj/%.o: src/%.cpp $(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
 
 obj/object_converter/objconverter.o: src/object_converter/objconverter.cpp
-	$(CXX) $(CXXFLAGS) -c -o src/object_converter/objconverter.cpp
+	$(CXX) $(CXXFLAGS) -c -o obj/object_converter/objconverter.o src/object_converter/objconverter.cpp
 
 objconverter: obj/object_converter/objconverter.o obj/hypermath.o
 	$(CXX) $(CXXFLAGS) -o bin/objconverter \
 										obj/object_converter/objconverter.o obj/hypermath.o
 
 clean: 
-	rm -f $(OBJECTS)
-	rm -f $(EXECUTABLE)
+	rm -f $(OBJECTS) obj/object_converter/objconverter.o
+	rm -f $(EXECUTABLE) bin/objconverter
 
 .PHONY: all clean
 

@@ -20,6 +20,7 @@
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 
+CameraControls control = CameraControls(NULL, NULL);
 // Called on GLFW error.
 static void error_callback(int error, const char* description)
 {
@@ -35,7 +36,21 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
     if(key == GLFW_KEY_M && action == GLFW_PRESS)
     {
-        // toggle mouse binding in cameracontrols
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        double center_x = floor(width/2);
+        double center_y = floor(height/2);
+        glfwSetCursorPos(window, center_x, center_y);
+        control.bind_mouse = ! control.bind_mouse;
+        if(control.bind_mouse)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        }
+        if(!control.bind_mouse)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+        }
     }
 }
 
@@ -172,7 +187,9 @@ int main(int argc, const char* argv[])
     double delta_time;
 
     FpsCounter fps = FpsCounter(true);
-    CameraControls control = CameraControls(window, &s.camera);
+    control = CameraControls(window, &s.camera);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 
     while (!glfwWindowShouldClose(window))
     {

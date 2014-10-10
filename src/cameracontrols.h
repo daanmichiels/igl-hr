@@ -11,25 +11,19 @@ class CameraControls
     private:
         GLFWwindow* _window;
         Camera* _camera;
-        float _mouse_speed = 0.05;
-        bool _mouse_on = true;
-				
-        // These can be used later to recompute the view matrix
-        // every time (to prevent round-off from transforming the
-        // camera every time).
+        float _mouse_speed = 0.3;
 		glm::vec4 _pos;
-		glm::quat _dir;
-
+        glm::vec4 _up, _forward, _right;
+        void update_camera_transformation();
 
     public:
         CameraControls(GLFWwindow* window, Camera* camera);
+        bool bind_mouse = true;
         void handle(float delta_time, int width, int height);
         void handle_mouse(float delta_time, int width, int height);
         void handle_keyboard(float delta_time);
-        void set_mouse_speed(float speed);
-		void moveCamera(glm::vec4 trans);
-        glm::vec4 get_pos();
-        glm::quat get_dir();
+        //void set_mouse_speed(float speed);
+        //glm::vec4 get_pos();
 };
 
 #endif

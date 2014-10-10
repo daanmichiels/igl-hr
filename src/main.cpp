@@ -25,12 +25,17 @@ static void error_callback(int error, const char* description)
 {
     std::cerr << description;
 }
+
 // Bind ESC to window close 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if(key == GLFW_KEY_M && action == GLFW_PRESS)
+    {
+        // toggle mouse binding in cameracontrols
     }
 }
 
@@ -149,7 +154,7 @@ int main()
         }
     }
                 
-//setup delta_time (must be outside of main loop)
+    //setup delta_time (must be outside of main loop)
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
@@ -190,9 +195,6 @@ int main()
         /*Keyboard Mapping*/
         control.handle(delta_time, width, height);
 	
-        //set variables for camera movement. but first, set cursor mode invisible
-        
-        
         fps.update(current_time);
     }
 

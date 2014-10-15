@@ -56,6 +56,17 @@ namespace
 
 namespace primitives
 {
+    // Create a line between two arbitrary points.
+    // the line is uniformly colored
+    mesh line(glm::vec4 a, glm::vec4 b, glm::vec4 col)
+    {
+        mesh result;
+        result.vao = vao_from_pos_col({a,b}, {col,col});
+        result.mode = GL_LINES;
+        result.first = 0;
+        result.count = 2;
+        return result;
+    }
     // Create a triangle.
     // The corners will be red, green, blue.
     mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
@@ -119,7 +130,7 @@ namespace primitives
     {
         std::vector<glm::vec4> colors;
 
-        for (int i = 0; i < v.size(); i++) {
+        for (unsigned int i = 0; i < v.size(); i++) {
             switch (i % 3) {
                 case 0 :
                     colors.push_back(red);
@@ -147,7 +158,7 @@ namespace primitives
     {
         std::vector<glm::vec4> colors;
 
-        for (int i = 0; i < v.size(); i++) {
+        for (unsigned int i = 0; i < v.size(); i++) {
             switch (i % 3) {
                 case 0 :
                     colors.push_back(red);

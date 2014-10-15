@@ -73,12 +73,9 @@ void print_info()
     std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
 }
 
-
-
-
 int main(int argc, const char* argv[])
 {
-    const char* filename = "resources/teapot.obj";
+    const char* filename = "resources/suzy.obj";
     if (argc > 1) {
         filename = argv[1];
     }
@@ -93,12 +90,23 @@ int main(int argc, const char* argv[])
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(1.0f);
 
     object t1, t2, t3;
     t1 = object(filename, false, 1);
     t2 = object(filename, false, 0.1);
     t3 = object(filename, false, 0.01);
+    //setup axis meshes
+    mesh xaxis = primitives::line(hypermath::exp0(glm::vec4(-10,0,0,0)),hypermath::exp0(glm::vec4(10,0,0,0)), glm::vec4(1.0f,0.0f,0.0f,1.0f)); //red
+    mesh yaxis = primitives::line(hypermath::exp0(glm::vec4(0,-10,0,0)),hypermath::exp0(glm::vec4(0,10,0,0)), glm::vec4(0.0f,0.0f,1.0f,1.0f)); //green
+    mesh zaxis = primitives::line(hypermath::exp0(glm::vec4(0,0,-10,0)),hypermath::exp0(glm::vec4(0,0,10,0)), glm::vec4(0.0f,1.0f,0.0f,1.0f)); //blue
+    
+    object x_axis, y_axis, z_axis;
 
+    x_axis.meshes.push_back(xaxis);
+    y_axis.meshes.push_back(yaxis);
+    z_axis.meshes.push_back(zaxis);
     // create a camera
     Camera cam(1.2f, 800.0f/600.0f, 0.001f, 100.0f);
 
@@ -107,6 +115,9 @@ int main(int argc, const char* argv[])
     s.objects.push_back(&t1);
     s.objects.push_back(&t2);
     s.objects.push_back(&t3);
+    s.objects.push_back(&x_axis);
+    s.objects.push_back(&y_axis);
+    s.objects.push_back(&z_axis);
     s.camera = cam;
     s.program = program;
 
@@ -148,6 +159,7 @@ int main(int argc, const char* argv[])
         InputHandler::handle(delta_time, width, height);
 	
         fps.update(current_time);
+
 
     }
 

@@ -7,6 +7,7 @@
 
 namespace primitives
 {
+    mesh line(glm::vec4 a, glm::vec4 b, glm::vec4 col);
     mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c);
     mesh rectangle(float width, float depth, glm::vec4 color);
     mesh tetrahedron(float radius);

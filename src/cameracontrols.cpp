@@ -147,17 +147,26 @@ void CameraControls::handle_keyboard(float delta_time)
         _forward = transf * _forward;
         update_camera_transformation();
     }
+    if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
+    {
+        _pos = glm::vec4(0,0,0,1);
+        _up = glm::vec4(0,1,0,0);
+        _forward = glm::vec4(0,0,-1,0);
+        _right = glm::vec4(1,0,0,0);
+    }
 }
 
-/*
+
 void CameraControls::set_mouse_speed(float speed)
 {
     _mouse_speed = speed;
+}
+void CameraControls::set_step_size(float size)
+{
+    _move_speed = size;
 }
 
 glm::vec4 CameraControls::get_pos()
 {
     return _pos;
 }
-*/
-

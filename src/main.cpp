@@ -75,7 +75,7 @@ void print_info()
 
 int main(int argc, const char* argv[])
 {
-    const char* filename = "resources/suzy.obj";
+    const char* filename = "resources/plane.obj";
     if (argc > 1) {
         filename = argv[1];
     }
@@ -90,34 +90,87 @@ int main(int argc, const char* argv[])
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
-    glEnable(GL_LINE_SMOOTH);
-    glLineWidth(1.0f);
 
-    object t1, t2, t3;
+
+    object t1;
     t1 = object(filename, false, 1);
-    t2 = object(filename, false, 0.1);
-    t3 = object(filename, false, 0.01);
-    //setup axis meshes
-    mesh xaxis = primitives::line(hypermath::exp0(glm::vec4(-10,0,0,0)),hypermath::exp0(glm::vec4(10,0,0,0)), glm::vec4(1.0f,0.0f,0.0f,1.0f)); //red
-    mesh yaxis = primitives::line(hypermath::exp0(glm::vec4(0,-10,0,0)),hypermath::exp0(glm::vec4(0,10,0,0)), glm::vec4(0.0f,0.0f,1.0f,1.0f)); //green
-    mesh zaxis = primitives::line(hypermath::exp0(glm::vec4(0,0,-10,0)),hypermath::exp0(glm::vec4(0,0,10,0)), glm::vec4(0.0f,1.0f,0.0f,1.0f)); //blue
-    
-    object x_axis, y_axis, z_axis;
 
-    x_axis.meshes.push_back(xaxis);
-    y_axis.meshes.push_back(yaxis);
-    z_axis.meshes.push_back(zaxis);
     // create a camera
     Camera cam(1.2f, 800.0f/600.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
     s.objects.push_back(&t1);
-    s.objects.push_back(&t2);
-    s.objects.push_back(&t3);
-    s.objects.push_back(&x_axis);
-    s.objects.push_back(&y_axis);
-    s.objects.push_back(&z_axis);
+
+    //setup grid axes 
+    mesh axis_x, axis_y, axis_z;
+    axis_x = primitives::line(hypermath::exp0(glm::vec4(-10,0,0,0)), hypermath::exp0(glm::vec4(10,0,0,0)), glm::vec4(1.0f,0.0f,0.0f,1.0f));
+    axis_y = primitives::line(hypermath::exp0(glm::vec4(0,-10,0,0)), hypermath::exp0(glm::vec4(0,10,0,0)), glm::vec4(0.0f,0.0f,1.0f,1.0f));
+    axis_z = primitives::line(hypermath::exp0(glm::vec4(0,0,-10,0)), hypermath::exp0(glm::vec4(0,0,10,0)), glm::vec4(0.0f,1.0f,0.0f,1.0f));
+
+    //setup grid arrays *set grid_space to change the grid spacing
+    double grid_space = .25;
+    int steps_to_ten = (int)ceil(10/grid_space);
+    object x[steps_to_ten][steps_to_ten], y[steps_to_ten][steps_to_ten], z[steps_to_ten][steps_to_ten];
+
+    //grid loop
+    for(int j=0;j<steps_to_ten;j++)
+    {
+    for(int i=0;i<steps_to_ten;i++)
+    {
+
+        x[i][j].meshes.push_back(axis_x);
+        y[i][j].meshes.push_back(axis_y);
+        z[i][j].meshes.push_back(axis_z);
+        x[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space*j, grid_space*i, 0))));
+        y[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i, 0, grid_space*j, 0))));
+        z[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*j, grid_space*i, 0, 0))));
+
+        s.objects.push_back(&x[i][j]);
+        s.objects.push_back(&y[i][j]);
+        s.objects.push_back(&z[i][j]);
+
+        i++;
+
+        x[i][j].meshes.push_back(axis_x);
+        y[i][j].meshes.push_back(axis_y);
+        z[i][j].meshes.push_back(axis_z);
+        x[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(0,-grid_space*j,grid_space*i,0))));
+        y[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i,0,-grid_space*j,0))));
+        z[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(-grid_space*j,grid_space*i,0,0))));
+
+        s.objects.push_back(&x[i][j]);
+        s.objects.push_back(&y[i][j]);
+        s.objects.push_back(&z[i][j]);
+
+        i++;
+
+        x[i][j].meshes.push_back(axis_x);
+        y[i][j].meshes.push_back(axis_y);
+        z[i][j].meshes.push_back(axis_z);
+        x[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(0,grid_space*j,-grid_space*i,0))));
+        y[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(-grid_space*i,0,grid_space*j,0))));
+        z[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*j,-grid_space*i,0,0))));
+
+        s.objects.push_back(&x[i][j]);
+        s.objects.push_back(&y[i][j]);
+        s.objects.push_back(&z[i][j]);        
+
+
+        i++;
+
+        x[i][j].meshes.push_back(axis_x);
+        y[i][j].meshes.push_back(axis_y);
+        z[i][j].meshes.push_back(axis_z);
+        x[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(0,-grid_space*j,-grid_space*i,0))));
+        y[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(-grid_space*i,0,-grid_space*j,0))));
+        z[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(-grid_space*j,-grid_space*i,0,0))));
+
+        s.objects.push_back(&x[i][j]);
+        s.objects.push_back(&y[i][j]);
+        s.objects.push_back(&z[i][j]);  
+    }
+    }
     s.camera = cam;
     s.program = program;
 

@@ -11,7 +11,8 @@ class CameraControls
     private:
         GLFWwindow* _window;
         Camera* _camera;
-        float _mouse_speed = 0.3;
+        float _mouse_speed = 0.3f;
+        float _move_speed = 0.2f;
 		glm::vec4 _pos;
         glm::vec4 _up, _forward, _right;
         void update_camera_transformation();

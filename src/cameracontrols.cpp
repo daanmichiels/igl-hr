@@ -89,7 +89,7 @@ void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, 0.2f * ((float)delta_time) * _forward);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _forward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -99,7 +99,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) || glfwGetKey(_window, GLFW_KEY_S ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -0.2f * ((float)delta_time) * _forward);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _forward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -109,7 +109,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) || glfwGetKey(_window, GLFW_KEY_A ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -0.2f * ((float)delta_time) * _right);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _right);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -119,7 +119,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) || glfwGetKey(_window, GLFW_KEY_D ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, 0.2f * ((float)delta_time) * _right);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _right);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -129,7 +129,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) || glfwGetKey(_window, GLFW_KEY_R))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, 0.2f * ((float)delta_time) * _up);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _up);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -139,7 +139,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) || glfwGetKey(_window, GLFW_KEY_F))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -0.2f * ((float)delta_time) * _up);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _up);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;

@@ -108,7 +108,7 @@ int main(int argc, const char* argv[])
     axis_y = primitives::line(hypermath::exp0(glm::vec4(0,-10,0,0)), hypermath::exp0(glm::vec4(0,10,0,0)), glm::vec4(0.0f,0.0f,1.0f,1.0f));
     axis_z = primitives::line(hypermath::exp0(glm::vec4(0,0,-10,0)), hypermath::exp0(glm::vec4(0,0,10,0)), glm::vec4(0.0f,1.0f,0.0f,1.0f));
     //setup grid arrays *set grid_space to change the grid spacing
-    double grid_space = .2;
+    double grid_space = .5;
     int steps = (int)ceil(10/grid_space);
     object x[2*steps + 1][2*steps + 1], y[2*steps + 1][2*steps + 1], z[2*steps + 1][2*steps + 1];
 

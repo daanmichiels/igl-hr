@@ -67,6 +67,81 @@ namespace primitives
         result.count = 2;
         return result;
     }
+    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
+
+    mesh axes()
+    {
+        mesh result;
+        std::vector<glm::vec4> pos;
+        std::vector<glm::vec4> col;
+        
+        //first set the vectors for the axes.
+        pos.push_back(hypermath::exp0(glm::vec4(-10,0,0,0)));
+        pos.push_back(hypermath::exp0(glm::vec4(10,0,0,0)));
+        pos.push_back(hypermath::exp0(glm::vec4(0,-10,0,0)));
+        pos.push_back(hypermath::exp0(glm::vec4(0,10,0,0)));
+        pos.push_back(hypermath::exp0(glm::vec4(0,0,-10,0)));
+        pos.push_back(hypermath::exp0(glm::vec4(0,0,10,0)));
+        
+        //set the colors for each corresponding axis.
+        col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+        col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+        col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
+        col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
+        col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+        col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+        result.vao = vao_from_pos_col(pos, col);
+        result.mode = GL_LINES;
+        result.first = 0;
+        result.count = 6;
+        return result;
+    }
+
+    mesh grid(double grid_space)
+    {
+        mesh result;
+        std::vector<glm::vec4> pos;
+        std::vector<glm::vec4> col;
+        int steps = (int) ceil(10/grid_space);
+        glm::vec4 x_pos(hypermath::exp0(glm::vec4(10, 0, 0, 0)));
+        glm::vec4 x_neg(hypermath::exp0(glm::vec4(-10, 0, 0, 0)));
+        glm::vec4 y_pos(hypermath::exp0(glm::vec4(0, 10, 0, 0)));
+        glm::vec4 y_neg(hypermath::exp0(glm::vec4(0, -10, 0, 0)));
+        glm::vec4 z_pos(hypermath::exp0(glm::vec4(0, 0, 10, 0)));
+        glm::vec4 z_neg(hypermath::exp0(glm::vec4(0, 0, -10, 0)));
+
+        for(int j=0; j<= 2*steps; j++)
+        {
+            for(int i=0; i<= 2*steps; i++)
+            {
+                int j_prime = -1 * steps + j;
+                int i_prime = -1 * steps + i;
+                // X Grid
+                pos.push_back(x_pos * hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
+                pos.push_back(x_neg * hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
+                // Y Grid
+                pos.push_back(y_pos * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i_prime, -0, grid_space*j_prime, 0))));
+                pos.push_back(y_neg * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
+                // Z Grid
+                pos.push_back(z_pos * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
+                pos.push_back(z_neg * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
+
+                col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+                col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
+                col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
+                col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
+                col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+                col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+            }
+        }            
+        
+        result.vao = vao_from_pos_col(pos, col);
+        result.mode = GL_LINES;
+        result.first = 0;
+        result.count = pos.size();
+        return result;
+    }
+
     // Create a triangle.
     // The corners will be red, green, blue.
     mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)

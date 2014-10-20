@@ -102,36 +102,14 @@ int main(int argc, const char* argv[])
     Scene s = Scene();
     s.objects.push_back(&t1);
 
-    //setup grid axes 
-    mesh axis_x, axis_y, axis_z;
-    axis_x = primitives::line(hypermath::exp0(glm::vec4(-10,0,0,0)), hypermath::exp0(glm::vec4(10,0,0,0)), glm::vec4(1.0f,0.0f,0.0f,1.0f));
-    axis_y = primitives::line(hypermath::exp0(glm::vec4(0,-10,0,0)), hypermath::exp0(glm::vec4(0,10,0,0)), glm::vec4(0.0f,0.0f,1.0f,1.0f));
-    axis_z = primitives::line(hypermath::exp0(glm::vec4(0,0,-10,0)), hypermath::exp0(glm::vec4(0,0,10,0)), glm::vec4(0.0f,1.0f,0.0f,1.0f));
     //setup grid arrays *set grid_space to change the grid spacing
     double grid_space = .5;
-    int steps = (int)ceil(10/grid_space);
-    object x[2*steps + 1][2*steps + 1], y[2*steps + 1][2*steps + 1], z[2*steps + 1][2*steps + 1];
+    mesh mesh_grid;
+    mesh_grid = primitives::grid(grid_space);
+    object grid;
+    grid.meshes.push_back(mesh_grid);
+    s.objects.push_back(&grid);
 
-    //grid loop
-    for(int j= 0; j<= 2*steps;j++)
-    {
-        for(int i= 0; i<2*steps;i++)
-        { 
-            int j_prime = -steps + j;
-            int i_prime = -steps + i;
-
-            x[i][j].meshes.push_back(axis_x);
-            y[i][j].meshes.push_back(axis_y);
-            z[i][j].meshes.push_back(axis_z);
-            x[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space*j_prime, grid_space*i_prime, 0))));
-            y[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
-            z[i][j].transform(hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*j_prime, grid_space*i_prime, 0, 0))));
-            s.objects.push_back(&x[i][j]);
-            s.objects.push_back(&y[i][j]);
-            s.objects.push_back(&z[i][j]);
-
-        }
-    }
     s.camera = cam;
     s.program = program;
 
@@ -173,7 +151,6 @@ int main(int argc, const char* argv[])
         InputHandler::handle(delta_time, width, height);
 	
         fps.update(current_time);
-
 
     }
 

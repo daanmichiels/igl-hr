@@ -9,7 +9,7 @@ class FpsCounter
         double _fps;
         int _framecount;
     public:
-        FpsCounter(bool verbose);
+        FpsCounter(bool verbose = false);
         void update(double time);
         double get_fps();
 };

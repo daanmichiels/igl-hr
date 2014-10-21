@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-FpsCounter::FpsCounter(bool verbose = false)
+FpsCounter::FpsCounter(bool verbose)
 {
     _verbose = verbose;
     _fps = 0.0f;

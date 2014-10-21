@@ -24,8 +24,8 @@ ifeq ($(uname_s),Linux)
 else
 ifeq ($(uname_s),Darwin)
 	CXX=clang++
-	LINKLIBES=-L/usr/lib -lglfw3 -pthread -lGLEW 
-  INCLUDES=-I/usr/include -I/usr/local/include
+	LINKLIBES=-L/usr/lib -lglfw3 -pthread -lGLEW
+  INCLUDES=-I/usr/include -I/usr/local/include thirdparty/LibOVR/Lib/Mac/Release/libovr.a
 	CXXFLAGS = -g -Wall -std=c++11 -DGLM_FORCE_RADIANS -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
 	EXECUTABLE=bin/HSOR
 else
@@ -46,16 +46,6 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) \
 	                  $(OBJECTS) \
 	                  $(INCLUDES) $(LINKLIBES)
-
-# shaders are a bit special
-# note that these names are compiler-dependent, since
-# different compiler mangle names differently
-#obj/shaders/%.o: src/shaders/%.glsl
-#	ld -r -b binary -o $@ $<
-#	objcopy --redefine-sym _binary_src_shaders_$*_glsl_start=_source_$*_start \
-#	        --redefine-sym _binary_src_shaders_$*_glsl_size=_source_$*_size \
-#	        --redefine-sym _binary_src_shaders_$*_glsl_end=_source_$*_end \
-#	        obj/shaders/$*.o
 
 src/shaders/%.h: src/shaders/%.glsl
 	python shaderwriter.py

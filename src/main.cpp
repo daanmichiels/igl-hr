@@ -19,6 +19,10 @@
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "../thirdparty/LibOVR/Src/OVR_CAPI.h"
+#include "../thirdparty/LibOVR/Include/OVR.h"
+
+using namespace OVR;
 
 // Called on GLFW error.
 static void error_callback(int error, const char* description)
@@ -98,6 +102,21 @@ int main(int argc, const char* argv[])
     GLFWwindow* window = create_window();
     print_info();
 
+    /************************************
+    * RIFT STUFF
+    ************************************/
+    ovr_Initialize();
+    ovrHmd hmd = ovrHmd_Create(0);
+    if (!hmd)
+    {
+        hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
+    }        
+    ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
+
+    /************************************
+    * END RIFT STUFF
+    ************************************/
+
     // build and link the shading program
     GLuint program = build_program();
     if(!program)
@@ -171,7 +190,9 @@ int main(int argc, const char* argv[])
     double last_time = current_time;
     double delta_time;
 
-    FpsCounter fps = FpsCounter(true);
+    float eye_width = 0.001f;
+
+    FpsCounter fps = FpsCounter();
     CameraControls control = CameraControls(window, &s.camera);
 
     while (!glfwWindowShouldClose(window))
@@ -183,7 +204,7 @@ int main(int argc, const char* argv[])
 
         s.camera.set_ratio(initialFoV);
 
-        glViewport(0, 0, width, height);
+        glViewport(0, 0, width / 2, height);
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
         //get current delta_time
@@ -191,17 +212,23 @@ int main(int argc, const char* argv[])
         current_time = glfwGetTime();
         delta_time = current_time - last_time;
         // obj movement
-        glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
-        glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
-        location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
-        o1.transformation = rotation1 * hypermath::translation0(location1);
-        o2.transformation = hypermath::translation0(location2) * rotation2;
+        // glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
+        // glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
+        // location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
+        // o1.transformation = rotation1 * hypermath::translation0(location1);
+        // o2.transformation = hypermath::translation0(location2) * rotation2;
 
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
-        
         s.render();
+
+        control.switchEye();
+        glViewport(width / 2, 0, width / 2, height);
+        s.render();
+
+        control.switchEye();
+
         glfwSwapBuffers(window);
         glfwPollEvents();
 
@@ -215,6 +242,8 @@ int main(int argc, const char* argv[])
     // Finished while loop. Time to destroy the window and exit.
     glfwDestroyWindow(window);
     glfwTerminate();
+    ovrHmd_Destroy(hmd);
+    ovr_Shutdown();
     exit(EXIT_SUCCESS);
 }
 

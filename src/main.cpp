@@ -219,7 +219,7 @@ int main(int argc, const char* argv[])
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
-        s.render();
+        s.render_stereo(width, height, control);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

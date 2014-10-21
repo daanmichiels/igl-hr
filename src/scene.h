@@ -4,6 +4,7 @@
 #include <vector>
 #include "object.h"
 #include "camera.h"
+#include "cameracontrols.h"
 #include "mesh.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 
@@ -15,6 +16,7 @@
         GLuint program;
         
         void render();
+        void render_stereo(int width, int height, CameraControls control);
 
     private:
         void render_object(object o, glm::mat4 modelview);

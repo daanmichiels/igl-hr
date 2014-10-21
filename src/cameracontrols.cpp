@@ -104,6 +104,19 @@ void CameraControls::update_camera_transformation()
     _camera->set_transformation(transf);
 }
 
+void CameraControls::move_right(float distance)
+{
+    glm::vec4 newpos = hypermath::exp(_pos, distance * _right);
+    glm::mat4 transf = hypermath::translation(_pos,newpos);
+    _pos = newpos;
+    _up = transf * _up;
+    _right = transf * _right;
+    _forward = transf * _forward;
+    _sright = transf * _sright;
+    _sforward = transf * _sforward;
+    update_camera_transformation();
+}
+
 void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))

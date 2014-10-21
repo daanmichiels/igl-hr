@@ -22,6 +22,16 @@ void Scene::render()
     glUseProgram(0);
 }
 
+void Scene::render_stereo(int width, int height, CameraControls control)
+{
+    glViewport(0, 0, width / 2, height);
+    render();
+    control.move_right(0.001f);
+    glViewport(width / 2, 0, width / 2, height);
+    render();
+    control.move_right(-0.001f);
+}
+
 // Renders an object.
 // The supplied modelview matrix is the modelview matrix so far, when
 // traversing through the object's parents. For example, if the object

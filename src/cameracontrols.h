@@ -13,16 +13,17 @@ class CameraControls
     private:
         GLFWwindow* _window;
         Camera* _camera;
+        ovrHmd* _hmd;
         float _mouse_speed = 0.3f;
         float _move_speed = 0.2f;
         glm::vec4 _pos;
         glm::vec4 _up, _forward, _right,_sforward,_sright;
-        ovrHmd* _hmd;
         void update_camera_transformation();
 
     public:
         CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd);
         bool bind_mouse = true;
+        void move_right(float distance);
         void handle(float delta_time, int width, int height);
         void handle_mouse(float delta_time, int width, int height);
         void handle_keyboard(float delta_time);

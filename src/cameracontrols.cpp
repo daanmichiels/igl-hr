@@ -10,23 +10,26 @@
 #include <iostream>
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 
+using namespace OVR;
 
-CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
+CameraControls::CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd)
 {
     _window = window;
     _camera = camera;
+    _hmd = hmd;
     _pos = glm::vec4(0,0,0,1);
     _up = glm::vec4(0,1,0,0);
     _forward = glm::vec4(0,0,-1,0);
     _right = glm::vec4(1,0,0,0);
-	//shoulder orientation
-	_sforward = glm::vec4(0,0,-1,0);
-	_sright = glm::vec4(1,0,0,0);
+    //shoulder orientation
+    _sforward = glm::vec4(0,0,-1,0);
+    _sright = glm::vec4(1,0,0,0);
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
 {
     handle_keyboard(delta_time);
+    handle_hmd(delta_time);
     if(bind_mouse)
     {
         handle_mouse(delta_time, width, height);
@@ -54,13 +57,23 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     glm::vec4 right2 = ((float)cos(angle_y)) * _right + ((float)sin(angle_y)) * _forward;
     _forward = -1*((float)sin(angle_y)) * _right + ((float)cos(angle_y)) * _forward;
     _right = right2;
-	glm::vec4 sright2 = ((float)cos(angle_y)) * _sright + ((float)sin(angle_y)) * _sforward;
+    glm::vec4 sright2 = ((float)cos(angle_y)) * _sright + ((float)sin(angle_y)) * _sforward;
     _sforward = -1*((float)sin(angle_y)) * _sright + ((float)cos(angle_y)) * _sforward;
     _sright = sright2;
 
     update_camera_transformation();
 
     return; 
+}
+
+void CameraControls::handle_hmd(float delta_time)
+{
+    // Query the HMD for the current tracking state.
+    ovrTrackingState ts  = ovrHmd_GetTrackingState(*_hmd, ovr_GetTimeInSeconds());
+    if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
+        ovrQuatf orientation = ts.HeadPose.ThePose.Orientation;
+        set_orientation(glm::quat(orientation.x, orientation.y, orientation.z, orientation.w));
+    }
 }
 
 void CameraControls::update_camera_transformation()
@@ -86,21 +99,9 @@ void CameraControls::update_camera_transformation()
     transf[3][1] = _pos.y;
     transf[3][2] = _pos.z;
     transf[3][3] = _pos.w;
-	//potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
+    //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
     transf = glm::inverse(transf);
     _camera->set_transformation(transf);
-}
-
-void CameraControls::switchEye()
-{
-    _left_eye = !_left_eye;
-    glm::vec4 newpos = hypermath::exp(_pos, (_left_eye ? _eye_width : -_eye_width) * _right);
-    glm::mat4 transf = hypermath::translation(_pos,newpos);
-    _pos = newpos;
-    _up = transf * _up;
-    _right = transf * _right;
-    _forward = transf * _forward;
-    update_camera_transformation();
 }
 
 void CameraControls::handle_keyboard(float delta_time)
@@ -113,7 +114,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -125,7 +126,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }    
@@ -137,7 +138,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -149,7 +150,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -161,7 +162,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -173,7 +174,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-		_sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -183,11 +184,23 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = glm::vec4(0,1,0,0);
         _forward = glm::vec4(0,0,-1,0);
         _right = glm::vec4(1,0,0,0);
-		_sforward = glm::vec4(0,0,-1,0);
-		_sright = glm::vec4(1,0,0,0);
+        _sforward = glm::vec4(0,0,-1,0);
+        _sright = glm::vec4(1,0,0,0);
     }
 }
 
+void CameraControls::set_orientation(glm::quat rotation)
+{
+    glm::mat4 rotate = hypermath::rotation0(rotation);
+    glm::mat4 rotatez = hypermath::rotationz(rotation);
+    glm::mat4 transf = hypermath::translation(glm::vec4(0,0,0,1),_pos);
+    _up = transf*rotate*glm::vec4(0,1,0,0);
+    _forward = transf*rotate*glm::vec4(0,0,-1,0);
+    _right = transf*rotate*glm::vec4(1,0,0,0);
+    _sforward = transf*rotatez*glm::vec4(0,0,-1,0);
+    _sright = transf*rotatez*glm::vec4(1,0,0,0);
+    update_camera_transformation();
+}
 
 void CameraControls::set_mouse_speed(float speed)
 {

@@ -190,10 +190,8 @@ int main(int argc, const char* argv[])
     double last_time = current_time;
     double delta_time;
 
-    float eye_width = 0.001f;
-
     FpsCounter fps = FpsCounter();
-    CameraControls control = CameraControls(window, &s.camera);
+    CameraControls control = CameraControls(window, &s.camera, &hmd);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -204,7 +202,7 @@ int main(int argc, const char* argv[])
 
         s.camera.set_ratio(initialFoV);
 
-        glViewport(0, 0, width / 2, height);
+        glViewport(0, 0, width, height);
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
         //get current delta_time
@@ -222,12 +220,6 @@ int main(int argc, const char* argv[])
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
         s.render();
-
-        control.switchEye();
-        glViewport(width / 2, 0, width / 2, height);
-        s.render();
-
-        control.switchEye();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

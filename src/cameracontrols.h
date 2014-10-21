@@ -13,8 +13,10 @@ class CameraControls
         Camera* _camera;
         float _mouse_speed = 0.3f;
         float _move_speed = 0.2f;
-		glm::vec4 _pos;
-        glm::vec4 _up, _forward, _right;
+        float _eye_width = 0.001f;
+        bool _left_eye = true;
+    glm::vec4 _pos;
+        glm::vec4 _up, _forward, _right, _sforward,_sright;
         void update_camera_transformation();
 
     public:

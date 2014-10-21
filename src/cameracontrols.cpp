@@ -19,6 +19,9 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
     _up = glm::vec4(0,1,0,0);
     _forward = glm::vec4(0,0,-1,0);
     _right = glm::vec4(1,0,0,0);
+  //shoulder orientation
+  _sforward = glm::vec4(0,0,-1,0);
+  _sright = glm::vec4(1,0,0,0);
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -51,6 +54,9 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     glm::vec4 right2 = ((float)cos(angle_y)) * _right + ((float)sin(angle_y)) * _forward;
     _forward = -1*((float)sin(angle_y)) * _right + ((float)cos(angle_y)) * _forward;
     _right = right2;
+  glm::vec4 sright2 = ((float)cos(angle_y)) * _sright + ((float)sin(angle_y)) * _sforward;
+    _sforward = -1*((float)sin(angle_y)) * _sright + ((float)cos(angle_y)) * _sforward;
+    _sright = sright2;
 
     update_camera_transformation();
 
@@ -80,7 +86,7 @@ void CameraControls::update_camera_transformation()
     transf[3][1] = _pos.y;
     transf[3][2] = _pos.z;
     transf[3][3] = _pos.w;
-
+  //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
     transf = glm::inverse(transf);
     _camera->set_transformation(transf);
 }
@@ -89,42 +95,50 @@ void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _forward);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) || glfwGetKey(_window, GLFW_KEY_S ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _forward);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) || glfwGetKey(_window, GLFW_KEY_A ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _right);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) || glfwGetKey(_window, GLFW_KEY_D ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _right);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) || glfwGetKey(_window, GLFW_KEY_R))
@@ -135,6 +149,8 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) || glfwGetKey(_window, GLFW_KEY_F))
@@ -145,6 +161,8 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
+    _sright = transf * _sright;
+        _sforward = transf * _sforward;
         update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
@@ -153,6 +171,8 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = glm::vec4(0,1,0,0);
         _forward = glm::vec4(0,0,-1,0);
         _right = glm::vec4(1,0,0,0);
+    _sforward = glm::vec4(0,0,-1,0);
+    _sright = glm::vec4(1,0,0,0);
     }
 }
 
@@ -161,6 +181,7 @@ void CameraControls::set_mouse_speed(float speed)
 {
     _mouse_speed = speed;
 }
+
 void CameraControls::set_step_size(float size)
 {
     _move_speed = size;

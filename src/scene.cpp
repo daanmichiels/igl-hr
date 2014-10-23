@@ -16,7 +16,10 @@ void Scene::render()
     
     for(object* o : objects)
     {
-        render_object(*o, view);
+        if(o->is_visible())
+        {
+            render_object(*o, view);
+        }
     }
 
     glUseProgram(0);

@@ -28,6 +28,8 @@ class CameraControls
         void set_mouse_speed(float speed);
         void set_step_size(float size);
         glm::vec4 get_pos();
+        void increase_speed();
+        void decrease_speed();
 };
 
 #endif

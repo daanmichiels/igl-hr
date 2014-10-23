@@ -94,7 +94,6 @@ int main(int argc, const char* argv[])
 
     object t1;
     t1 = object(filename, false, 1);
-
     // create a camera
     Camera cam(1.2f, 800.0f/600.0f, 0.001f, 100.0f);
 
@@ -109,12 +108,14 @@ int main(int argc, const char* argv[])
     object grid;
     grid.meshes.push_back(mesh_grid);
     s.objects.push_back(&grid);
+    grid.toggle_visibility();
 
     s.camera = cam;
     s.program = program;
 
-    // set up camera controls
+    // set up camera controls and input handler
     InputHandler::cameracontrols = CameraControls(window, &s.camera);
+    InputHandler::grid = &grid;
 
     FpsCounter fps = FpsCounter(true);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

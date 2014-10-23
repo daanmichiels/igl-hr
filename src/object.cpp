@@ -81,3 +81,14 @@ object::object()
 {
 
 }
+
+
+bool object::is_visible()
+{ 
+    bool visibility = this->visible;
+    return visibility;
+}
+void object::toggle_visibility()
+{
+    this->visible = ! this-> visible;
+}

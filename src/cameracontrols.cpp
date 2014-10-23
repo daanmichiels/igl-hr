@@ -191,3 +191,24 @@ glm::vec4 CameraControls::get_pos()
 {
     return _pos;
 }
+//increase step size. max is 1.0f
+void CameraControls::increase_speed()
+{
+    float size = _move_speed + .05f;
+    if(size > 1.0f)
+    {
+        size = 1.0f;
+    }
+    set_step_size(size);
+}
+//decrease step size. minimum is 0.01f
+void CameraControls::decrease_speed()
+{
+    float size = _move_speed - .05f;
+    if(size <= 0)
+    {
+        size = 0.01f;
+    }
+
+    set_step_size(size);
+}

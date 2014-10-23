@@ -1,6 +1,13 @@
 #include "inputhandler.h"
+#include "object.h"
+#include <vector>
+#include "camera.h"
+#include "mesh.h"
+#include "../thirdparty/glm/glm/glm.hpp"
+
 
 CameraControls InputHandler::cameracontrols = CameraControls(NULL, NULL);
+object* InputHandler::grid = NULL;
 
 void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -25,6 +32,18 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         }
+    }
+    if(key == GLFW_KEY_G && action == GLFW_PRESS )
+    {
+        grid->toggle_visibility();
+    }
+    if(key == GLFW_KEY_EQUAL && action == GLFW_PRESS)
+    {
+        cameracontrols.increase_speed();
+    }
+    if(key == GLFW_KEY_MINUS && action == GLFW_PRESS)
+    {
+        cameracontrols.decrease_speed();
     }
 }
 

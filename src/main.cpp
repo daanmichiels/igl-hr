@@ -109,8 +109,9 @@ int main(int argc, const char* argv[])
     ovrHmd hmd = ovrHmd_Create(0);
     if (!hmd)
     {
+        std::cout << "no hmd detected, using debug\n";
         hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
-    }        
+    }
     ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
 
     /************************************
@@ -219,7 +220,7 @@ int main(int argc, const char* argv[])
         glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
-        s.render_stereo(width, height, control);
+        s.render();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

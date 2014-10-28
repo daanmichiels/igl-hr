@@ -29,7 +29,7 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd)
 void CameraControls::handle(float delta_time, int width, int height)
 {
     handle_keyboard(delta_time);
-    handle_hmd(delta_time);
+    handle_hmd();
     if(bind_mouse)
     {
         handle_mouse(delta_time, width, height);
@@ -66,13 +66,13 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     return; 
 }
 
-void CameraControls::handle_hmd(float delta_time)
+void CameraControls::handle_hmd()
 {
     // Query the HMD for the current tracking state.
     ovrTrackingState ts  = ovrHmd_GetTrackingState(*_hmd, ovr_GetTimeInSeconds());
     if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
         ovrQuatf orientation = ts.HeadPose.ThePose.Orientation;
-        set_orientation(glm::quat(orientation.x, orientation.y, orientation.z, orientation.w));
+        set_orientation(glm::quat(orientation.w, orientation.x, orientation.y, orientation.z));
     }
 }
 
@@ -117,10 +117,19 @@ void CameraControls::move_right(float distance)
     update_camera_transformation();
 }
 
+void CameraControls::printShoulder()
+{
+    std::cout << "_sforward: " << _sforward.x << ", " << _sforward.y << ", " 
+        << _sforward.z << ", " << _sforward.w << '\n';
+    std::cout << "_sright: " << _sright.x << ", " << _sright.y << ", " 
+        << _sright.z << ", " << _sright.w << '\n';
+}
+
 void CameraControls::handle_keyboard(float delta_time)
 {
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))
     {
+        // printShoulder();
         glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
@@ -130,9 +139,11 @@ void CameraControls::handle_keyboard(float delta_time)
         _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
+        // printShoulder();
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) || glfwGetKey(_window, GLFW_KEY_S ))
     {
+        // printShoulder();
         glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
@@ -142,9 +153,11 @@ void CameraControls::handle_keyboard(float delta_time)
         _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
+        // printShoulder();
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) || glfwGetKey(_window, GLFW_KEY_A ))
     {
+        // printShoulder();
         glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
@@ -154,9 +167,11 @@ void CameraControls::handle_keyboard(float delta_time)
         _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
+        // printShoulder();
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) || glfwGetKey(_window, GLFW_KEY_D ))
     {
+        // printShoulder();
         glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
@@ -166,9 +181,11 @@ void CameraControls::handle_keyboard(float delta_time)
         _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
+        // printShoulder();
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) || glfwGetKey(_window, GLFW_KEY_R))
     {
+        // printShoulder();
         glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _up);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
@@ -178,6 +195,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
+        // printShoulder();
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) || glfwGetKey(_window, GLFW_KEY_F))
     {
@@ -199,6 +217,16 @@ void CameraControls::handle_keyboard(float delta_time)
         _right = glm::vec4(1,0,0,0);
         _sforward = glm::vec4(0,0,-1,0);
         _sright = glm::vec4(1,0,0,0);
+    }
+    if ( glfwGetKey(_window, GLFW_KEY_COMMA))
+    {
+        _eye_width -= _eye_width_step;
+        std::cout << "eye width: " << _eye_width << '\n';
+    }
+    if ( glfwGetKey(_window, GLFW_KEY_PERIOD))
+    {
+        _eye_width += _eye_width_step;
+        std::cout << "eye width: " << _eye_width << '\n';
     }
 }
 
@@ -228,4 +256,17 @@ void CameraControls::set_step_size(float size)
 glm::vec4 CameraControls::get_pos()
 {
     return _pos;
+}
+
+float CameraControls::get_eye_width()
+{
+    return _eye_width;
+}
+
+void CameraControls::setQuatIndices(int x, int y, int z, int w)
+{
+    quatX = x;
+    quatY = y;
+    quatZ = z;
+    quatW = w;
 }

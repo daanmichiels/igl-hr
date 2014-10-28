@@ -14,9 +14,11 @@
         std::vector<object*> objects;
         Camera camera;
         GLuint program;
+        bool _has_printed = false;
         
         void render();
         void render_stereo(int width, int height, CameraControls control);
+        void render_all_permutations(int width, int height, CameraControls control);
 
     private:
         void render_object(object o, glm::mat4 modelview);

@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
+#include <iostream>
 
 // Renders the objects (and their children, and ...)
 // using the provided camera and program.
@@ -26,10 +27,51 @@ void Scene::render_stereo(int width, int height, CameraControls control)
 {
     glViewport(0, 0, width / 2, height);
     render();
-    control.move_right(0.001f);
+    control.move_right(control.get_eye_width());
     glViewport(width / 2, 0, width / 2, height);
     render();
-    control.move_right(-0.001f);
+    control.move_right(-control.get_eye_width());
+}
+
+void Scene::render_all_permutations(int width, int height, CameraControls control)
+{
+    int x, y, z, w;
+    int row = 0;
+    int col = 0;
+
+    for (x = 0; x < 4; x++) {
+        for (y = 0; y < 4; y++) {
+            for (z = 0; z < 4; z++) {
+                for (w = 0; w < 4; w++) {
+                    if (x != y && x != z && x != w &&
+                        y != z && y != w &&
+                        z != w) {
+
+                        if (!_has_printed) {
+                            std::cout << "(" << x << ", " << y << ", " << z << ", " << w << ")";
+                        }
+
+                        control.setQuatIndices(x, y, z, w);
+                        glViewport(col++ * (width / 6.0), row * (height / 4.0), width / 6.0, height / 4.0);
+                        control.handle_hmd();
+                        if (col - 1 == 0 && row == 0) {
+                            render();
+                        }
+
+                        if (col == 6) {
+                            col = 0;
+                            row++;
+                            if (!_has_printed) {
+                                std::cout << '\n';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    _has_printed = true;
 }
 
 // Renders an object.

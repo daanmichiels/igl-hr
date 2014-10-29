@@ -30,7 +30,6 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
         else
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
         }
     }
     if(key == GLFW_KEY_G && action == GLFW_PRESS )

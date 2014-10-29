@@ -9,19 +9,21 @@
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 #include <iostream>
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include <math.h>
 
+//should that be here?
+const double PI  =3.141592653589793238463;
 
 CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
     _window = window;
     _camera = camera;
     _pos = glm::vec4(0,0,0,1);
-    _up = glm::vec4(0,1,0,0);
-    _forward = glm::vec4(0,0,-1,0);
-    _right = glm::vec4(1,0,0,0);
-  //shoulder orientation
-  _sforward = glm::vec4(0,0,-1,0);
-  _sright = glm::vec4(1,0,0,0);
+
+    //shoulder orientation
+    _sup = glm::vec4(0,1,0,0);
+    _sforward = glm::vec4(0,0,-1,0);
+    _sright = glm::vec4(1,0,0,0);
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -31,6 +33,7 @@ void CameraControls::handle(float delta_time, int width, int height)
     {
         handle_mouse(delta_time, width, height);
     }
+    update_camera_transformation();
 }
 
 void CameraControls::handle_mouse(float delta_time, int width, int height)
@@ -42,137 +45,97 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     glfwGetCursorPos(_window, &mouse_x, &mouse_y);
     glfwSetCursorPos(_window, center_x, center_y);
 
-    float angle_x = _mouse_speed * delta_time * (center_y - mouse_y);
-    float angle_y = _mouse_speed * delta_time * (center_x - mouse_x);
+    _angle_ver += _mouse_speed * delta_time * (center_y - mouse_y);
+    _angle_ver = fmin(PI/2, fmax(-PI/2, _angle_ver));
 
-    //first rotate over x
-    glm::vec4 forward2 = ((float)sin(angle_x)) * _up + ((float)cos(angle_x)) * _forward;
-    _up = ((float)cos(angle_x)) * _up - ((float)sin(angle_x)) * _forward;
-    _forward = forward2;
-
-    //now rotate over y
-    glm::vec4 right2 = ((float)cos(angle_y)) * _right + ((float)sin(angle_y)) * _forward;
-    _forward = -1*((float)sin(angle_y)) * _right + ((float)cos(angle_y)) * _forward;
-    _right = right2;
-  glm::vec4 sright2 = ((float)cos(angle_y)) * _sright + ((float)sin(angle_y)) * _sforward;
-    _sforward = -1*((float)sin(angle_y)) * _sright + ((float)cos(angle_y)) * _sforward;
-    _sright = sright2;
-
-    update_camera_transformation();
+    double angle_hor = _mouse_speed * delta_time * (center_x - mouse_x);
+    _sforward = ((float)cos(angle_hor))*_sforward - ((float)sin(angle_hor))*_sright;
+    _sright = ((float)sin(angle_hor))*_sforward + ((float)cos(angle_hor))*_sright;
 
     return; 
 }
 
 void CameraControls::update_camera_transformation()
 {
+    glm::vec4 up, forward, right;
+    right = _sright;
+    forward = ((float)cos(_angle_ver))*_sforward + ((float)sin(_angle_ver))*_sup;
+    up = ((float)cos(_angle_ver))*_sup - ((float)sin(_angle_ver))*_sforward;
+
     glm::mat4 transf = glm::mat4();
+    transf[0][0] = right.x;
+    transf[0][1] = right.y;
+    transf[0][2] = right.z;
+    transf[0][3] = right.w;
 
-    transf[0][0] = _right.x;
-    transf[0][1] = _right.y;
-    transf[0][2] = _right.z;
-    transf[0][3] = _right.w;
+    transf[1][0] = up.x;
+    transf[1][1] = up.y;
+    transf[1][2] = up.z;
+    transf[1][3] = up.w;
 
-    transf[1][0] = _up.x;
-    transf[1][1] = _up.y;
-    transf[1][2] = _up.z;
-    transf[1][3] = _up.w;
-
-    transf[2][0] = -1*_forward.x;
-    transf[2][1] = -1*_forward.y;
-    transf[2][2] = -1*_forward.z;
-    transf[2][3] = -1*_forward.w;
+    transf[2][0] = -1*forward.x;
+    transf[2][1] = -1*forward.y;
+    transf[2][2] = -1*forward.z;
+    transf[2][3] = -1*forward.w;
 
     transf[3][0] = _pos.x;
     transf[3][1] = _pos.y;
     transf[3][2] = _pos.z;
     transf[3][3] = _pos.w;
-  //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
+    //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
     transf = glm::inverse(transf);
     _camera->set_transformation(transf);
 }
 
 void CameraControls::handle_keyboard(float delta_time)
 {
+    //direction of walking in coordinates (right, up, forward)
+    glm::vec3 walking_direction = glm::vec3();
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sforward);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
-        _sforward = transf * _sforward;
-        update_camera_transformation();
+        walking_direction += glm::vec3(0,0,1);
     }
     if( glfwGetKey(_window, GLFW_KEY_DOWN) || glfwGetKey(_window, GLFW_KEY_S ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sforward);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
-        _sforward = transf * _sforward;
-        update_camera_transformation();
+        walking_direction += glm::vec3(0,0,-1);
     }    
     if( glfwGetKey(_window, GLFW_KEY_LEFT) || glfwGetKey(_window, GLFW_KEY_A ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sright);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
-        _sforward = transf * _sforward;
-        update_camera_transformation();
+        walking_direction += glm::vec3(-1,0,0);
     }
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) || glfwGetKey(_window, GLFW_KEY_D ))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sright);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
-        _sforward = transf * _sforward;
-        update_camera_transformation();
+        walking_direction += glm::vec3(1,0,0);
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) || glfwGetKey(_window, GLFW_KEY_R))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _up);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
-        _sforward = transf * _sforward;
-        update_camera_transformation();
+        walking_direction += glm::vec3(0,1,0);
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) || glfwGetKey(_window, GLFW_KEY_F))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _up);
+        walking_direction += glm::vec3(0,-1,0);
+    }
+
+    //length is either zero or at least one, mathematically
+    //but floating point
+    if(glm::length(walking_direction) >= 0.5)
+    {
+        walking_direction = glm::normalize(walking_direction);
+        walking_direction *= _move_speed * delta_time;
+        glm::vec4 newpos = hypermath::exp(_pos, walking_direction.x*_sright + walking_direction.y*_sup + walking_direction.z*_sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
-        _up = transf * _up;
-        _right = transf * _right;
-        _forward = transf * _forward;
-    _sright = transf * _sright;
+        _sup = transf * _sup;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
-        update_camera_transformation();
     }
     if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
     {
         _pos = glm::vec4(0,0,0,1);
-        _up = glm::vec4(0,1,0,0);
-        _forward = glm::vec4(0,0,-1,0);
-        _right = glm::vec4(1,0,0,0);
-    _sforward = glm::vec4(0,0,-1,0);
-    _sright = glm::vec4(1,0,0,0);
+        _sforward = glm::vec4(0,0,-1,0);
+        _sright = glm::vec4(1,0,0,0);
+        _sup = glm::vec4(0,1,0,0);
+        _angle_ver = 0.0;
     }
 }
 

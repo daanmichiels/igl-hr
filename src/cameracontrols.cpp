@@ -101,7 +101,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-    _sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }
@@ -161,7 +161,7 @@ void CameraControls::handle_keyboard(float delta_time)
         _up = transf * _up;
         _right = transf * _right;
         _forward = transf * _forward;
-    _sright = transf * _sright;
+        _sright = transf * _sright;
         _sforward = transf * _sforward;
         update_camera_transformation();
     }

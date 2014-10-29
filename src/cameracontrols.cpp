@@ -18,12 +18,11 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
     _window = window;
     _camera = camera;
-    _pos = glm::vec4(0,0,0,1);
 
-    //shoulder orientation
-    _sup = glm::vec4(0,1,0,0);
-    _sforward = glm::vec4(0,0,-1,0);
-    _sright = glm::vec4(1,0,0,0);
+    _shoulders.pos = glm::vec4(0,0,0,1);
+    _shoulders.up = glm::vec4(0,1,0,0);
+    _shoulders.forward = glm::vec4(0,0,-1,0);
+    _shoulders.right = glm::vec4(1,0,0,0);
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -33,6 +32,7 @@ void CameraControls::handle(float delta_time, int width, int height)
     {
         handle_mouse(delta_time, width, height);
     }
+    _shoulders.correct_roundoff();
     update_camera_transformation();
 }
 
@@ -49,8 +49,8 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     _angle_ver = fmin(PI/2, fmax(-PI/2, _angle_ver));
 
     double angle_hor = _mouse_speed * delta_time * (center_x - mouse_x);
-    _sforward = ((float)cos(angle_hor))*_sforward - ((float)sin(angle_hor))*_sright;
-    _sright = ((float)sin(angle_hor))*_sforward + ((float)cos(angle_hor))*_sright;
+    _shoulders.forward = ((float)cos(angle_hor))*_shoulders.forward - ((float)sin(angle_hor))*_shoulders.right;
+    _shoulders.right = ((float)sin(angle_hor))*_shoulders.forward + ((float)cos(angle_hor))*_shoulders.right;
 
     return; 
 }
@@ -58,9 +58,9 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
 void CameraControls::update_camera_transformation()
 {
     glm::vec4 up, forward, right;
-    right = _sright;
-    forward = ((float)cos(_angle_ver))*_sforward + ((float)sin(_angle_ver))*_sup;
-    up = ((float)cos(_angle_ver))*_sup - ((float)sin(_angle_ver))*_sforward;
+    right = _shoulders.right;
+    forward = ((float)cos(_angle_ver))*_shoulders.forward + ((float)sin(_angle_ver))*_shoulders.up;
+    up = ((float)cos(_angle_ver))*_shoulders.up - ((float)sin(_angle_ver))*_shoulders.forward;
 
     glm::mat4 transf = glm::mat4();
     transf[0][0] = right.x;
@@ -78,10 +78,10 @@ void CameraControls::update_camera_transformation()
     transf[2][2] = -1*forward.z;
     transf[2][3] = -1*forward.w;
 
-    transf[3][0] = _pos.x;
-    transf[3][1] = _pos.y;
-    transf[3][2] = _pos.z;
-    transf[3][3] = _pos.w;
+    transf[3][0] = _shoulders.pos.x;
+    transf[3][1] = _shoulders.pos.y;
+    transf[3][2] = _shoulders.pos.z;
+    transf[3][3] = _shoulders.pos.w;
     //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
     transf = glm::inverse(transf);
     _camera->set_transformation(transf);
@@ -122,19 +122,20 @@ void CameraControls::handle_keyboard(float delta_time)
     {
         walking_direction = glm::normalize(walking_direction);
         walking_direction *= _move_speed * delta_time;
-        glm::vec4 newpos = hypermath::exp(_pos, walking_direction.x*_sright + walking_direction.y*_sup + walking_direction.z*_sforward);
-        glm::mat4 transf = hypermath::translation(_pos,newpos);
-        _pos = newpos;
-        _sup = transf * _sup;
-        _sright = transf * _sright;
-        _sforward = transf * _sforward;
+        glm::vec4 newpos = hypermath::exp(_shoulders.pos, walking_direction.x*_shoulders.right + walking_direction.y*_shoulders.up + walking_direction.z*_shoulders.forward);
+        glm::mat4 transf = hypermath::translation(_shoulders.pos,newpos);
+        _shoulders.pos = newpos;
+        _shoulders.up = transf * _shoulders.up;
+        _shoulders.right = transf * _shoulders.right;
+        _shoulders.forward = transf * _shoulders.forward;
     }
+
     if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
     {
-        _pos = glm::vec4(0,0,0,1);
-        _sforward = glm::vec4(0,0,-1,0);
-        _sright = glm::vec4(1,0,0,0);
-        _sup = glm::vec4(0,1,0,0);
+        _shoulders.pos = glm::vec4(0,0,0,1);
+        _shoulders.forward = glm::vec4(0,0,-1,0);
+        _shoulders.right = glm::vec4(1,0,0,0);
+        _shoulders.up = glm::vec4(0,1,0,0);
         _angle_ver = 0.0;
     }
 }
@@ -152,7 +153,7 @@ void CameraControls::set_step_size(float size)
 
 glm::vec4 CameraControls::get_pos()
 {
-    return _pos;
+    return _shoulders.pos;
 }
 //increase step size. max is 1.0f
 void CameraControls::increase_speed()

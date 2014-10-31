@@ -32,6 +32,7 @@ class CameraControls
         glm::vec4 get_pos();
         void increase_speed();
         void decrease_speed();
+        glm::mat4 get_cam_view();
         glm::vec4 get_forward();
 };
 

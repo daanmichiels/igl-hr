@@ -3,6 +3,7 @@
 #include "object.h"
 #include "cameracontrols.h"
 #include "scene.h"
+#include <vector>
 
 class FlagManager
 {
@@ -10,15 +11,14 @@ class FlagManager
         object _flag;
         int _flag_num;
         Scene* _scene;
-        std::vector<object*> _flag_vec;
         CameraControls* _camera_controls;
+        std::vector<object*> _flag_vec;
+
 
     public:
-        FlagManager(Scene s, CameraControls camc);
+        FlagManager(Scene* s, CameraControls camc);
         FlagManager();
         void drop_flag();
-        int num_flags();
-        object* return_last_flag();
 };
 
 #endif

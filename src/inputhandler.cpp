@@ -5,7 +5,7 @@
 #include "mesh.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "FlagManager.h"
-
+#include <iostream>
 
 CameraControls InputHandler::cameracontrols = CameraControls(NULL, NULL);
 object* InputHandler::grid = NULL;
@@ -46,8 +46,9 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         cameracontrols.decrease_speed();
     }
-    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && flagmanager != NULL)
     {
+
         flagmanager->drop_flag();
     }
 }

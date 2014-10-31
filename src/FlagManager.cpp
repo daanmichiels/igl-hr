@@ -5,17 +5,19 @@
 #include "scene.h"
 #include "hypermath.h"
 #include "primitives.h"
+#include <iostream>
 
-FlagManager::FlagManager(Scene s, CameraControls camc)
+FlagManager::FlagManager(Scene* s, CameraControls camc)
 {
     _flag_num = 0;
-    glm::vec4 a = hypermath::exp0(glm::vec4(.2,0,0,0));
-    glm::vec4 b  = hypermath::exp0(glm::vec4(0,.2,0,0));
-    glm::vec4 c = hypermath::exp0(glm::vec4(0,-.2,0,0));
+    glm::vec4 a = hypermath::exp0(glm::vec4(.1,0,0,0));
+    glm::vec4 b  = hypermath::exp0(glm::vec4(0,.1,0,0));
+    glm::vec4 c = hypermath::exp0(glm::vec4(0,-.1,0,0));
     mesh mesh_triangle = primitives::triangle(a,b,c);
     _flag.meshes.push_back(mesh_triangle);
 
-    _scene = &s;
+    _flag_vec = std::vector<object*>();
+    _scene = s;
     _camera_controls = &camc;
 }
 //empty constructor
@@ -25,24 +27,13 @@ FlagManager::FlagManager()
 
 void FlagManager::drop_flag()
 {
-    object new_flag = object(_flag, _flag_num);
-    new_flag.set_transformation(hypermath::translation0inv(_camera_controls->get_forward()));
-    _flag_vec.push_back(&new_flag);
+    object* new_flag = new object(_flag, _flag_num);
+    new_flag->set_transformation(glm::inverse(_camera_controls->get_cam_view()));
+    _flag_vec.push_back(new_flag);
 
-    //THIS LINE CAUSES SEGFAULT
-//    _scene->objects.push_back(&new_flag);
-    _flag_num++;
-}
-int FlagManager::num_flags()
-{
-    return _flag_num;
-}
-object* FlagManager::return_last_flag()
-{
-    object* last_flag = NULL;
-    if(_flag_vec[_flag_num] != NULL)
+    if(_scene != NULL)
     {
-        last_flag = _flag_vec[_flag_num];
+        _scene->objects.push_back(new_flag);
     }
-    return last_flag;
+    _flag_num++;
 }

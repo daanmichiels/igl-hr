@@ -14,6 +14,7 @@
 #include "fpscounter.h"
 #include "cameracontrols.h"
 #include "inputhandler.h"
+#include "FlagManager.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -112,10 +113,12 @@ int main(int argc, const char* argv[])
 
     s.camera = cam;
     s.program = program;
-
+    CameraControls cam_controls = CameraControls(window, &s.camera);
+    FlagManager flag_manager = FlagManager(s, cam_controls);
     // set up camera controls and input handler
-    InputHandler::cameracontrols = CameraControls(window, &s.camera);
+    InputHandler::cameracontrols = cam_controls;
     InputHandler::grid = &grid;
+    InputHandler::flagmanager = &flag_manager;
 
     FpsCounter fps = FpsCounter(true);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -132,7 +135,6 @@ int main(int argc, const char* argv[])
         float initialFoV = ((float)width)/height;
 
         s.camera.set_ratio(initialFoV);
-
         glViewport(0, 0, width, height);
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 

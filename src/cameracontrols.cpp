@@ -176,3 +176,12 @@ void CameraControls::decrease_speed()
 
     set_step_size(size);
 }
+glm::vec4 CameraControls::get_forward()
+{
+    glm::vec4 forward;
+    for(int i=0; i<4; i++)
+    {
+        forward[i] = _shoulders.forward[i];
+    }
+    return forward;
+}

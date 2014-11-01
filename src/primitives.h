@@ -13,8 +13,15 @@ namespace primitives
     mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c);
     mesh rectangle(float width, float depth, glm::vec4 color);
     mesh tetrahedron(float radius);
+    mesh octahedron(float radius);
+
     mesh generic(std::vector<glm::vec4> v);
     mesh object(std::vector<glm::vec4> v);
+    std::vector<glm::vec4> sierp_subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions);
+    mesh sierp_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions);
+    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions);
+    mesh subdivided_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski);
+    mesh subdivided_octahedron(float radius, int divisions, bool sierpinski);
 }
 
 #endif

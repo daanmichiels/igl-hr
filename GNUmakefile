@@ -47,16 +47,6 @@ $(EXECUTABLE): $(OBJECTS)
 	                  $(OBJECTS) \
 	                  $(INCLUDES) $(LINKLIBES)
 
-# shaders are a bit special
-# note that these names are compiler-dependent, since
-# different compiler mangle names differently
-#obj/shaders/%.o: src/shaders/%.glsl
-#	ld -r -b binary -o $@ $<
-#	objcopy --redefine-sym _binary_src_shaders_$*_glsl_start=_source_$*_start \
-#	        --redefine-sym _binary_src_shaders_$*_glsl_size=_source_$*_size \
-#	        --redefine-sym _binary_src_shaders_$*_glsl_end=_source_$*_end \
-#	        obj/shaders/$*.o
-
 src/shaders/%.h: src/shaders/%.glsl
 	python shaderwriter.py
 

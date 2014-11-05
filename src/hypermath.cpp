@@ -182,5 +182,9 @@ namespace hypermath
         glm::vec4 newTarget = rMatrix*target;
         return translation0(newTarget)*rMatrix*translation0inv(basepoint);
     }
+    glm::vec4 midpoint(glm::vec4 a, glm::vec4 b)
+    {
+        return hypermath::exp(b,0.5f*hypermath::expinv(b,a));
+    }
 }
 

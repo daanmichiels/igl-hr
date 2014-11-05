@@ -303,9 +303,9 @@ namespace primitives
         glm::vec4 ab, bc, ac;
         std::vector<glm::vec4> t1, t2, t3, t4;
 
-        ab = hypermath::exp(b,0.5f*hypermath::expinv(b,a));
-        ac = hypermath::exp(c,0.5f*hypermath::expinv(c,a));
-        bc = hypermath::exp(c,0.5f*hypermath::expinv(c,b));
+        ab = hypermath::midpoint(a,b);
+        ac = hypermath::midpoint(a,c);
+        bc = hypermath::midpoint(b,c);
 
         //recursive calls to each subdivided triangle
         if(divisions > 0)
@@ -358,7 +358,7 @@ namespace primitives
     std::vector<glm::vec4> normalize_triangle_vector(std::vector<glm::vec4> input)
     {
         std::vector<glm::vec4> normalized;
-        for(int i=0; i < input.size(); i++)
+        for(unsigned int i=0; i < input.size(); i++)
         {
             normalized.push_back(hypermath::exp0(hypermath::normalize(input[i])));
         }

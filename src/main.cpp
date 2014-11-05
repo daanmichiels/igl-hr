@@ -111,25 +111,10 @@ int main(int argc, const char* argv[])
     s.objects.push_back(&grid);
     grid.toggle_visibility();
 
-
-    //make sierpinski triangle
-    glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.5f, 0.0f, 0.0f));
-    glm::vec4 b = hypermath::exp0(glm::vec4(0.5f, -0.5f, 0.0f, 0.0f));
-    glm::vec4 c = hypermath::exp0(glm::vec4(-0.5f, -0.5f, 0.0f, 0.0f));
-    glm::vec4 sierpinski_triangle_trans = hypermath::exp0(glm::vec4(0,.5,.5,0));
-
-    mesh sierpinski_triangle_mesh = primitives::subdivided_triangle(a,b,c,1,true);
-    object sier;
-    sier.meshes.push_back(sierpinski_triangle_mesh);
-    sier.transform(hypermath::translation0(sierpinski_triangle_trans));
-    s.objects.push_back(&sier);
-
     //make sierpinski octahedron.
-    mesh sierpinski_octahedron = primitives::subdivided_octahedron(0.25f, 5, true);
+    mesh sierpinski_octahedron = primitives::subdivided_octahedron(2, 7, true);
     object sier_octa;
     sier_octa.meshes.push_back(sierpinski_octahedron);
-    glm::vec4 sierpinski_octa_trans = hypermath::exp0(glm::vec4(.5,.5,.5,0));
-    sier_octa.transform(hypermath::translation0(sierpinski_octa_trans));
     s.objects.push_back(&sier_octa);
 
     s.camera = cam;

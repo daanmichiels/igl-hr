@@ -289,70 +289,31 @@ namespace primitives
         result.count = v.size();
         return result;
     }
-    //subdivision discarding the middle piece
-    std::vector<glm::vec4> sierpinski_subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions)
+    //Subdivision, Passing true as the last argument discards the "middle" each step, resulting in sierpinski subdivision
+    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
     {
         std::vector<glm::vec4> triangles;
-        glm::vec4 ab, bc, ac;
-        std::vector<glm::vec4> t1, t2, t3;
-        for(int i=0; i<4; i++)
+        if(divisions == 0)
         {
-            ab[i] = (a[i] + b[i])/2;
-            ac[i] = (a[i] + c[i])/2;
-            bc[i] = (b[i] + c[i])/2;
-        }
-
-        if(divisions > 0)
-        {
-            t1 = sierpinski_subdivide_triangle_vector(a, ab, ac, divisions - 1);
-            t2 = sierpinski_subdivide_triangle_vector(ab, b, bc, divisions -1);
-            t3 = sierpinski_subdivide_triangle_vector(ac, bc, c, divisions -1);
-            for(unsigned int i = 0; i < t1.size(); i++)
-            {
-                triangles.push_back(t1[i]);
-            }
-
-            for(unsigned int i = 0; i < t2.size(); i++)
-            {
-                triangles.push_back(t2[i]);
-            }
-
-            for(unsigned int i = 0; i < t3.size(); i++)
-            {
-                triangles.push_back(t3[i]);
-            }
+            triangles.push_back(a);
+            triangles.push_back(b);
+            triangles.push_back(c);
             return triangles;
         }
-         triangles.push_back(a);
-         triangles.push_back(ab);
-         triangles.push_back(ac);
-         triangles.push_back(ab);
-         triangles.push_back(b);
-         triangles.push_back(bc);
-         triangles.push_back(ac);
-         triangles.push_back(bc);
-         triangles.push_back(c);
-         return triangles;
-    }
-    //Normal Subdivision
-    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions)
-    {
-        std::vector<glm::vec4> triangles;
         glm::vec4 ab, bc, ac;
         std::vector<glm::vec4> t1, t2, t3, t4;
-        for(int i=0; i<4; i++)
-        {
-            ab[i] = (a[i] + b[i])/2;
-            ac[i] = (a[i] + c[i])/2;
-            bc[i] = (b[i] + c[i])/2;
-        }
+
+        ab = hypermath::exp(b,0.5f*hypermath::expinv(b,a));
+        ac = hypermath::exp(c,0.5f*hypermath::expinv(c,a));
+        bc = hypermath::exp(c,0.5f*hypermath::expinv(c,b));
+
         //recursive calls to each subdivided triangle
-        if(divisions > 1)
+        if(divisions > 0)
         {
-            t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1);
-            t2 = subdivide_triangle_vector(ab, b, bc, divisions -1);
-            t3 = subdivide_triangle_vector(ac, bc, c, divisions -1);
-            t4 = subdivide_triangle_vector(ab, ac, bc, divisions -1);
+            t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1, sierpinski);
+            t2 = subdivide_triangle_vector(ab, b, bc, divisions -1, sierpinski);
+            t3 = subdivide_triangle_vector(ac, bc, c, divisions -1, sierpinski);
+            t4 = subdivide_triangle_vector(ab, ac, bc, divisions -1, sierpinski);
             for(unsigned int i = 0; i < t1.size(); i++)
             {
                 triangles.push_back(t1[i]);
@@ -367,9 +328,12 @@ namespace primitives
             {
                 triangles.push_back(t3[i]);
             }
-            for(unsigned int i = 0; i < t4.size(); i++)
+            if(!sierpinski)
             {
-                triangles.push_back(t4[i]);
+                for(unsigned int i = 0; i < t4.size(); i++)
+                {
+                    triangles.push_back(t4[i]);
+                }
             }
             return triangles;
         }
@@ -383,39 +347,34 @@ namespace primitives
          triangles.push_back(ac);
          triangles.push_back(bc);
          triangles.push_back(c);
-         triangles.push_back(ab);
-         triangles.push_back(ac);
-         triangles.push_back(bc);
+         if(!sierpinski)
+         {
+            triangles.push_back(ab);
+            triangles.push_back(ac);
+            triangles.push_back(bc);
+         }
          return triangles;
     }
+    std::vector<glm::vec4> normalize_triangle_vector(std::vector<glm::vec4> input)
+    {
+        std::vector<glm::vec4> normalized;
+        for(int i=0; i < input.size(); i++)
+        {
+            normalized.push_back(hypermath::exp0(hypermath::normalize(input[i])));
+        }
+        return normalized;
+    }
+    //creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle.
     mesh subdivided_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
     {
         std::vector<glm::vec4> triangle;
-        if(sierpinski)
-        {
-            triangle = sierpinski_subdivide_triangle_vector(a, b, c, divisions);
-        }
-        else if(!sierpinski)
-        {
-            triangle = subdivide_triangle_vector(a, b, c, divisions);
-        }
+        triangle = subdivide_triangle_vector(a,b,c,divisions,sierpinski);
         std::vector<glm::vec4> colors;
-        for(unsigned int i = 0; i < triangle.size(); i++)
+        for(unsigned int i = 0; i < triangle.size()/3; i++)
         {
-            switch (i % 3) 
-            {
-                case 0 :
-                    colors.push_back(red);
-                    break;
-
-                case 1 :
-                    colors.push_back(green);
-                    break;
-
-                default :
-                    colors.push_back(blue);
-                    break; 
-            }
+            colors.push_back(red);
+            colors.push_back(green);
+            colors.push_back(blue);
         }
 
         mesh result;
@@ -437,29 +396,14 @@ namespace primitives
 
         std::vector<glm::vec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
         
-        //subdivision
-        if(sierpinski)
-        {
-            t1 = sierpinski_subdivide_triangle_vector(a,b,d,divisions);
-            t2 = sierpinski_subdivide_triangle_vector(a,d,c,divisions);
-            t3 = sierpinski_subdivide_triangle_vector(a,c,e,divisions);
-            t4 = sierpinski_subdivide_triangle_vector(a,e,b,divisions);
-            t5 = sierpinski_subdivide_triangle_vector(f,b,d,divisions);
-            t6 = sierpinski_subdivide_triangle_vector(f,d,c,divisions);
-            t7 = sierpinski_subdivide_triangle_vector(f,c,e,divisions);
-            t8 = sierpinski_subdivide_triangle_vector(f,e,b,divisions);            
-        }
-        else if(!sierpinski)
-        {
-            t1 = subdivide_triangle_vector(a,b,d, divisions);
-            t2 = subdivide_triangle_vector(a,d,c,divisions);
-            t3 = subdivide_triangle_vector(a,c,e,divisions);
-            t4 = subdivide_triangle_vector(a,e,b,divisions);
-            t5 = subdivide_triangle_vector(f,b,d,divisions);
-            t6 = subdivide_triangle_vector(f,d,c,divisions);
-            t7 = subdivide_triangle_vector(f,c,e,divisions);
-            t8 = subdivide_triangle_vector(f,e,b,divisions);
-        }
+        t1 = subdivide_triangle_vector(a, b, d, divisions, sierpinski);
+        t2 = subdivide_triangle_vector(a, d, c, divisions, sierpinski);
+        t3 = subdivide_triangle_vector(a, c, e, divisions, sierpinski);
+        t4 = subdivide_triangle_vector(a, e, b, divisions, sierpinski);
+        t5 = subdivide_triangle_vector(f, b, d, divisions, sierpinski);
+        t6 = subdivide_triangle_vector(f, d, c, divisions, sierpinski);
+        t7 = subdivide_triangle_vector(f, c, e, divisions, sierpinski);
+        t8 = subdivide_triangle_vector(f, e, b, divisions, sierpinski);
         //push back each all from subdivision
         for(unsigned int i=0; i < t1.size(); i++)
         {
@@ -502,22 +446,11 @@ namespace primitives
         }
         //setup colors
         std::vector<glm::vec4> colors;
-        for(unsigned int i = 0; i < collected.size(); i++)
+        for(unsigned int i = 0; i < collected.size()/3; i++)
         {
-            switch (i % 3) 
-            {
-                case 0 :
-                    colors.push_back(red);
-                    break;
-
-                case 1 :
-                    colors.push_back(green);
-                    break;
-
-                default :
-                    colors.push_back(blue);
-                    break; 
-            }
+            colors.push_back(red);
+            colors.push_back(green);
+            colors.push_back(blue);
         }
         //create mesh
         mesh result;

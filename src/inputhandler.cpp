@@ -4,12 +4,12 @@
 #include "camera.h"
 #include "mesh.h"
 #include "../thirdparty/glm/glm/glm.hpp"
-#include "FlagManager.h"
+#include "flagmanager.h"
 #include <iostream>
 
 CameraControls InputHandler::cameracontrols = CameraControls(NULL, NULL);
 object* InputHandler::grid = NULL;
-FlagManager* InputHandler::flagmanager = NULL;
+flagmanager* InputHandler::flag_manager = NULL;
 
 void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -46,10 +46,10 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         cameracontrols.decrease_speed();
     }
-    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && flagmanager != NULL)
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && flag_manager != NULL)
     {
 
-        flagmanager->drop_flag();
+        flag_manager->drop_flag();
     }
 }
 

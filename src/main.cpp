@@ -14,7 +14,7 @@
 #include "fpscounter.h"
 #include "cameracontrols.h"
 #include "inputhandler.h"
-#include "FlagManager.h"
+#include "flagmanager.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -120,11 +120,11 @@ int main(int argc, const char* argv[])
     s.camera = cam;
     s.program = program;
     CameraControls cam_controls = CameraControls(window, &s.camera);
-    FlagManager flag_manager = FlagManager(&s, cam_controls);
+    flagmanager flag_manager = flagmanager(&s, cam_controls);
     // set up camera controls and input handler
     InputHandler::cameracontrols = cam_controls;
     InputHandler::grid = &grid;
-    InputHandler::flagmanager = &flag_manager;
+    InputHandler::flag_manager = &flag_manager;
 
     FpsCounter fps = FpsCounter(true);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

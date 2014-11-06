@@ -22,6 +22,7 @@ struct object
     void set_transformation(glm::mat4 transform);
     object();
     object(const char filename[], bool converted, double scale);
+    object( object obj, int copy_num);
 };
 
 #endif /* OBJECT_H */

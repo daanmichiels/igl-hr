@@ -92,3 +92,16 @@ void object::toggle_visibility()
 {
     this->visible = ! this-> visible;
 }
+object::object(object obj, int copy_num)
+{
+    this->name = obj.name + std::to_string(copy_num);
+    this->transformation = obj.transformation;
+    for(unsigned int i=0; i< obj.children.size(); i++)
+    {
+        this->children.push_back(obj.children[i]);
+    }
+    for(unsigned int i=0; i< obj.meshes.size(); i++)
+    {
+        this->meshes.push_back(obj.meshes[i]);
+    }
+}

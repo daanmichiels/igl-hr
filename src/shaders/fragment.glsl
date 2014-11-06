@@ -2,8 +2,8 @@
 
 smooth in vec3 theColor;
 
-out vec4 finalColor;
+layout(location = 0) out vec3 color;
 
 void main() {
-    finalColor = vec4(theColor, 0.5);
+    color = (theColor);
 }

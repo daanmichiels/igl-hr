@@ -102,6 +102,9 @@ int main(int argc, const char* argv[])
     GLFWwindow* window = create_window();
     print_info();
 
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
     /************************************
     * RIFT STUFF
     ************************************/
@@ -114,6 +117,87 @@ int main(int argc, const char* argv[])
     }
     ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
 
+    //Render to texture - tutorial at http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-14-render-to-texture/
+    int textureScale = 400;
+
+    // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+    GLuint left_framebuffer = 0;
+    glGenFramebuffers(1, &left_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, left_framebuffer);
+
+    // The texture we're going to render to
+    GLuint left_texture;
+    glGenTextures(1, &left_texture);
+     
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, left_texture);
+     
+    // Give an empty image to OpenGL ( the last "0" )
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 4 * textureScale, 3 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+     
+    // Poor filtering. Needed !
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    // The depth buffer
+    GLuint left_depth_buffer;
+    glGenRenderbuffers(1, &left_depth_buffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, left_depth_buffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 4 * textureScale, 3 * textureScale);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, left_depth_buffer);
+
+    // Set "left_texture" as our colour attachement #0
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, left_texture, 0);
+     
+    // Set the list of draw buffers.
+    GLenum left_draw_buffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, left_draw_buffers); // "1" is the size of left_draw_buffers
+
+    // Always check that our framebuffer is ok
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        return false;
+    }
+
+    // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+    GLuint right_framebuffer = 0;
+    glGenFramebuffers(1, &right_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
+
+    // The texture we're going to render to
+    GLuint right_texture;
+    glGenTextures(1, &right_texture);
+     
+    // "Bind" the newly created texture : all future texture functions will modify this texture
+    glBindTexture(GL_TEXTURE_2D, right_texture);
+     
+    // Give an empty image to OpenGL ( the last "0" )
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 4 * textureScale, 3 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+     
+    // Poor filtering. Needed !
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    // The depth buffer
+    GLuint right_depth_buffer;
+    glGenRenderbuffers(1, &right_depth_buffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, right_depth_buffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 4 * textureScale, 3 * textureScale);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, right_depth_buffer);
+
+    // Set "left_texture" as our colour attachement #0
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, right_texture, 0);
+     
+    // Set the list of draw buffers.
+    GLenum rigth_draw_buffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, rigth_draw_buffers); // "1" is the size of rigth_draw_buffers
+
+    // Always check that our framebuffer is ok
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        return false;
+    }
+
     /************************************
     * END RIFT STUFF
     ************************************/
@@ -125,6 +209,15 @@ int main(int argc, const char* argv[])
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
+
+    GLuint quad_program = build_quad_program();
+    if(!quad_program)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    GLuint left_tex_id = glGetUniformLocation(quad_program, "left_texture");
 
     // create some meshes
     glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
@@ -165,6 +258,58 @@ int main(int argc, const char* argv[])
     s.camera = cam;
     s.program = program;
 
+    // set up mesh to render to
+    GLuint render_left_vao;
+    glGenVertexArrays(1, &render_left_vao);
+    glBindVertexArray(render_left_vao);
+
+    GLuint render_left_buffer;
+    glGenBuffers(1, &render_left_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, render_left_buffer);
+
+    static const float render_left_data[] = {
+        -1.0f, -1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+        0.0f, -1.0f, 0.0f,
+        0.0f,  1.0f, 0.0f,
+    };
+     
+    glBufferData(GL_ARRAY_BUFFER, sizeof(render_left_data), render_left_data, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // set up mesh to render to
+    GLuint render_right_vao;
+    glGenVertexArrays(1, &render_right_vao);
+    glBindVertexArray(render_right_vao);
+
+    GLuint render_right_buffer;
+    glGenBuffers(1, &render_right_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, render_right_buffer);
+
+    static const float render_right_data[] = {
+        0.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        0.0f,  1.0f, 0.0f,
+        0.0f,  1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        1.0f,  1.0f, 0.0f,
+    };
+     
+    glBufferData(GL_ARRAY_BUFFER, sizeof(render_right_data), render_right_data, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     // make it more interesting
     // object grid[240];
     // int count = 0;
@@ -197,13 +342,11 @@ int main(int argc, const char* argv[])
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
         float initialFoV = ((float)width)/height;
 
         s.camera.set_ratio(initialFoV);
 
-        glViewport(0, 0, width, height);
+        
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
         //get current delta_time
@@ -217,10 +360,35 @@ int main(int argc, const char* argv[])
         // o1.transformation = rotation1 * hypermath::translation0(location1);
         // o2.transformation = hypermath::translation0(location2) * rotation2;
 
-        glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-        s.render();
+        s.render_stereo(textureScale, control, left_framebuffer, right_framebuffer);
+
+        // Render to the screen
+        glViewport(0, 0, width, height);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glUseProgram(quad_program);
+
+        // Clear the screen
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Bind our left texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, left_texture);
+        // Set our "left_texture" sampler to user Texture Unit 0
+        glUniform1i(left_tex_id, 0);
+
+        // Draw the left triangles !
+        glBindVertexArray(render_left_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        // Bind our left texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, right_texture);
+        // Set our "left_texture" sampler to user Texture Unit 0
+        glUniform1i(left_tex_id, 0);
+
+        // Draw the left triangles !
+        glBindVertexArray(render_right_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

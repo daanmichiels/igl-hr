@@ -17,7 +17,7 @@
         bool _has_printed = false;
         
         void render();
-        void render_stereo(int width, int height, CameraControls control);
+        void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
         void render_all_permutations(int width, int height, CameraControls control);
 
     private:

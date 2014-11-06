@@ -1,4 +1,4 @@
-glslFiles = {'fragment', 'vertex'}
+glslFiles = {'fragment', 'vertex', 'rift_vertex', 'rift_fragment', 'tess_control', 'tess_eval', 'geo'}
 for file in glslFiles:
   inputFile = 'src/shaders/' + file + '.glsl'
   outputFile = 'src/shaders/' + file + '.h'

@@ -10,7 +10,7 @@ SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shad
 all: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(OBJECTS) $(INCLUDES) $(LINKLIBES)
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(OBJECTS) $(INCLUDES) $(LIBPATHS) $(LIBRARIES)
 
 src/shaders/%.h: src/shaders/%.glsl
 	python shaderwriter.py

@@ -1,4 +1,5 @@
 *.o
+*.obj
 *.exe
 *.tmp
 *.bak
@@ -7,6 +8,7 @@
 *.Cache
 *.a
 *.dll
+*.lib
 *~
 Thumbs.db
 ehthumbs.db

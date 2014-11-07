@@ -12,7 +12,7 @@
 #include <math.h>
 
 //should that be here?
-const double PI  =3.141592653589793238463;
+const double PI = 3.141592653589793238463;
 
 CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
@@ -129,17 +129,16 @@ void CameraControls::handle_keyboard(float delta_time)
         _shoulders.right = transf * _shoulders.right;
         _shoulders.forward = transf * _shoulders.forward;
     }
-
-    if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
-    {
-        _shoulders.pos = glm::vec4(0,0,0,1);
-        _shoulders.forward = glm::vec4(0,0,-1,0);
-        _shoulders.right = glm::vec4(1,0,0,0);
-        _shoulders.up = glm::vec4(0,1,0,0);
-        _angle_ver = 0.0;
-    }
 }
 
+void CameraControls::reset_to_origin()
+{
+    _shoulders.pos = glm::vec4(0,0,0,1);
+    _shoulders.forward = glm::vec4(0,0,-1,0);
+    _shoulders.right = glm::vec4(1,0,0,0);
+    _shoulders.up = glm::vec4(0,1,0,0);
+    _angle_ver = 0.0;
+}
 
 void CameraControls::set_mouse_speed(float speed)
 {

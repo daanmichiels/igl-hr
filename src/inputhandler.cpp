@@ -24,7 +24,7 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
         double center_x = floor(width/2);
         double center_y = floor(height/2);
         glfwSetCursorPos(window, center_x, center_y);
-        cameracontrols.bind_mouse = ! cameracontrols.bind_mouse;
+        cameracontrols.bind_mouse = !cameracontrols.bind_mouse;
         if(cameracontrols.bind_mouse)
         {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -50,6 +50,10 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
 
         flagmanager->drop_flag();
+    }
+    if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS)
+    {
+        cameracontrols.reset_to_origin();
     }
 }
 

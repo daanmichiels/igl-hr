@@ -25,11 +25,12 @@ object::object(const char filename[], bool converted, double scale)
     std::ifstream input(filename);
 
     std::vector<glm::vec4> vertices;
-
     std::vector<glm::vec4> v;
 
-    for(std::string line; getline(input, line); ) {
-        if (line[0] == 'v') {
+    for(std::string line; getline(input, line); )
+    {
+        if (line[0] == 'v')
+        {
             double x, y, z, w;
             size_t index;
 
@@ -49,7 +50,6 @@ object::object(const char filename[], bool converted, double scale)
             }
             else {
                 glm::vec4 conv = hypermath::exp0(glm::vec4(x * scale, y * scale, z * scale, 0));
-
                 x = conv.x;
                 y = conv.y;
                 z = conv.z;
@@ -82,16 +82,6 @@ object::object()
 
 }
 
-
-bool object::is_visible()
-{ 
-    bool visibility = this->visible;
-    return visibility;
-}
-void object::toggle_visibility()
-{
-    this->visible = ! this-> visible;
-}
 object::object(object obj, int copy_num)
 {
     this->name = obj.name + std::to_string(copy_num);

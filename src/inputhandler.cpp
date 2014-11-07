@@ -36,7 +36,7 @@ void InputHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     if(key == GLFW_KEY_G && action == GLFW_PRESS )
     {
-        grid->toggle_visibility();
+        grid->visible = !grid->visible;
     }
     if(key == GLFW_KEY_EQUAL && action == GLFW_PRESS)
     {

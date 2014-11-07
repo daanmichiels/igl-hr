@@ -16,7 +16,7 @@ void Scene::render()
     
     for(object* o : objects)
     {
-        if(o->is_visible())
+        if(o->visible)
         {
             render_object(*o, view);
         }

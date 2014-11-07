@@ -295,7 +295,7 @@ namespace primitives
     std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
     {
         std::vector<glm::vec4> triangles;
-        if(divisions == 0)
+        if(divisions < 1)
         {
             triangles.push_back(a);
             triangles.push_back(b);

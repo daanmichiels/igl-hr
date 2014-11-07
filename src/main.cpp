@@ -109,7 +109,7 @@ int main(int argc, const char* argv[])
     object grid;
     grid.meshes.push_back(mesh_grid);
     s.objects.push_back(&grid);
-    grid.toggle_visibility();
+    grid.visible = false;
 
     //make sierpinski octahedron.
     mesh sierpinski_octahedron = primitives::subdivided_octahedron(2, 7, true);

@@ -26,12 +26,16 @@
 int main(int argc, const char* argv[])
 {
     const char* filename = "resources/plane.obj";
-    if (argc > 1) {
-        filename = argv[1];
+    bool fullscreen = false;
+    for(int i=argc-1; i>0; i--)
+    {
+        if(strcmp(argv[i],"--fullscreen") == 0)
+            fullscreen = true;
+        else
+            filename = argv[i];
     }
 
-    GLFWwindow* window = create_window(true);
-    print_info();
+    GLFWwindow* window = create_window(fullscreen);
 
     // build and link the shading program
     GLuint program = build_program();

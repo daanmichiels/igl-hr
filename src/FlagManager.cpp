@@ -13,13 +13,14 @@ FlagManager::FlagManager(Scene* s, CameraControls camc)
     glm::vec4 a = hypermath::exp0(glm::vec4(.1,0,0,0));
     glm::vec4 b  = hypermath::exp0(glm::vec4(0,.1,0,0));
     glm::vec4 c = hypermath::exp0(glm::vec4(0,-.1,0,0));
-    mesh mesh_triangle = primitives::triangle(a,b,c);
-    _flag.meshes.push_back(mesh_triangle);
+    _flag = primitives::triangle(a,b,c);
 
-    _flag_vec = std::vector<object*>();
+    _flags = std::vector<object*>();
     _scene = s;
     _camera_controls = &camc;
 }
+
+//what's this for?
 //empty constructor
 FlagManager::FlagManager()
 {
@@ -27,9 +28,12 @@ FlagManager::FlagManager()
 
 void FlagManager::drop_flag()
 {
-    object* new_flag = new object(_flag, _flag_num);
+    std::cout << "dropping flag" << std::endl;
+    object* new_flag = new object();
+    new_flag->name = "flag" + std::to_string(_flag_num);
+    new_flag->meshes.push_back(_flag);
     new_flag->set_transformation(glm::inverse(_camera_controls->get_cam_view()));
-    _flag_vec.push_back(new_flag);
+    _flags.push_back(new_flag);
 
     if(_scene != NULL)
     {
@@ -37,3 +41,4 @@ void FlagManager::drop_flag()
     }
     _flag_num++;
 }
+

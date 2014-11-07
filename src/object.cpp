@@ -82,6 +82,7 @@ object::object()
 
 }
 
+/*
 object::object(object obj, int copy_num)
 {
     this->name = obj.name + std::to_string(copy_num);
@@ -95,3 +96,5 @@ object::object(object obj, int copy_num)
         this->meshes.push_back(obj.meshes[i]);
     }
 }
+*/
+

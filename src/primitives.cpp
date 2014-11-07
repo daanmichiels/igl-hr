@@ -67,7 +67,6 @@ namespace primitives
         result.count = 2;
         return result;
     }
-    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
 
     mesh axes()
     {
@@ -97,6 +96,7 @@ namespace primitives
         return result;
     }
 
+    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
     mesh grid(double grid_space)
     {
         mesh result;
@@ -161,7 +161,7 @@ namespace primitives
     {
         float w = width / 2;
         float d = depth / 2;
-        std::vector<glm::vec4> pos = {hypermath::exp0(glm::vec4(-w,0, d,0)), \
+        std::vector<glm::vec4> pos = {hypermath::exp0(glm::vec4(-w,0,d,0)), \
             hypermath::exp0(glm::vec4( w,0, d,0)), \
             hypermath::exp0(glm::vec4(-w,0,-d,0)), \
             hypermath::exp0(glm::vec4( w,0,-d,0))};
@@ -232,6 +232,7 @@ namespace primitives
         return result;
     }
 
+    /*
     // Create a generic mesh based on a list of vertices
     // The mesh will be multicolored
     mesh generic(std::vector<glm::vec4> v)
@@ -261,6 +262,7 @@ namespace primitives
         result.count = v.size();
         return result;
     }
+    */
 
     mesh object(std::vector<glm::vec4> v)
     {

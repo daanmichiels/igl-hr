@@ -15,64 +15,13 @@
 #include "cameracontrols.h"
 #include "inputhandler.h"
 #include "FlagManager.h"
+#include "init.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-
-// Called on GLFW error.
-static void error_callback(int error, const char* description)
-{
-    std::cerr << description;
-}
-
-// Creates the window and gets an OpenGL context for it.
-GLFWwindow* create_window()
-{
-    GLFWwindow* window;
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-     {
-        exit(EXIT_FAILURE);
-     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-
-   // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
-    if (!window)
-    {
-        std::cout << "Failed to create window. Do you have OpenGL 3.3 or higher?\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, InputHandler::key_callback);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    return window;
-}
-
-// Prints some information about the OpenGL context.
-// Requires a currect OpenGL context.
-void print_info()
-{
-    glewExperimental = GL_TRUE;
-    GLenum error = glewInit();
-    if(error != GLEW_OK)
-    {
-        std::cout << "Error: " << glewGetErrorString(error) << "\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
-    std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
-}
 
 int main(int argc, const char* argv[])
 {
@@ -81,7 +30,7 @@ int main(int argc, const char* argv[])
         filename = argv[1];
     }
 
-    GLFWwindow* window = create_window();
+    GLFWwindow* window = create_window(false);
     print_info();
 
     // build and link the shading program

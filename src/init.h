@@ -35,13 +35,23 @@ GLFWwindow* create_window(bool fullscreen)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    //what was this line for?
+    //glfwWindowHint(GLFW_DEPTH_BITS, 24);
 #endif
 #ifdef _WIN32
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 #endif
 
-    window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
+    if(fullscreen)
+    {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, "Hyperbolic space on the Rift", monitor, NULL);
+    }
+    else
+    {
+        window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
+    }
+
     if (!window)
     {
         // which version do we require?

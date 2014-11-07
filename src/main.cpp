@@ -30,7 +30,7 @@ int main(int argc, const char* argv[])
         filename = argv[1];
     }
 
-    GLFWwindow* window = create_window(false);
+    GLFWwindow* window = create_window(true);
     print_info();
 
     // build and link the shading program

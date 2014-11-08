@@ -1,13 +1,13 @@
 #include "object.h"
 #include "cameracontrols.h"
-#include "FlagManager.h"
+#include "flagmanager.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "scene.h"
 #include "hypermath.h"
 #include "primitives.h"
 #include <iostream>
 
-FlagManager::FlagManager(Scene* s, CameraControls camc)
+flagmanager::flagmanager(Scene* s, CameraControls camc)
 {
     _flag_num = 0;
     glm::vec4 a = hypermath::exp0(glm::vec4(.1,0,0,0));
@@ -22,11 +22,11 @@ FlagManager::FlagManager(Scene* s, CameraControls camc)
 
 //what's this for?
 //empty constructor
-FlagManager::FlagManager()
+flagmanager::flagmanager()
 {
 }
 
-void FlagManager::drop_flag()
+void flagmanager::drop_flag()
 {
     std::cout << "dropping flag" << std::endl;
     object* new_flag = new object();

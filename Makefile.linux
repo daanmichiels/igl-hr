@@ -1,8 +1,9 @@
-CXXFLAGS=-g -Wall -std=c++11 -Wl,-static -DGLM_FORCE_RADIANS
-INCLUDES=-I/usr/include -I/usr/local/include
+
 LIBPATHS=-L/usr/lib
-LIBRARIES=-lglfw3 -pthread -lGLEW -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11
-EXECUTABLE=bin/hsor
+LIBRARIES=-lglfw3 -pthread -lGLEW -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11  
+INCLUDES=-I/usr/include -I/usr/local/include
+CXXFLAGS=-g -Wall -std=c++11 -DGLM_FORCE_RADIANS
+EXECUTABLE=bin/HSOR
 
 OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp))
 SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))

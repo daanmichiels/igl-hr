@@ -305,9 +305,9 @@ namespace primitives
         glm::vec4 ab, bc, ac;
         std::vector<glm::vec4> t1, t2, t3, t4;
 
-        ab = hypermath::midpoint(a,b);
-        ac = hypermath::midpoint(a,c);
-        bc = hypermath::midpoint(b,c);
+        ab = hypermath::midpoint(a, b, 0.5f);
+        ac = hypermath::midpoint(a, c, 0.5f);
+        bc = hypermath::midpoint(b, c, 0.5f);
 
         //recursive calls to each subdivided triangle
         if(divisions > 0)

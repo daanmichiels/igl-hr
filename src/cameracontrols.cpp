@@ -7,22 +7,14 @@
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include <iostream>
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
-
-//should that be here?
-const double PI = 3.141592653589793238463;
 
 CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
     _window = window;
     _camera = camera;
-
-    _shoulders.pos = glm::vec4(0,0,0,1);
-    _shoulders.up = glm::vec4(0,1,0,0);
-    _shoulders.forward = glm::vec4(0,0,-1,0);
-    _shoulders.right = glm::vec4(1,0,0,0);
+    reset_to_origin();
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -41,6 +33,7 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     double mouse_x, mouse_y;
     double center_x = floor(width/2);
     double center_y = floor(height/2);
+    double PI = 3.141592653589793238463;
 
     glfwGetCursorPos(_window, &mouse_x, &mouse_y);
     glfwSetCursorPos(_window, center_x, center_y);

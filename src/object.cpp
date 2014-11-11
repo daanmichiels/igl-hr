@@ -20,6 +20,11 @@ void object::set_transformation(glm::mat4 transformation)
     this->transformation = transformation;
 }
 
+object::object(mesh object_mesh)
+{
+    this->meshes.push_back(object_mesh);
+}
+
 object::object(const char filename[], bool converted, double scale)
 {
     std::ifstream input(filename);
@@ -82,19 +87,4 @@ object::object()
 
 }
 
-/*
-object::object(object obj, int copy_num)
-{
-    this->name = obj.name + std::to_string(copy_num);
-    this->transformation = obj.transformation;
-    for(unsigned int i=0; i< obj.children.size(); i++)
-    {
-        this->children.push_back(obj.children[i]);
-    }
-    for(unsigned int i=0; i< obj.meshes.size(); i++)
-    {
-        this->meshes.push_back(obj.meshes[i]);
-    }
-}
-*/
 

@@ -9,26 +9,18 @@
 
 flagmanager::flagmanager(Scene* s, CameraControls camc)
 {
+    //setup our flag
     _flag_num = 0;
-    glm::vec4 a = hypermath::exp0(glm::vec4(.1,0,0,0));
-    glm::vec4 b  = hypermath::exp0(glm::vec4(0,.1,0,0));
-    glm::vec4 c = hypermath::exp0(glm::vec4(0,-.1,0,0));
-    _flag = primitives::triangle(a,b,c);
-
+    _flag = primitives::subdivided_octahedron(0.01f, 2);
     _flags = std::vector<object*>();
     _scene = s;
     _camera_controls = &camc;
 }
 
-//what's this for?
-//empty constructor
-flagmanager::flagmanager()
-{
-}
-
 void flagmanager::drop_flag()
 {
-    std::cout << "dropping flag" << std::endl;
+    std::cout << "Dropping Flag" << std::endl;
+    
     object* new_flag = new object();
     new_flag->name = "flag" + std::to_string(_flag_num);
     new_flag->meshes.push_back(_flag);

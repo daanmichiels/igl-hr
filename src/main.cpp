@@ -58,7 +58,7 @@ GLFWwindow* create_window()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
+    window = glfwCreateWindow(1280, 800, "Hyperbolic space on the Rift", NULL, NULL);
     if (!window)
     {
         std::cout << "Failed to create window. Do you have OpenGL 3.0 or higher?\n";
@@ -257,6 +257,7 @@ int main(int argc, const char* argv[])
     s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
+    s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
 
     // set up mesh to render to
     GLuint render_left_vao;
@@ -376,17 +377,27 @@ int main(int argc, const char* argv[])
         // Set our "left_texture" sampler to user Texture Unit 0
         glUniform1i(left_tex_id, 0);
 
+        if (s.lens_center_loc != -1)
+        {
+           glUniform2f(s.lens_center_loc, s.left_lens_center.x, s.left_lens_center.y);
+        }
+
         // Draw the left triangles !
         glBindVertexArray(render_left_vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Bind our left texture in Texture Unit 0
+        // Bind our right texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, right_texture);
-        // Set our "left_texture" sampler to user Texture Unit 0
+        // Set our "right_texture" sampler to user Texture Unit 0
         glUniform1i(left_tex_id, 0);
 
-        // Draw the left triangles !
+        if (s.lens_center_loc != -1)
+        {
+           glUniform2f(s.lens_center_loc, s.right_lens_center.x, s.right_lens_center.y);
+        }
+
+        // Draw the right triangles !
         glBindVertexArray(render_right_vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

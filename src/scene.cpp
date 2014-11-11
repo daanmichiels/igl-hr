@@ -26,8 +26,8 @@ void Scene::render()
 void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer)
 {
     // Render to our left framebuffer
-    glViewport((4 * textureScale) * 0.15, (3 * textureScale) * 0.15,
-        (4 * textureScale) * 0.7, (3 * textureScale) * 0.7);
+    glViewport((4 * textureScale) * 0.1, (3 * textureScale) * 0.1,
+        (4 * textureScale) * 0.8, (3 * textureScale) * 0.8);
     glBindFramebuffer(GL_FRAMEBUFFER, left_framebuffer);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
@@ -37,9 +37,9 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
 
     control.move_right(control.get_eye_width());
 
-    // Render to our rigth framebuffer
-    glViewport((4 * textureScale) * 0.15, (3 * textureScale) * 0.15,
-        (4 * textureScale) * 0.7, (3 * textureScale) * 0.7);
+    // Render to our right framebuffer
+    glViewport((4 * textureScale) * 0.1, (3 * textureScale) * 0.1,
+        (4 * textureScale) * 0.8, (3 * textureScale) * 0.8);
     glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);

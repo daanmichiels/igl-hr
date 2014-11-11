@@ -220,13 +220,13 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if ( glfwGetKey(_window, GLFW_KEY_COMMA))
     {
-        _eye_width -= _eye_width_step;
-        std::cout << "eye width: " << _eye_width << '\n';
+        left_lens_center.x -= _eye_width_step;
+        // std::cout << "eye width: " << _eye_width << '\n';
     }
     if ( glfwGetKey(_window, GLFW_KEY_PERIOD))
     {
-        _eye_width += _eye_width_step;
-        std::cout << "eye width: " << _eye_width << '\n';
+        left_lens_center.x += _eye_width_step;
+        // std::cout << "eye width: " << _eye_width << '\n';
     }
 }
 

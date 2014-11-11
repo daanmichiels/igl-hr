@@ -258,6 +258,7 @@ int main(int argc, const char* argv[])
     s.camera = cam;
     s.program = program;
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
+    s.barrel_power_loc - glGetUniformLocation(quad_program, "BarrelPower");
 
     // set up mesh to render to
     GLuint render_left_vao;
@@ -379,7 +380,7 @@ int main(int argc, const char* argv[])
 
         if (s.lens_center_loc != -1)
         {
-           glUniform2f(s.lens_center_loc, s.left_lens_center.x, s.left_lens_center.y);
+           glUniform2f(s.lens_center_loc, control.left_lens_center.x, control.left_lens_center.y);
         }
 
         // Draw the left triangles !
@@ -394,7 +395,7 @@ int main(int argc, const char* argv[])
 
         if (s.lens_center_loc != -1)
         {
-           glUniform2f(s.lens_center_loc, s.right_lens_center.x, s.right_lens_center.y);
+           glUniform2f(s.lens_center_loc, control.right_lens_center.x, control.right_lens_center.y);
         }
 
         // Draw the right triangles !

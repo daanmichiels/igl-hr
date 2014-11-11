@@ -8,6 +8,8 @@
 *.a
 *.dll
 *~
+*.obj
+*.lib
 Thumbs.db
 ehthumbs.db
 Desktop.ini

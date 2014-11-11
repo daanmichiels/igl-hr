@@ -17,13 +17,16 @@ class CameraControls
         float _mouse_speed = 0.3f;
         float _move_speed = 0.2f;
         float _eye_width = 0.001f;
-        float _eye_width_step = 0.00001f;
+        float _eye_width_step = 0.01f;
         glm::vec4 _pos;
         glm::vec4 _up, _forward, _right,_sforward,_sright;
         void update_camera_transformation();
         int quatX, quatY, quatZ, quatW;
 
     public:
+        glm::vec2 left_lens_center = glm::vec2(-0.25,0);
+        glm::vec2 right_lens_center = glm::vec2(0.25,0);
+
         CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd);
         bool bind_mouse = false;
         void move_right(float distance);

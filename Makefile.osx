@@ -1,0 +1,28 @@
+CXX=clang++
+CXXFLAGS=-ig -Wall -std=c++11 -DGLM_FORCE_RADIANS
+CXXFLAGS+= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
+INCLUDES=-I/usr/include -I/usr/local/include thirdparty/LibOVR/Lib/Mac/Release/libovr.a
+LIBPATHS=-L/usr/lib
+LIBRARIES=-lglfw3 -pthread -lGLEW
+EXECUTABLE=bin/hsor
+
+OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp))
+SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(OBJECTS) $(INCLUDES) $(LIBPATHS) $(LIBRARIES)
+
+src/shaders/%.h: src/shaders/%.glsl
+	python shaderwriter.py
+
+obj/%.o: src/%.cpp $(SHADER_HEADERS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
+
+clean: 
+	rm -f $(OBJECTS)
+	rm -f $(EXECUTABLE)
+
+.PHONY: all clean
+

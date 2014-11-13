@@ -1,0 +1,32 @@
+CXX=cl.exe
+CXXFLAGS=/nologo /DGLM_FORCE_RADIANS /Foobj\ /DGLEW_STATIC /MD /EHsc
+INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include
+LIBPATHS=/LIBPATH:"thirdparty\glew\lib" /LIBPATH:"thirdparty\glfw\lib"
+LIBRARIES= glfw3.lib glew32s.lib glu32.lib gdi32.lib opengl32.lib user32.lib
+EXECUTABLE=bin\hr.exe
+
+OBJECTS=$(patsubst src/%.cpp,obj\\%.obj,$(wildcard src/*.cpp))
+SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src\shaders\\%.h,$(wildcard src/shaders/*.glsl))
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	@echo.
+	@echo $(EXECUTABLE)
+	@$(CXX) $(CXXFLAGS) $(OBJECTS) /Fe$(EXECUTABLE) /link $(LIBPATHS) $(LIBRARIES)
+
+src\shaders\\%.h: src\shaders\\%.glsl
+	python shaderwriter.py
+
+obj\\%.obj: src\\%.cpp $(SHADER_HEADERS)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) /c $<
+
+clean:
+	cmd /C "del $(OBJECTS)"
+	cmd /C "del $(EXECUTABLE)"
+
+.PHONY: all clean
+
+
+
+

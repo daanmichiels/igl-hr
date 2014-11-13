@@ -1,13 +1,18 @@
-glslFiles = {'fragment', 'vertex', 'rift_vertex', 'rift_fragment', 'tess_control', 'tess_eval', 'geo'}
+import glob
+import os
+glslFiles = glob.glob('src/shaders/*.glsl')
+
 for file in glslFiles:
-  inputFile = 'src/shaders/' + file + '.glsl'
-  outputFile = 'src/shaders/' + file + '.h'
-  input = open(inputFile, 'r')
-  output = open(outputFile, 'w')
-  output.write('#ifndef ' + file.upper() + '_SHADER\n'
-    + '#define ' + file.upper() + '_SHADER\n'
-    + '\n'
-    + 'char _binary_src_shaders_' + file + '_glsl_start[] = '
-    + '\"' + input.read().replace('\'', '\\\'').replace('\\', '\\\\').replace('\n', '\\n') + '\";\n'
-    + '\n'
-    + '#endif')
+    (root, ext) = os.path.splitext(file)
+    basename = os.path.basename(file)
+    (basename, _) = os.path.splitext(basename)
+    outputFile = root + '.h'
+    input = open(file, 'r')
+    output = open(outputFile, 'w')
+    output.write('#ifndef ' + basename.upper() + '_SHADER\n'
+      + '#define ' + basename.upper() + '_SHADER\n'
+      + '\n'
+      + 'char _binary_src_shaders_' + basename + '_glsl_start[] = '
+      + '\"' + input.read().replace('\'', '\\\'').replace('\\', '\\\\').replace('\n', '\\n') + '\";\n'
+      + '\n'
+      + '#endif')

@@ -19,8 +19,8 @@
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include "../thirdparty/LibOVR/Src/OVR_CAPI.h"
-#include "../thirdparty/LibOVR/Include/OVR.h"
+#include "../thirdparty/libovr/src/OVR_CAPI.h"
+#include "../thirdparty/libovr/include/OVR.h"
 
 using namespace OVR;
 
@@ -258,7 +258,7 @@ int main(int argc, const char* argv[])
     s.camera = cam;
     s.program = program;
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
-    s.barrel_power_loc - glGetUniformLocation(quad_program, "BarrelPower");
+    s.barrel_power_loc = glGetUniformLocation(quad_program, "BarrelPower");
 
     // set up mesh to render to
     GLuint render_left_vao;

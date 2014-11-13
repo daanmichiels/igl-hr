@@ -5,8 +5,8 @@
 #include "camera.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include "../thirdparty/LibOVR/Src/OVR_CAPI.h"
-#include "../thirdparty/LibOVR/Include/OVR.h"
+#include "../thirdparty/libovr/src/OVR_CAPI.h"
+#include "../thirdparty/libovr/include/OVR.h"
 
 class CameraControls
 {

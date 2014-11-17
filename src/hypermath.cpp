@@ -21,6 +21,10 @@ namespace hypermath
     // basepoint is irrelevant
     glm::vec4 normalize(glm::vec4 v)
     {
+        if(v == glm::vec4(0,0,0,0))
+        {
+            return v;
+        }
         return v / length(v);
     }
 

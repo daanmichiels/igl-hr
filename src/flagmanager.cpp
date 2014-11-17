@@ -11,7 +11,7 @@ flagmanager::flagmanager(Scene* s, CameraControls camc)
 {
     //setup our flag
     _flag_num = 0;
-    _flag = primitives::subdivided_octahedron(0.01f, 2);
+    _flag = primitives::sphere(0.01f, 4, glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
     _flags = std::vector<object*>();
     _scene = s;
     _camera_controls = &camc;
@@ -20,7 +20,6 @@ flagmanager::flagmanager(Scene* s, CameraControls camc)
 void flagmanager::drop_flag()
 {
     std::cout << "Dropping Flag" << std::endl;
-    
     object* new_flag = new object();
     new_flag->name = "flag" + std::to_string(_flag_num);
     new_flag->meshes.push_back(_flag);

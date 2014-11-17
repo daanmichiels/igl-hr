@@ -22,9 +22,11 @@
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include <fenv.h> 
 
 int main(int argc, const char* argv[])
 {
+    feenableexcept(FE_DIVBYZERO); 
     const char* filename = "resources/plane.obj";
     bool fullscreen = false;
     for(int i=argc-1; i>0; i--)

@@ -17,6 +17,7 @@ namespace primitives
     mesh object(std::vector<glm::vec4> v);
     mesh subdivided_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski = false);
     mesh subdivided_octahedron(float radius, int divisions, bool sierpinski = false);
+    mesh sphere(float radius, int divisions, glm::vec4 col, bool sierpinski = false);
 }
 
 #endif

@@ -24,7 +24,7 @@ namespace hypermath
     glm::mat4 rotationinv(glm::vec4 basepoint, glm::quat rotate);
     glm::mat4 movement(glm::vec4 basepoint, glm::vec4 target, glm::quat rotate);
     glm::vec4 midpoint(glm::vec4 a, glm::vec4 b, float t);
-
+    glm::vec4 gravity(glm::vec4 basepoint);
 }
 
 #endif

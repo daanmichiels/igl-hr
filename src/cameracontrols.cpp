@@ -118,6 +118,9 @@ void CameraControls::handle_keyboard(float delta_time)
         glm::vec4 newpos = hypermath::exp(_shoulders.pos, walking_direction.x*_shoulders.right + walking_direction.y*_shoulders.up + walking_direction.z*_shoulders.forward);
         glm::mat4 transf = hypermath::translation(_shoulders.pos,newpos);
         _shoulders.pos = newpos;
+
+        // This makes movement weird 
+        // _shoulders.up = -hypermath::gravity(_shoulders.pos);
         _shoulders.up = transf * _shoulders.up;
         _shoulders.right = transf * _shoulders.right;
         _shoulders.forward = transf * _shoulders.forward;
@@ -147,7 +150,6 @@ glm::vec4 CameraControls::get_pos()
 {
     return _shoulders.pos;
 }
-
 //increase step size. max is 1.0f
 void CameraControls::increase_speed()
 {
@@ -158,7 +160,6 @@ void CameraControls::increase_speed()
     }
     set_step_size(size);
 }
-
 //decrease step size. minimum is 0.01f
 void CameraControls::decrease_speed()
 {
@@ -167,21 +168,19 @@ void CameraControls::decrease_speed()
     {
         size = 0.01f;
     }
+
     set_step_size(size);
 }
-
 glm::mat4 CameraControls::get_cam_view()
 {
     glm::mat4 view = _camera->get_view();
     return view;
 }
-
 glm::vec4 CameraControls::get_forward()
 {
     glm::vec4 forward = _shoulders.forward;
     return forward;
 }
-
 glm::vec4 CameraControls::get_flag_pos()
 {
     return hypermath::midpoint(_shoulders.forward, -_shoulders.up, 0.5f);

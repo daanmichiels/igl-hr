@@ -21,10 +21,6 @@ namespace hypermath
     // basepoint is irrelevant
     glm::vec4 normalize(glm::vec4 v)
     {
-        if(v == glm::vec4(0,0,0,0))
-        {
-            return v;
-        }
         return v / length(v);
     }
 
@@ -190,5 +186,18 @@ namespace hypermath
     {
         return hypermath::exp(b,t*hypermath::expinv(b,a));
     }
+
+    // Returns vector towards a point at (0,-Infinity,0, Infinity)
+    glm::vec4 gravity(glm::vec4 basepoint) 
+    {
+	float a = basepoint.x;
+	float b = basepoint.y;
+	float c = basepoint.z;
+	float d = basepoint.w;
+	float bd=b+d;
+	glm::vec4 dir = glm::vec4(a*(bd),1+b*(bd),c*(bd),-1+d*(bd));
+	float norm = -1/sqrt(2*d*d*bd*bd+3+a*a+c*c);
+	return norm*dir;
+    }	    
 }
 

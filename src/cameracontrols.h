@@ -36,6 +36,7 @@ class CameraControls
         glm::vec4 get_forward();
         void reset_to_origin();
         glm::vec4 get_flag_pos();
+
 };
 
 #endif

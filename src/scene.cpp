@@ -3,6 +3,7 @@
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include <iostream>
+#include "hypermath.h"
 
 // Renders the objects (and their children, and ...)
 // using the provided camera and program.
@@ -25,9 +26,11 @@ void Scene::render()
 
 void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer)
 {
+    control.move_right(-control.get_ipd() * 0.5f * control.get_meter());
+
     // Render to our left framebuffer
-    glViewport((4 * textureScale) * 0.1, (3 * textureScale) * 0.1,
-        (4 * textureScale) * 0.8, (3 * textureScale) * 0.8);
+    glViewport((6.4 * textureScale) * 0.25, (8 * textureScale) * 0.25,
+        (6.4 * textureScale) * 0.5, (8 * textureScale) * 0.5);
     glBindFramebuffer(GL_FRAMEBUFFER, left_framebuffer);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
@@ -35,11 +38,11 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
     glClear(GL_DEPTH_BUFFER_BIT);
     render();
 
-    control.move_right(control.get_eye_width());
+    control.move_right(control.get_ipd() * control.get_meter());
 
     // Render to our right framebuffer
-    glViewport((4 * textureScale) * 0.1, (3 * textureScale) * 0.1,
-        (4 * textureScale) * 0.8, (3 * textureScale) * 0.8);
+    glViewport((6.4 * textureScale) * 0.25, (8 * textureScale) * 0.25,
+        (6.4 * textureScale) * 0.5, (8 * textureScale) * 0.5);
     glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
@@ -47,7 +50,7 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
     glClear(GL_DEPTH_BUFFER_BIT);
     render();
 
-    control.move_right(-control.get_eye_width());
+    control.move_right(-control.get_ipd() * 0.5f * control.get_meter());
 }
 
 void Scene::render_all_permutations(int width, int height, CameraControls control)

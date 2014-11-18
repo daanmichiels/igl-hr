@@ -16,8 +16,8 @@ class CameraControls
         ovrHmd* _hmd;
         float _mouse_speed = 0.3f;
         float _move_speed = 0.2f;
-        float _eye_width = 0.001f;
-        float _eye_width_step = 0.01f;
+        float _ipd = 0.065f;
+        float _meter = 1.0f;
         glm::vec4 _pos;
         glm::vec4 _up, _forward, _right,_sforward,_sright;
         void update_camera_transformation();
@@ -38,7 +38,10 @@ class CameraControls
         void set_orientation(glm::quat rotation);
         void set_mouse_speed(float speed);
         void set_step_size(float size);
-        float get_eye_width();
+        void grow(float factor);
+        void shrink(float factor);
+        float get_ipd();
+        float get_meter();
         glm::vec4 get_pos();
         void setQuatIndices(int x, int y, int z, int w);
 };

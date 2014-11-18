@@ -130,7 +130,7 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_UP) || glfwGetKey(_window, GLFW_KEY_W ))
     {
         // printShoulder();
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sforward);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * _meter * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -144,7 +144,7 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_DOWN) || glfwGetKey(_window, GLFW_KEY_S ))
     {
         // printShoulder();
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sforward);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * _meter * ((float)delta_time) * _sforward);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -158,7 +158,7 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_LEFT) || glfwGetKey(_window, GLFW_KEY_A ))
     {
         // printShoulder();
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _sright);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * _meter * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -172,7 +172,7 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_RIGHT) || glfwGetKey(_window, GLFW_KEY_D ))
     {
         // printShoulder();
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _sright);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * _meter * ((float)delta_time) * _sright);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -186,7 +186,7 @@ void CameraControls::handle_keyboard(float delta_time)
     if( glfwGetKey(_window, GLFW_KEY_PAGE_UP) || glfwGetKey(_window, GLFW_KEY_R))
     {
         // printShoulder();
-        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * ((float)delta_time) * _up);
+        glm::vec4 newpos = hypermath::exp(_pos, _move_speed * _meter * ((float)delta_time) * _up);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -199,7 +199,7 @@ void CameraControls::handle_keyboard(float delta_time)
     }
     if( glfwGetKey(_window, GLFW_KEY_PAGE_DOWN) || glfwGetKey(_window, GLFW_KEY_F))
     {
-        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * ((float)delta_time) * _up);
+        glm::vec4 newpos = hypermath::exp(_pos, -_move_speed * _meter * ((float)delta_time) * _up);
         glm::mat4 transf = hypermath::translation(_pos,newpos);
         _pos = newpos;
         _up = transf * _up;
@@ -218,15 +218,13 @@ void CameraControls::handle_keyboard(float delta_time)
         _sforward = glm::vec4(0,0,-1,0);
         _sright = glm::vec4(1,0,0,0);
     }
-    if ( glfwGetKey(_window, GLFW_KEY_COMMA))
+    if( glfwGetKey(_window, GLFW_KEY_MINUS))
     {
-        left_lens_center.x -= _eye_width_step;
-        // std::cout << "eye width: " << _eye_width << '\n';
+        shrink(1.1f);
     }
-    if ( glfwGetKey(_window, GLFW_KEY_PERIOD))
+    if( glfwGetKey(_window, GLFW_KEY_EQUAL))
     {
-        left_lens_center.x += _eye_width_step;
-        // std::cout << "eye width: " << _eye_width << '\n';
+        grow(1.1f);
     }
 }
 
@@ -253,14 +251,29 @@ void CameraControls::set_step_size(float size)
     _move_speed = size;
 }
 
+void CameraControls::grow(float factor)
+{
+    _meter *= factor;
+}
+
+void CameraControls::shrink(float factor)
+{
+    _meter /= factor;
+}
+
 glm::vec4 CameraControls::get_pos()
 {
     return _pos;
 }
 
-float CameraControls::get_eye_width()
+float CameraControls::get_ipd()
 {
-    return _eye_width;
+    return _ipd;
+}
+
+float CameraControls::get_meter()
+{
+    return _meter;
 }
 
 void CameraControls::setQuatIndices(int x, int y, int z, int w)

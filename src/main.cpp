@@ -133,7 +133,7 @@ int main(int argc, const char* argv[])
     glBindTexture(GL_TEXTURE_2D, left_texture);
      
     // Give an empty image to OpenGL ( the last "0" )
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 4 * textureScale, 3 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 6.4 * textureScale, 8 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
      
     // Poor filtering. Needed !
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -143,7 +143,7 @@ int main(int argc, const char* argv[])
     GLuint left_depth_buffer;
     glGenRenderbuffers(1, &left_depth_buffer);
     glBindRenderbuffer(GL_RENDERBUFFER, left_depth_buffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 4 * textureScale, 3 * textureScale);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 6.4 * textureScale, 8 * textureScale);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, left_depth_buffer);
 
     // Set "left_texture" as our colour attachement #0
@@ -172,7 +172,7 @@ int main(int argc, const char* argv[])
     glBindTexture(GL_TEXTURE_2D, right_texture);
      
     // Give an empty image to OpenGL ( the last "0" )
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 4 * textureScale, 3 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 6.4 * textureScale, 8 * textureScale, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
      
     // Poor filtering. Needed !
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -182,7 +182,7 @@ int main(int argc, const char* argv[])
     GLuint right_depth_buffer;
     glGenRenderbuffers(1, &right_depth_buffer);
     glBindRenderbuffer(GL_RENDERBUFFER, right_depth_buffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 4 * textureScale, 3 * textureScale);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 6.4 * textureScale, 8 * textureScale);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, right_depth_buffer);
 
     // Set "left_texture" as our colour attachement #0
@@ -246,7 +246,7 @@ int main(int argc, const char* argv[])
     o2.children.push_back(&o3);
 
     // create a camera
-    Camera cam(1.2f, 800.0f/600.0f, 0.001f, 100.0f);
+    Camera cam(1.2f, 640.0f/800.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
@@ -344,7 +344,7 @@ int main(int argc, const char* argv[])
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
-        float initialFoV = ((float)width)/height;
+        float initialFoV = ((float)width / 2)/height;
 
         s.camera.set_ratio(initialFoV);
 

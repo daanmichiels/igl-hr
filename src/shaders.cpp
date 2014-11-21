@@ -77,9 +77,6 @@ GLuint build_program()
         return 0;
     }
 
-    std::cout << "location of uniform 'projection': " << glGetUniformLocation(program, "projection") << std::endl;
-    std::cout << "location of uniform 'modelview': " << glGetUniformLocation(program, "modelview") << std::endl;
-
     return program;
 }
 

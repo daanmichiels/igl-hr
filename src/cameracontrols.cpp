@@ -9,6 +9,7 @@
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
+#include <iostream>
 
 using namespace OVR;
 
@@ -16,6 +17,7 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd)
 {
     _window = window;
     _camera = camera;
+    _hmd = hmd;
     reset_to_origin();
 }
 
@@ -154,10 +156,6 @@ void CameraControls::handle_keyboard(float delta_time)
         _shoulders.up = transf * _shoulders.up;
         _shoulders.right = transf * _shoulders.right;
         _shoulders.forward = transf * _shoulders.forward;
-    }
-    if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
-    {
-        reset_to_origin();
     }
     if( glfwGetKey(_window, GLFW_KEY_MINUS))
     {

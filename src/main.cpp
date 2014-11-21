@@ -199,14 +199,14 @@ int main(int argc, const char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    GLuint left_tex_id = glGetUniformLocation(quad_program, "left_texture");
+    GLuint tex_id = glGetUniformLocation(quad_program, "sourceTexture");
 
     // create some meshes
-    glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
-    glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
-    glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
-    mesh mesh_triangle = primitives::triangle(a,b,c);
-    mesh mesh_tetra    = primitives::tetrahedron(0.04);
+    // glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
+    // glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
+    // glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
+    // mesh mesh_triangle = primitives::triangle(a,b,c);
+    // mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
     // object o1, o2, o3, t1, t2, t3;
@@ -220,24 +220,11 @@ int main(int argc, const char* argv[])
     // o2.transform(hypermath::translation0(location2));
     // o3.transform(hypermath::translation0(location3));
 
-    object t1;
-    t1 = object(filename, false, 1);
-
     // create a camera
     Camera cam(1.2f, 640.0f/800.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
-    s.objects.push_back(&t1);
-
-    // setup grid
-    object grid(primitives::grid(.5));
-    s.objects.push_back(&grid);
-    grid.visible = false;
-
-    //make sierpinski octahedron.
-    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 7, true));
-    s.objects.push_back(&sierpinski_octahedron);
 
     s.camera = cam;
     s.program = program;
@@ -300,18 +287,32 @@ int main(int argc, const char* argv[])
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    object t1;
+    t1 = object(filename, false, 1);
+    s.objects.push_back(&t1);
+
+    // setup grid
+    object grid(primitives::grid(.5));
+    s.objects.push_back(&grid);
+    grid.visible = false;
+
+    //make sierpinski octahedron.
+    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 7, true));
+    s.objects.push_back(&sierpinski_octahedron);
+
     // Set up input handler
     InputHandler::cameracontrols = cam_controls;
     InputHandler::grid = &grid;
     InputHandler::flag_manager = &flag_manager;
 
-    FpsCounter fps = FpsCounter(true);
+    FpsCounter fps = FpsCounter(false);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     //setup delta_time
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
+
     // main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -342,7 +343,7 @@ int main(int argc, const char* argv[])
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, left_texture);
         // Set our "left_texture" sampler to user Texture Unit 0
-        glUniform1i(left_tex_id, 0);
+        glUniform1i(tex_id, 0);
 
         if (s.lens_center_loc != -1)
         {
@@ -357,7 +358,7 @@ int main(int argc, const char* argv[])
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, right_texture);
         // Set our "right_texture" sampler to user Texture Unit 0
-        glUniform1i(left_tex_id, 0);
+        glUniform1i(tex_id, 0);
 
         if (s.lens_center_loc != -1)
         {

@@ -297,7 +297,7 @@ int main(int argc, const char* argv[])
     grid.visible = false;
 
     //make sierpinski octahedron.
-    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 7, true));
+    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 1, true));
     s.objects.push_back(&sierpinski_octahedron);
 
     // Set up input handler
@@ -329,45 +329,48 @@ int main(int argc, const char* argv[])
         current_time = glfwGetTime();
         delta_time = current_time - last_time;
 
-        s.render_stereo(textureScale, cam_controls, left_framebuffer, right_framebuffer);
-
-        // Render to the screen
-        glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glUseProgram(quad_program);
+        s.render();
 
-        // Clear the screen
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // s.render_stereo(textureScale, cam_controls, left_framebuffer, right_framebuffer);
 
-        // Bind our left texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, left_texture);
-        // Set our "left_texture" sampler to user Texture Unit 0
-        glUniform1i(tex_id, 0);
+        // // Render to the screen
+        // glViewport(0, 0, width, height);
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glUseProgram(quad_program);
 
-        if (s.lens_center_loc != -1)
-        {
-           glUniform2f(s.lens_center_loc, cam_controls.left_lens_center.x, cam_controls.left_lens_center.y);
-        }
+        // // Clear the screen
+        // glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Draw the left triangles !
-        glBindVertexArray(render_left_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // // Bind our left texture in Texture Unit 0
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, left_texture);
+        // // Set our "left_texture" sampler to user Texture Unit 0
+        // glUniform1i(tex_id, 0);
 
-        // Bind our right texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, right_texture);
-        // Set our "right_texture" sampler to user Texture Unit 0
-        glUniform1i(tex_id, 0);
+        // if (s.lens_center_loc != -1)
+        // {
+        //    glUniform2f(s.lens_center_loc, cam_controls.left_lens_center.x, cam_controls.left_lens_center.y);
+        // }
 
-        if (s.lens_center_loc != -1)
-        {
-           glUniform2f(s.lens_center_loc, cam_controls.right_lens_center.x, cam_controls.right_lens_center.y);
-        }
+        // // Draw the left triangles !
+        // glBindVertexArray(render_left_vao);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Draw the right triangles !
-        glBindVertexArray(render_right_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // // Bind our right texture in Texture Unit 0
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, right_texture);
+        // // Set our "right_texture" sampler to user Texture Unit 0
+        // glUniform1i(tex_id, 0);
+
+        // if (s.lens_center_loc != -1)
+        // {
+        //    glUniform2f(s.lens_center_loc, cam_controls.right_lens_center.x, cam_controls.right_lens_center.y);
+        // }
+
+        // // Draw the right triangles !
+        // glBindVertexArray(render_right_vao);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

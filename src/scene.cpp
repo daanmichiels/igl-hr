@@ -71,6 +71,7 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
 // has no parent, it's the view matrix of the camera.
 void Scene::render_object(object o, glm::mat4 modelview)
 {
+    std::cout << "rendering " << "\n";
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
     for(mesh m : o.meshes)

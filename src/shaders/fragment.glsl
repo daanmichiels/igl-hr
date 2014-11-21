@@ -1,10 +1,10 @@
-#version 150
+#version 330
 
 smooth in vec3 theColor;
 
-out vec4 finalColor;
+layout(location = 0) out vec3 color;
 
 void main() {
-    //why is this 0.5?
-    finalColor = vec4(theColor, 0.5);
+
+    color = (theColor);
 }

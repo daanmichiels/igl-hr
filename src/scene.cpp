@@ -2,6 +2,8 @@
 #include <GL/glew.h>
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
+#include <iostream>
+#include "hypermath.h"
 
 // Renders the objects (and their children, and ...)
 // using the provided camera and program.
@@ -23,6 +25,44 @@ void Scene::render()
     }
 
     glUseProgram(0);
+}
+
+void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer)
+{
+    if( glfwGetKey(control._window, GLFW_KEY_COMMA))
+    {
+        _border -= 0.01f;
+    }
+    if( glfwGetKey(control._window, GLFW_KEY_PERIOD))
+    {
+        _border += 0.01f;
+    }
+
+    control.move_right(-control.get_ipd() * 0.5f * control.get_meter());
+
+    // Render to our left framebuffer
+    glViewport((6.4 * textureScale) * _border, (8 * textureScale) * _border,
+        (6.4 * textureScale) * (1.0 - (_border * 2.0)), (8 * textureScale) * (1.0 - (_border * 2.0)));
+    glBindFramebuffer(GL_FRAMEBUFFER, left_framebuffer);
+
+    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    render();
+
+    control.move_right(control.get_ipd() * control.get_meter());
+
+    // Render to our right framebuffer
+    glViewport((6.4 * textureScale) * _border, (8 * textureScale) * _border,
+        (6.4 * textureScale) * (1.0 - (_border * 2.0)), (8 * textureScale) * (1.0 - (_border * 2.0)));
+    glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
+
+    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    render();
+
+    control.move_right(-control.get_ipd() * 0.5f * control.get_meter());
 }
 
 // Renders an object.

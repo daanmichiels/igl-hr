@@ -10,7 +10,9 @@
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
 
-CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
+using namespace OVR;
+
+CameraControls::CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd)
 {
     _window = window;
     _camera = camera;
@@ -20,6 +22,7 @@ CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 void CameraControls::handle(float delta_time, int width, int height)
 {
     handle_keyboard(delta_time);
+    handle_hmd();
     if(bind_mouse)
     {
         handle_mouse(delta_time, width, height);
@@ -48,12 +51,22 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     return; 
 }
 
+void CameraControls::handle_hmd()
+{
+    // Query the HMD for the current tracking state.
+    ovrTrackingState ts  = ovrHmd_GetTrackingState(*_hmd, ovr_GetTimeInSeconds());
+    if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
+        ovrQuatf orientation = ts.HeadPose.ThePose.Orientation;
+        set_orientation(glm::quat(orientation.w, orientation.x, orientation.y, orientation.z));
+    }
+}
+
 void CameraControls::update_camera_transformation()
 {
     glm::vec4 up, forward, right;
-    right = _shoulders.right;
-    forward = ((float)cos(_angle_ver))*_shoulders.forward + ((float)sin(_angle_ver))*_shoulders.up;
-    up = ((float)cos(_angle_ver))*_shoulders.up - ((float)sin(_angle_ver))*_shoulders.forward;
+    right = _head.right;
+    forward = _head.forward; //((float)cos(_angle_ver))*_shoulders.forward + ((float)sin(_angle_ver))*_shoulders.up;
+    up = _head.up; //((float)cos(_angle_ver))*_shoulders.up - ((float)sin(_angle_ver))*_shoulders.forward;
 
     glm::mat4 transf = glm::mat4();
     transf[0][0] = right.x;
@@ -75,9 +88,26 @@ void CameraControls::update_camera_transformation()
     transf[3][1] = _shoulders.pos.y;
     transf[3][2] = _shoulders.pos.z;
     transf[3][3] = _shoulders.pos.w;
+
     //potentially change this so that we calculate inverse ourselves. Slightly faster maybe.
     transf = glm::inverse(transf);
     _camera->set_transformation(transf);
+}
+
+void CameraControls::move_right(float distance)
+{
+    glm::vec4 newpos = hypermath::exp(_shoulders.pos, distance * _shoulders.right);
+    glm::mat4 transf = hypermath::translation(_shoulders.pos, newpos);
+    _shoulders.pos = newpos;
+
+    _shoulders.up = transf * _shoulders.up;
+    _shoulders.right = transf * _shoulders.right;
+    _shoulders.forward = transf * _shoulders.forward;
+
+    _head.up = transf * _head.up;
+    _head.right = transf * _head.right;
+    _head.forward = transf * _head.forward;
+    update_camera_transformation();
 }
 
 void CameraControls::handle_keyboard(float delta_time)
@@ -125,6 +155,31 @@ void CameraControls::handle_keyboard(float delta_time)
         _shoulders.right = transf * _shoulders.right;
         _shoulders.forward = transf * _shoulders.forward;
     }
+    if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
+    {
+        reset_to_origin();
+    }
+    if( glfwGetKey(_window, GLFW_KEY_MINUS))
+    {
+        shrink(1.1f);
+    }
+    if( glfwGetKey(_window, GLFW_KEY_EQUAL))
+    {
+        grow(1.1f);
+    }
+}
+
+void CameraControls::set_orientation(glm::quat rotation)
+{
+    glm::mat4 rotate = hypermath::rotation0(rotation);
+    glm::mat4 rotatez = hypermath::rotationz(rotation);
+    glm::mat4 transf = hypermath::translation(glm::vec4(0,0,0,1), _shoulders.pos);
+    _head.up = transf*rotate*glm::vec4(0,1,0,0);
+    _head.forward = transf*rotate*glm::vec4(0,0,-1,0);
+    _head.right = transf*rotate*glm::vec4(1,0,0,0);
+    _shoulders.forward = transf*rotatez*glm::vec4(0,0,-1,0);
+    _shoulders.right = transf*rotatez*glm::vec4(1,0,0,0);
+    update_camera_transformation();
 }
 
 void CameraControls::reset_to_origin()
@@ -133,6 +188,11 @@ void CameraControls::reset_to_origin()
     _shoulders.forward = glm::vec4(0,0,-1,0);
     _shoulders.right = glm::vec4(1,0,0,0);
     _shoulders.up = glm::vec4(0,1,0,0);
+
+    _head.forward = glm::vec4(0,0,-1,0);
+    _head.right = glm::vec4(1,0,0,0);
+    _head.up = glm::vec4(0,1,0,0);
+
     _angle_ver = 0.0;
 }
 
@@ -146,10 +206,21 @@ void CameraControls::set_step_size(float size)
     _move_speed = size;
 }
 
+void CameraControls::grow(float factor)
+{
+    _meter *= factor;
+}
+
+void CameraControls::shrink(float factor)
+{
+    _meter /= factor;
+}
+
 glm::vec4 CameraControls::get_pos()
 {
     return _shoulders.pos;
 }
+
 //increase step size. max is 1.0f
 void CameraControls::increase_speed()
 {
@@ -160,6 +231,7 @@ void CameraControls::increase_speed()
     }
     set_step_size(size);
 }
+
 //decrease step size. minimum is 0.01f
 void CameraControls::decrease_speed()
 {
@@ -171,17 +243,30 @@ void CameraControls::decrease_speed()
 
     set_step_size(size);
 }
+
 glm::mat4 CameraControls::get_cam_view()
 {
     glm::mat4 view = _camera->get_view();
     return view;
 }
+
 glm::vec4 CameraControls::get_forward()
 {
     glm::vec4 forward = _shoulders.forward;
     return forward;
 }
+
 glm::vec4 CameraControls::get_flag_pos()
 {
     return hypermath::midpoint(_shoulders.forward, -_shoulders.up, 0.5f);
+}
+
+float CameraControls::get_ipd()
+{
+    return _ipd;
+}
+
+float CameraControls::get_meter()
+{
+    return _meter;
 }

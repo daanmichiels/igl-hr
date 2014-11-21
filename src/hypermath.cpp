@@ -1,6 +1,7 @@
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include <iostream>
 
 namespace hypermath
 {
@@ -140,16 +141,15 @@ namespace hypermath
     // Quaternion defines axis of rotation and degrees of rotation.
     glm::mat4 rotation0(glm::quat rotation)
     {
-        glm::mat3 rotate3d = glm::mat3_cast(rotation);
-        glm::mat4 result = glm::mat4();
-        for(int i=0; i<3; i++)
-        {
-            for(int j=0; j<3; j++)
-            {
-                result[i][j] = rotate3d[i][j];
-            }
-        }
-        return result;
+        return glm::mat4_cast(rotation);
+    }
+    
+    //project quaternion into a rotation around z-axis
+    glm::mat4 rotationz(glm::quat rotation)
+    {
+        rotation[0] = 0;
+        rotation[2] = 0;
+        return glm::mat4_cast((glm::normalize(rotation)));
     }
 
     //just invert the quaternion to get the inverse rotation.

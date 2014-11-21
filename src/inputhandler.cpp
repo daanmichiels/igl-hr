@@ -7,7 +7,7 @@
 #include "flagmanager.h"
 #include <iostream>
 
-CameraControls InputHandler::cameracontrols = CameraControls(NULL, NULL);
+CameraControls InputHandler::cameracontrols = CameraControls(NULL, NULL, NULL);
 object* InputHandler::grid = NULL;
 flagmanager* InputHandler::flag_manager = NULL;
 

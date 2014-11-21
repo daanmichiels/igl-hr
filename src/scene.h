@@ -4,6 +4,7 @@
 #include <vector>
 #include "object.h"
 #include "camera.h"
+#include "cameracontrols.h"
 #include "mesh.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 
@@ -13,10 +14,14 @@
         std::vector<object*> objects;
         Camera camera;
         GLuint program;
+        GLuint lens_center_loc;
+        GLuint barrel_power_loc;
         
         void render();
+        void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
 
     private:
+        float _border = 0.1f;
         void render_object(object o, glm::mat4 modelview);
         void render_mesh(mesh m);
 };

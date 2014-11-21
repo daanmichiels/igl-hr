@@ -26,7 +26,6 @@ float getDistortionScale(vec2 offset)
 vec2 distort(vec2 p)
 {
     p = p - lensCenter;
-    p.y = p.y / 0.8;
     float distortionScale = getDistortionScale(p);
     return (((((p * distortionScale) + lensCenter) + 1.0) * 0.5) * 0.5) + 0.25;
 

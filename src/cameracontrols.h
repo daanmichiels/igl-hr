@@ -11,7 +11,6 @@
 class CameraControls
 {
     private:
-        GLFWwindow* _window;
         Camera* _camera;
         ovrHmd* _hmd;
         float _mouse_speed = 0.3f;
@@ -24,8 +23,9 @@ class CameraControls
         int quatX, quatY, quatZ, quatW;
 
     public:
-        glm::vec2 left_lens_center = glm::vec2(-0.25,0);
-        glm::vec2 right_lens_center = glm::vec2(0.25,0);
+        GLFWwindow* _window;
+        glm::vec2 left_lens_center = glm::vec2(0.15,0);
+        glm::vec2 right_lens_center = glm::vec2(-0.15,0);
 
         CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd);
         bool bind_mouse = false;

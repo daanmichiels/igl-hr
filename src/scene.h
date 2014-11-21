@@ -17,14 +17,13 @@
         GLuint lens_center_loc;
         GLuint barrel_power_loc;
         bool _has_printed = false;
-        glm::vec2 left_lens_center = glm::vec2(-0.25,0);
-        glm::vec2 right_lens_center = glm::vec2(0.25,0);
         
         void render();
         void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
         void render_all_permutations(int width, int height, CameraControls control);
 
     private:
+        float _border = 0.1f;
         void render_object(object o, glm::mat4 modelview);
         void render_mesh(mesh m);
 };

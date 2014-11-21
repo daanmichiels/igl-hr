@@ -20,16 +20,22 @@ void object::set_transformation(glm::mat4 transformation)
     this->transformation = transformation;
 }
 
+object::object(mesh object_mesh)
+{
+    this->meshes.push_back(object_mesh);
+}
+
 object::object(const char filename[], bool converted, double scale)
 {
     std::ifstream input(filename);
 
     std::vector<glm::vec4> vertices;
-
     std::vector<glm::vec4> v;
 
-    for(std::string line; getline(input, line); ) {
-        if (line[0] == 'v') {
+    for(std::string line; getline(input, line); )
+    {
+        if (line[0] == 'v')
+        {
             double x, y, z, w;
             size_t index;
 
@@ -49,7 +55,6 @@ object::object(const char filename[], bool converted, double scale)
             }
             else {
                 glm::vec4 conv = hypermath::exp0(glm::vec4(x * scale, y * scale, z * scale, 0));
-
                 x = conv.x;
                 y = conv.y;
                 z = conv.z;
@@ -83,25 +88,3 @@ object::object()
 }
 
 
-bool object::is_visible()
-{ 
-    bool visibility = this->visible;
-    return visibility;
-}
-void object::toggle_visibility()
-{
-    this->visible = ! this-> visible;
-}
-object::object(object obj, int copy_num)
-{
-    this->name = obj.name + std::to_string(copy_num);
-    this->transformation = obj.transformation;
-    for(unsigned int i=0; i< obj.children.size(); i++)
-    {
-        this->children.push_back(obj.children[i]);
-    }
-    for(unsigned int i=0; i< obj.meshes.size(); i++)
-    {
-        this->meshes.push_back(obj.meshes[i]);
-    }
-}

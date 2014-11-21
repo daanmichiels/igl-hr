@@ -7,22 +7,14 @@
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include <iostream>
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
-
-//should that be here?
-const double PI  =3.141592653589793238463;
 
 CameraControls::CameraControls(GLFWwindow* window, Camera* camera)
 {
     _window = window;
     _camera = camera;
-
-    _shoulders.pos = glm::vec4(0,0,0,1);
-    _shoulders.up = glm::vec4(0,1,0,0);
-    _shoulders.forward = glm::vec4(0,0,-1,0);
-    _shoulders.right = glm::vec4(1,0,0,0);
+    reset_to_origin();
 }
 
 void CameraControls::handle(float delta_time, int width, int height)
@@ -41,6 +33,7 @@ void CameraControls::handle_mouse(float delta_time, int width, int height)
     double mouse_x, mouse_y;
     double center_x = floor(width/2);
     double center_y = floor(height/2);
+    double PI = 3.141592653589793238463;
 
     glfwGetCursorPos(_window, &mouse_x, &mouse_y);
     glfwSetCursorPos(_window, center_x, center_y);
@@ -125,21 +118,23 @@ void CameraControls::handle_keyboard(float delta_time)
         glm::vec4 newpos = hypermath::exp(_shoulders.pos, walking_direction.x*_shoulders.right + walking_direction.y*_shoulders.up + walking_direction.z*_shoulders.forward);
         glm::mat4 transf = hypermath::translation(_shoulders.pos,newpos);
         _shoulders.pos = newpos;
+
+        // This makes movement weird 
+        // _shoulders.up = -hypermath::gravity(_shoulders.pos);
         _shoulders.up = transf * _shoulders.up;
         _shoulders.right = transf * _shoulders.right;
         _shoulders.forward = transf * _shoulders.forward;
     }
-
-    if( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
-    {
-        _shoulders.pos = glm::vec4(0,0,0,1);
-        _shoulders.forward = glm::vec4(0,0,-1,0);
-        _shoulders.right = glm::vec4(1,0,0,0);
-        _shoulders.up = glm::vec4(0,1,0,0);
-        _angle_ver = 0.0;
-    }
 }
 
+void CameraControls::reset_to_origin()
+{
+    _shoulders.pos = glm::vec4(0,0,0,1);
+    _shoulders.forward = glm::vec4(0,0,-1,0);
+    _shoulders.right = glm::vec4(1,0,0,0);
+    _shoulders.up = glm::vec4(0,1,0,0);
+    _angle_ver = 0.0;
+}
 
 void CameraControls::set_mouse_speed(float speed)
 {
@@ -185,4 +180,8 @@ glm::vec4 CameraControls::get_forward()
 {
     glm::vec4 forward = _shoulders.forward;
     return forward;
+}
+glm::vec4 CameraControls::get_flag_pos()
+{
+    return hypermath::midpoint(_shoulders.forward, -_shoulders.up, 0.5f);
 }

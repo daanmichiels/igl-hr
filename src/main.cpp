@@ -14,7 +14,8 @@
 #include "fpscounter.h"
 #include "cameracontrols.h"
 #include "inputhandler.h"
-#include "FlagManager.h"
+#include "flagmanager.h"
+#include "init.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -22,67 +23,19 @@
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 
-// Called on GLFW error.
-static void error_callback(int error, const char* description)
-{
-    std::cerr << description;
-}
-
-// Creates the window and gets an OpenGL context for it.
-GLFWwindow* create_window()
-{
-    GLFWwindow* window;
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-     {
-        exit(EXIT_FAILURE);
-     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-
-   // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    window = glfwCreateWindow(800, 600, "Hyperbolic space on the Rift", NULL, NULL);
-    if (!window)
-    {
-        std::cout << "Failed to create window. Do you have OpenGL 3.3 or higher?\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, InputHandler::key_callback);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    return window;
-}
-
-// Prints some information about the OpenGL context.
-// Requires a currect OpenGL context.
-void print_info()
-{
-    glewExperimental = GL_TRUE;
-    GLenum error = glewInit();
-    if(error != GLEW_OK)
-    {
-        std::cout << "Error: " << glewGetErrorString(error) << "\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
-    std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
-}
-
 int main(int argc, const char* argv[])
 {
     const char* filename = "resources/plane.obj";
-    if (argc > 1) {
-        filename = argv[1];
+    bool fullscreen = false;
+    for(int i=argc-1; i>0; i--)
+    {
+        if(strcmp(argv[i],"--fullscreen") == 0)
+            fullscreen = true;
+        else
+            filename = argv[i];
     }
 
-    GLFWwindow* window = create_window();
-    print_info();
+    GLFWwindow* window = create_window(fullscreen);
 
     // build and link the shading program
     GLuint program = build_program();
@@ -102,34 +55,29 @@ int main(int argc, const char* argv[])
     Scene s = Scene();
     s.objects.push_back(&t1);
 
-    //setup grid arrays *set grid_space to change the grid spacing
-    double grid_space = .5;
-    mesh mesh_grid;
-    mesh_grid = primitives::grid(grid_space);
-    object grid;
-    grid.meshes.push_back(mesh_grid);
+    // setup grid
+    object grid(primitives::grid(.5));
     s.objects.push_back(&grid);
-    grid.toggle_visibility();
+    grid.visible = false;
 
     //make sierpinski octahedron.
-    mesh sierpinski_octahedron = primitives::subdivided_octahedron(2, 7, true);
-    object sier_octa;
-    sier_octa.meshes.push_back(sierpinski_octahedron);
-    s.objects.push_back(&sier_octa);
+    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 7, true));
+    s.objects.push_back(&sierpinski_octahedron);
 
     s.camera = cam;
     s.program = program;
     CameraControls cam_controls = CameraControls(window, &s.camera);
-    FlagManager flag_manager = FlagManager(&s, cam_controls);
-    // set up camera controls and input handler
+    flagmanager flag_manager = flagmanager(&s, cam_controls);
+
+    // Set up input handler
     InputHandler::cameracontrols = cam_controls;
     InputHandler::grid = &grid;
-    InputHandler::flagmanager = &flag_manager;
+    InputHandler::flag_manager = &flag_manager;
 
     FpsCounter fps = FpsCounter(true);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-    //setup delta_time (must be outside of main loop)
+    //setup delta_time
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;

@@ -182,9 +182,22 @@ namespace hypermath
         glm::vec4 newTarget = rMatrix*target;
         return translation0(newTarget)*rMatrix*translation0inv(basepoint);
     }
-    glm::vec4 midpoint(glm::vec4 a, glm::vec4 b)
+    glm::vec4 midpoint(glm::vec4 a, glm::vec4 b, float t)
     {
-        return hypermath::exp(b,0.5f*hypermath::expinv(b,a));
+        return hypermath::exp(b,t*hypermath::expinv(b,a));
     }
+
+    // Returns vector towards a point at (0,-Infinity,0, Infinity)
+    glm::vec4 gravity(glm::vec4 basepoint) 
+    {
+	float a = basepoint.x;
+	float b = basepoint.y;
+	float c = basepoint.z;
+	float d = basepoint.w;
+	float bd=b+d;
+	glm::vec4 dir = glm::vec4(a*(bd),1+b*(bd),c*(bd),-1+d*(bd));
+	float norm = -1/sqrt(2*d*d*bd*bd+3+a*a+c*c);
+	return norm*dir;
+    }	    
 }
 

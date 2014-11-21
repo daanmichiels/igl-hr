@@ -1,8 +1,10 @@
 #include "../thirdparty/glm/glm/glm.hpp"
 #include <vector>
-
+#include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
+
 
 // Anonymous namespace.
 // Everything in here can only be accessed from this file (unit).
@@ -52,6 +54,137 @@ namespace
 
         return vao;
     }
+
+    /* Subdivision Algorithm
+    This works by finding the mid point between each pair of vertices, and generating 4 triangles.
+
+                        a
+                       *
+                      * *
+                     *   *
+    midpoint a,b    * * * *  midpoint a,c
+                   *       *
+                  * *     * *
+                 *   *   *   *
+              b * * * * * * * * c 
+                  midpoint b,c
+
+    Passing true as the last argument discards the "middle" each step, resulting in sierpinski subdivision
+    Increasing the number of divisions from 1 to 2 will perform the first division, then divide all of the newly generated triangles.
+    Can crash the program for too large of a large number of divisions.
+    */
+    
+    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
+    {
+
+        std::vector<glm::vec4> triangles;
+        glm::vec4 ab, bc, ac;
+        std::vector<glm::vec4> t1, t2, t3, t4;
+
+        ab = hypermath::midpoint(a, b, 0.5f);
+        ac = hypermath::midpoint(a, c, 0.5f);
+        bc = hypermath::midpoint(b, c, 0.5f);
+
+        //recursive calls to each subdivided triangle
+        if(divisions > 0)
+        {
+            t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1, sierpinski);
+            t2 = subdivide_triangle_vector(ab, b, bc, divisions -1, sierpinski);
+            t3 = subdivide_triangle_vector(ac, bc, c, divisions -1, sierpinski);
+            if(!sierpinski)
+            {
+                t4 = subdivide_triangle_vector(ab, ac, bc, divisions -1, sierpinski);
+            }
+
+            for(unsigned int i = 0; i < t1.size(); i++)
+            {
+                triangles.push_back(t1[i]);
+            }
+
+            for(unsigned int i = 0; i < t2.size(); i++)
+            {
+                triangles.push_back(t2[i]);
+            }
+
+            for(unsigned int i = 0; i < t3.size(); i++)
+            {
+                triangles.push_back(t3[i]);
+            }
+            if(!sierpinski)
+            {
+                for(unsigned int i = 0; i < t4.size(); i++)
+                {
+                    triangles.push_back(t4[i]);
+                }
+            }
+            return triangles;
+        }
+        else
+        {
+            //base case
+            triangles.push_back(a);
+            triangles.push_back(b);
+            triangles.push_back(c);
+            return triangles;
+        }
+
+    }
+    std::vector<glm::vec4> subdivide_triangle_vector_euclidean(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
+    {
+        std::vector<glm::vec4> triangles;
+        std::vector<glm::vec4> t1, t2, t3, t4;
+
+        glm::vec4 ab = a+b;
+        glm::vec4 ac = a+c;
+        glm::vec4 bc = b+c;
+        ab *= 0.5f;
+        ac *= 0.5f;
+        bc *= 0.5f;
+        //recursive calls to each subdivided triangle
+        if(divisions > 0)
+        {
+            t1 = subdivide_triangle_vector_euclidean(a, ab, ac, divisions - 1, sierpinski);
+            t2 = subdivide_triangle_vector_euclidean(ab, b, bc, divisions - 1, sierpinski);
+            t3 = subdivide_triangle_vector_euclidean(ac, bc, c, divisions - 1, sierpinski);
+
+            if(!sierpinski)
+            {
+                t4 = subdivide_triangle_vector_euclidean(ab, ac, bc, divisions -1, sierpinski);
+            }
+
+            for(unsigned int i = 0; i < t1.size(); i++)
+            {
+                triangles.push_back(t1[i]);
+            }
+
+            for(unsigned int i = 0; i < t2.size(); i++)
+            {
+                triangles.push_back(t2[i]);
+            }
+
+            for(unsigned int i = 0; i < t3.size(); i++)
+            {
+                triangles.push_back(t3[i]);
+            }
+            if(!sierpinski)
+            {
+                for(unsigned int i = 0; i < t4.size(); i++)
+                {
+                    triangles.push_back(t4[i]);
+                }
+            }
+            return triangles;
+        }
+        else
+        {
+            //base case
+            triangles.push_back(a);
+            triangles.push_back(b);
+            triangles.push_back(c);
+            return triangles;
+        }
+
+    }
 }
 
 namespace primitives
@@ -67,29 +200,30 @@ namespace primitives
         result.count = 2;
         return result;
     }
-    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
 
-    mesh axes()
+    // Make a set of XYZ axes, colored red green and blue respectively, inside of a sphere of given radius
+    mesh axes(float radius)
     {
         mesh result;
         std::vector<glm::vec4> pos;
         std::vector<glm::vec4> col;
         
         //first set the vectors for the axes.
-        pos.push_back(hypermath::exp0(glm::vec4(-10,0,0,0)));
-        pos.push_back(hypermath::exp0(glm::vec4(10,0,0,0)));
-        pos.push_back(hypermath::exp0(glm::vec4(0,-10,0,0)));
-        pos.push_back(hypermath::exp0(glm::vec4(0,10,0,0)));
-        pos.push_back(hypermath::exp0(glm::vec4(0,0,-10,0)));
-        pos.push_back(hypermath::exp0(glm::vec4(0,0,10,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(-1,0,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(1,0,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(0,-1,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(0,1,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(0,0,-1,0)));
+        pos.push_back(hypermath::exp0(radius * glm::vec4(0,0,1,0)));
         
-        //set the colors for each corresponding axis.
+        //set the colors for each corresponding axis. each line is uniformly colored
         col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
         col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
         col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
         col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+
         result.vao = vao_from_pos_col(pos, col);
         result.mode = GL_LINES;
         result.first = 0;
@@ -97,6 +231,7 @@ namespace primitives
         return result;
     }
 
+    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
     mesh grid(double grid_space)
     {
         mesh result;
@@ -161,7 +296,7 @@ namespace primitives
     {
         float w = width / 2;
         float d = depth / 2;
-        std::vector<glm::vec4> pos = {hypermath::exp0(glm::vec4(-w,0, d,0)), \
+        std::vector<glm::vec4> pos = {hypermath::exp0(glm::vec4(-w,0,d,0)), \
             hypermath::exp0(glm::vec4( w,0, d,0)), \
             hypermath::exp0(glm::vec4(-w,0,-d,0)), \
             hypermath::exp0(glm::vec4( w,0,-d,0))};
@@ -198,6 +333,7 @@ namespace primitives
         result.count = 6;
         return result;
     }
+    // Creates an octahedron at the origin. Each triangle is colored with red, green, and blue vertices.
     mesh octahedron(float radius)
     {
         glm::vec4 a = hypermath::exp0(radius * glm::vec4(0,0,1,0));
@@ -232,36 +368,6 @@ namespace primitives
         return result;
     }
 
-    // Create a generic mesh based on a list of vertices
-    // The mesh will be multicolored
-    mesh generic(std::vector<glm::vec4> v)
-    {
-        std::vector<glm::vec4> colors;
-
-        for (unsigned int i = 0; i < v.size(); i++) {
-            switch (i % 3) {
-                case 0 :
-                    colors.push_back(red);
-                    break;
-
-                case 1 :
-                    colors.push_back(green);
-                    break;
-
-                default :
-                    colors.push_back(blue);
-                    break; 
-            }
-        }
-
-        mesh result;
-        result.vao = vao_from_pos_col(v, colors);
-        result.mode = GL_TRIANGLE_FAN;
-        result.first = 0;
-        result.count = v.size();
-        return result;
-    }
-
     mesh object(std::vector<glm::vec4> v)
     {
         std::vector<glm::vec4> colors;
@@ -289,82 +395,10 @@ namespace primitives
         result.count = v.size();
         return result;
     }
-    //Subdivision, Passing true as the last argument discards the "middle" each step, resulting in sierpinski subdivision
-    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
-    {
-        std::vector<glm::vec4> triangles;
-        if(divisions == 0)
-        {
-            triangles.push_back(a);
-            triangles.push_back(b);
-            triangles.push_back(c);
-            return triangles;
-        }
-        glm::vec4 ab, bc, ac;
-        std::vector<glm::vec4> t1, t2, t3, t4;
-
-        ab = hypermath::midpoint(a,b);
-        ac = hypermath::midpoint(a,c);
-        bc = hypermath::midpoint(b,c);
-
-        //recursive calls to each subdivided triangle
-        if(divisions > 0)
-        {
-            t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1, sierpinski);
-            t2 = subdivide_triangle_vector(ab, b, bc, divisions -1, sierpinski);
-            t3 = subdivide_triangle_vector(ac, bc, c, divisions -1, sierpinski);
-            t4 = subdivide_triangle_vector(ab, ac, bc, divisions -1, sierpinski);
-            for(unsigned int i = 0; i < t1.size(); i++)
-            {
-                triangles.push_back(t1[i]);
-            }
-
-            for(unsigned int i = 0; i < t2.size(); i++)
-            {
-                triangles.push_back(t2[i]);
-            }
-
-            for(unsigned int i = 0; i < t3.size(); i++)
-            {
-                triangles.push_back(t3[i]);
-            }
-            if(!sierpinski)
-            {
-                for(unsigned int i = 0; i < t4.size(); i++)
-                {
-                    triangles.push_back(t4[i]);
-                }
-            }
-            return triangles;
-        }
-        //base case
-         triangles.push_back(a);
-         triangles.push_back(ab);
-         triangles.push_back(ac);
-         triangles.push_back(ab);
-         triangles.push_back(b);
-         triangles.push_back(bc);
-         triangles.push_back(ac);
-         triangles.push_back(bc);
-         triangles.push_back(c);
-         if(!sierpinski)
-         {
-            triangles.push_back(ab);
-            triangles.push_back(ac);
-            triangles.push_back(bc);
-         }
-         return triangles;
-    }
-    std::vector<glm::vec4> normalize_triangle_vector(std::vector<glm::vec4> input)
-    {
-        std::vector<glm::vec4> normalized;
-        for(unsigned int i=0; i < input.size(); i++)
-        {
-            normalized.push_back(hypermath::exp0(hypermath::normalize(input[i])));
-        }
-        return normalized;
-    }
-    //creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle.
+    
+    // Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
+    // See the comment for the subdivision algorithm for more information
+    
     mesh subdivided_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
     {
         std::vector<glm::vec4> triangle;
@@ -385,6 +419,10 @@ namespace primitives
         return result;
 
     }
+
+    // Creates a subdivided octahedron mesh. Again, passing sierpinski as true creates sierpinski triangles
+    // See the comment for the subdivision algorithm for more information
+
     mesh subdivided_octahedron(float radius, int divisions, bool sierpinski)
     {
         glm::vec4 a = hypermath::exp0(radius * glm::vec4(0,0,1,0));
@@ -395,6 +433,8 @@ namespace primitives
         glm::vec4 f = hypermath::exp0(radius * glm::vec4(0,0,-1,0));
 
         std::vector<glm::vec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
+
+        //generate each subdivided triangle
         
         t1 = subdivide_triangle_vector(a, b, d, divisions, sierpinski);
         t2 = subdivide_triangle_vector(a, d, c, divisions, sierpinski);
@@ -404,7 +444,8 @@ namespace primitives
         t6 = subdivide_triangle_vector(f, d, c, divisions, sierpinski);
         t7 = subdivide_triangle_vector(f, c, e, divisions, sierpinski);
         t8 = subdivide_triangle_vector(f, e, b, divisions, sierpinski);
-        //push back each all from subdivision
+
+        //push back each subdivision to the final vector.
         for(unsigned int i=0; i < t1.size(); i++)
         {
             collected.push_back(t1[i]);
@@ -444,6 +485,7 @@ namespace primitives
         {
             collected.push_back(t8[i]);
         }
+
         //setup colors
         std::vector<glm::vec4> colors;
         for(unsigned int i = 0; i < collected.size()/3; i++)
@@ -461,6 +503,93 @@ namespace primitives
         return result;
     }
 
+    /* This is made by making an octahedron, subdividing the octahedron (euclidean!).
+        Then we normalize every vertex, scale it according to the passed radius value.
+        Finally we exponentiate the resulting vector.
+    */
+    mesh sphere(float radius, int divisions, glm::vec4 col, bool sierpinski)
+    {
+        glm::vec4 a = glm::vec4(0,0,1,0);
+        glm::vec4 b = glm::vec4(0,1,0,0);
+        glm::vec4 c = glm::vec4(0,-1,0,0);
+        glm::vec4 d = glm::vec4(1,0,0,0);
+        glm::vec4 e = glm::vec4(-1,0,0,0);
+        glm::vec4 f = glm::vec4(0,0,-1,0);
+
+        std::vector<glm::vec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
+
+        //generate each subdivided triangle
+        
+        t1 = subdivide_triangle_vector_euclidean(a, b, d, divisions, sierpinski);
+        t2 = subdivide_triangle_vector_euclidean(a, d, c, divisions, sierpinski);
+        t3 = subdivide_triangle_vector_euclidean(a, c, e, divisions, sierpinski);
+        t4 = subdivide_triangle_vector_euclidean(a, e, b, divisions, sierpinski);
+        t5 = subdivide_triangle_vector_euclidean(f, b, d, divisions, sierpinski);
+        t6 = subdivide_triangle_vector_euclidean(f, d, c, divisions, sierpinski);
+        t7 = subdivide_triangle_vector_euclidean(f, c, e, divisions, sierpinski);
+        t8 = subdivide_triangle_vector_euclidean(f, e, b, divisions, sierpinski);
+        
+        //push back each subdivision to the final vector.
+        for(unsigned int i=0; i < t1.size(); i++)
+        {
+            collected.push_back(t1[i]);
+        }
+
+        for(unsigned int i=0; i < t2.size(); i++)
+        {
+            collected.push_back(t2[i]);
+        }
+        
+        for(unsigned int i=0; i < t3.size(); i++)
+        {
+            collected.push_back(t3[i]);
+        }
+        
+        for(unsigned int i=0; i < t4.size(); i++)
+        {
+            collected.push_back(t4[i]);
+        }
+        
+        for(unsigned int i=0; i < t5.size(); i++)
+        {
+            collected.push_back(t5[i]);
+        }
+        
+        for(unsigned int i=0; i < t6.size(); i++)
+        {
+            collected.push_back(t6[i]);
+        }
+        
+        for(unsigned int i=0; i < t7.size(); i++)
+        {
+            collected.push_back(t7[i]);
+        }
+        
+        for(unsigned int i=0; i < t8.size(); i++)
+        {
+            collected.push_back(t8[i]);
+        }
+
+        std::vector<glm::vec4> normalized;
+        for(unsigned int i=0; i < collected.size(); i++)
+        {
+            normalized.push_back(hypermath::exp0(radius * hypermath::normalize(collected[i])));
+        }
+
+        //setup colors
+        std::vector<glm::vec4> colors;
+        for(unsigned int i = 0; i < collected.size(); i++)
+        {
+            colors.push_back(col);
+        }
+        //create mesh
+        mesh result;
+        result.vao = vao_from_pos_col(normalized, colors);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = normalized.size();
+        return result;
+    }
 }
 
 

@@ -5,19 +5,18 @@
 #include "scene.h"
 #include <vector>
 
-class FlagManager
+class flagmanager
 {
     private:
-        object _flag;
+        mesh _flag;
         int _flag_num;
         Scene* _scene;
         CameraControls* _camera_controls;
-        std::vector<object*> _flag_vec;
-
+        std::vector<object*> _flags;
 
     public:
-        FlagManager(Scene* s, CameraControls camc);
-        FlagManager();
+        flagmanager(Scene* s, CameraControls camc);
+        flagmanager();
         void drop_flag();
 };
 

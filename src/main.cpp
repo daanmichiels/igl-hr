@@ -13,6 +13,7 @@
 #include "mesh.h"
 #include "fpscounter.h"
 #include "cameracontrols.h"
+#include "inputhandler.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -28,19 +29,6 @@ using namespace OVR;
 static void error_callback(int error, const char* description)
 {
     std::cerr << description;
-}
-
-// Bind ESC to window close 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
-    if(key == GLFW_KEY_M && action == GLFW_PRESS)
-    {
-        // toggle mouse binding in cameracontrols
-    }
 }
 
 // Creates the window and gets an OpenGL context for it.
@@ -66,7 +54,7 @@ GLFWwindow* create_window()
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, InputHandler::key_callback);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -260,6 +248,11 @@ int main(int argc, const char* argv[])
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
     s.barrel_power_loc = glGetUniformLocation(quad_program, "BarrelPower");
 
+    // setup grid
+    object grid(primitives::grid(.5));
+    s.objects.push_back(&grid);
+    grid.visible = false;
+
     // set up mesh to render to
     GLuint render_left_vao;
     glGenVertexArrays(1, &render_left_vao);
@@ -338,8 +331,16 @@ int main(int argc, const char* argv[])
     double last_time = current_time;
     double delta_time;
 
-    FpsCounter fps = FpsCounter();
     CameraControls control = CameraControls(window, &s.camera, &hmd);
+    flagmanager flag_manager = flagmanager(&s, control);
+
+    // Set up input handler
+    InputHandler::cameracontrols = control;
+    InputHandler::grid = &grid;
+    InputHandler::flag_manager = &flag_manager;
+
+    FpsCounter fps = FpsCounter(false);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -405,6 +406,8 @@ int main(int argc, const char* argv[])
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        InputHandler::handle(delta_time, width, height);
 
         /*Keyboard Mapping*/
         control.handle(delta_time, width, height);

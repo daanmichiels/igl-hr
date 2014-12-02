@@ -9,6 +9,7 @@
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
+#include <iostream>
 
 using namespace OVR;
 
@@ -155,6 +156,8 @@ void CameraControls::handle_keyboard(float delta_time)
 
 void CameraControls::reset_to_origin()
 {
+    std::cout << "in reset\n";
+
     _shoulders.pos = glm::vec4(0,0,0,1);
     _shoulders.forward = glm::vec4(0,0,-1,0);
     _shoulders.right = glm::vec4(1,0,0,0);

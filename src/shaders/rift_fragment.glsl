@@ -5,7 +5,7 @@ in vec3 theColor;
  
 out vec4 color;
  
-uniform sampler2D sourceTexture;
+uniform sampler2D left_texture;
 uniform vec2 BarrelPower;
 const float PI = 3.1415926535;
 uniform vec2 lensCenter;
@@ -38,5 +38,6 @@ vec2 distort(vec2 p)
 }
  
 void main(){
-    color = texture( sourceTexture, distort(vec2((fract(theUV.x) * 2.0) - 1.0, theUV.y)) ).rgba;
+    color = vec4(fract(theUV.xy), 0, 1);
+    color = texture( left_texture, distort(vec2((fract(theUV.x) * 2.0) - 1.0, theUV.y)) ).rgba;
 }

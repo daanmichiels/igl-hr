@@ -15,6 +15,7 @@ struct object
     std::vector<object*> children;
     std::vector<mesh> meshes;
     bool visible = true;
+
     void transform(glm::mat4 transformation);
     void set_transformation(glm::mat4 transform);
     object();

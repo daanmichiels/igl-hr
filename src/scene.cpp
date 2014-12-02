@@ -18,10 +18,7 @@ void Scene::render()
     
     for(object* o : objects)
     {
-        if(o->visible)
-        {
-            render_object(*o, view);
-        }
+        render_object(*o, view);
     }
 
     glUseProgram(0);
@@ -29,15 +26,6 @@ void Scene::render()
 
 void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer)
 {
-    if( glfwGetKey(control._window, GLFW_KEY_COMMA))
-    {
-        _border -= 0.01f;
-    }
-    if( glfwGetKey(control._window, GLFW_KEY_PERIOD))
-    {
-        _border += 0.01f;
-    }
-
     control.move_right(-control.get_ipd() * 0.5f * control.get_meter());
 
     // Render to our left framebuffer
@@ -58,6 +46,8 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
     glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
 
     glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glClear(GL_DEPTH_BUFFER_BIT);
     render();
@@ -71,7 +61,6 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
 // has no parent, it's the view matrix of the camera.
 void Scene::render_object(object o, glm::mat4 modelview)
 {
-    std::cout << "rendering " << "\n";
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
     for(mesh m : o.meshes)

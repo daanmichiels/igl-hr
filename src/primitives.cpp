@@ -276,7 +276,7 @@ namespace primitives
         result.count = pos.size();
         return result;
     }
-
+    
     // Create a triangle.
     // The corners will be red, green, blue.
     mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
@@ -306,6 +306,27 @@ namespace primitives
         result.mode = GL_TRIANGLE_STRIP;
         result.first = 0;
         result.count = 4;
+        return result;
+    }
+    // Create a n sided polygon inside a circle of given radius.
+    mesh circumscribed_ngon(int n, float radius, glm::vec4 color)
+    {
+        const double PI = 3.141592653589793238463;
+        double radians_between_vertices = 2*PI/n;
+        std::vector<glm::vec4> vertices;
+        std::vector<glm::vec4> col;
+        for(int i = 0; i <= n; i++)
+        {
+            float a = sin(i * radians_between_vertices);
+            float b = cos(i * radians_between_vertices);
+            vertices.push_back(hypermath::exp0(radius * glm::vec4(a, 0, b, 0)));
+            col.push_back(color);
+        }
+        mesh result;
+        result.vao = vao_from_pos_col(vertices, col);
+        result.mode = GL_TRIANGLE_FAN;
+        result.first = 0;
+        result.count = vertices.size();
         return result;
     }
 
@@ -578,9 +599,11 @@ namespace primitives
 
         //setup colors
         std::vector<glm::vec4> colors;
-        for(unsigned int i = 0; i < collected.size(); i++)
+        for(unsigned int i = 0; i < collected.size()/3; i++)
         {
-            colors.push_back(col);
+            colors.push_back(yellow);
+            colors.push_back(green);
+            colors.push_back(blue);
         }
         //create mesh
         mesh result;
@@ -591,5 +614,3 @@ namespace primitives
         return result;
     }
 }
-
-

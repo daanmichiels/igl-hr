@@ -13,9 +13,6 @@
 #include "mesh.h"
 #include "fpscounter.h"
 #include "cameracontrols.h"
-#include "inputhandler.h"
-#include "flagmanager.h"
-#include "init.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -26,6 +23,12 @@
 #include "../thirdparty/libovr/include/OVR.h"
 
 using namespace OVR;
+
+// Called on GLFW error.
+static void error_callback(int error, const char* description)
+{
+    std::cerr << description;
+}
 
 // Bind ESC to window close 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -70,19 +73,34 @@ GLFWwindow* create_window()
     return window;
 }
 
+// Prints some information about the OpenGL context.
+// Requires a currect OpenGL context.
+void print_info()
+{
+    glewExperimental = GL_TRUE;
+    GLenum error = glewInit();
+    if(error != GLEW_OK)
+    {
+        std::cout << "Error: " << glewGetErrorString(error) << "\n";
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
+    std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
+}
+
+
+
+
 int main(int argc, const char* argv[])
 {
-    const char* filename = "resources/plane.obj";
-    bool fullscreen = false;
-    for(int i=argc-1; i>0; i--)
-    {
-        if(strcmp(argv[i],"--fullscreen") == 0)
-            fullscreen = true;
-        else
-            filename = argv[i];
+    const char* filename = "resources/teapot.obj";
+    if (argc > 1) {
+        filename = argv[1];
     }
 
-    GLFWwindow* window = create_window(fullscreen);
+    GLFWwindow* window = create_window();
+    print_info();
 
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -199,39 +217,46 @@ int main(int argc, const char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    GLuint tex_id = glGetUniformLocation(quad_program, "sourceTexture");
+    GLuint left_tex_id = glGetUniformLocation(quad_program, "left_texture");
 
     // create some meshes
-    // glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
-    // glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
-    // glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
-    // mesh mesh_triangle = primitives::triangle(a,b,c);
-    // mesh mesh_tetra    = primitives::tetrahedron(0.04);
+    glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
+    glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
+    glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
+    mesh mesh_triangle = primitives::triangle(a,b,c);
+    mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
-    // object o1, o2, o3, t1, t2, t3;
-    // o1.meshes.push_back(mesh_triangle);
-    // o2.meshes.push_back(mesh_tetra);
-    // o3.meshes.push_back(mesh_tetra);
-    // glm::vec4 location1 = hypermath::exp0(glm::vec4(0.04,0,-0.1,0));
-    // glm::vec4 location2 = hypermath::exp0(glm::vec4(0,0,-0.2,0));
-    // glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.07,0));
-    // o1.transform(hypermath::translation0(location1));
-    // o2.transform(hypermath::translation0(location2));
-    // o3.transform(hypermath::translation0(location3));
+    object o1, o2, o3, t1, t2, t3;
+    o1.meshes.push_back(mesh_triangle);
+    o2.meshes.push_back(mesh_tetra);
+    o3.meshes.push_back(mesh_tetra);
+    glm::vec4 location1 = hypermath::exp0(glm::vec4(0.04,0,-0.1,0));
+    glm::vec4 location2 = hypermath::exp0(glm::vec4(0,0,-0.2,0));
+    glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.07,0));
+    o1.transform(hypermath::translation0(location1));
+    o2.transform(hypermath::translation0(location2));
+    o3.transform(hypermath::translation0(location3));
+
+    t1 = object(filename, false, 1);
+    t2 = object(filename, false, 0.1);
+    t3 = object(filename, false, 0.01);
+
+    // relations between the objects
+    o2.children.push_back(&o3);
 
     // create a camera
     Camera cam(1.2f, 640.0f/800.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
-
+    // s.objects.push_back(&o1);
+    // s.objects.push_back(&o2);
+    s.objects.push_back(&t1);
+    s.objects.push_back(&t2);
+    s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
-
-    CameraControls cam_controls = CameraControls(window, &s.camera, &hmd);;
-    flagmanager flag_manager = flagmanager(&s, cam_controls);
-
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
     s.barrel_power_loc = glGetUniformLocation(quad_program, "BarrelPower");
 
@@ -287,95 +312,102 @@ int main(int argc, const char* argv[])
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    object t1;
-    t1 = object(filename, false, 1);
-    s.objects.push_back(&t1);
-
-    // setup grid
-    object grid(primitives::grid(.5));
-    s.objects.push_back(&grid);
-    grid.visible = false;
-
-    //make sierpinski octahedron.
-    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 1, true));
-    s.objects.push_back(&sierpinski_octahedron);
-
-    // Set up input handler
-    InputHandler::cameracontrols = cam_controls;
-    InputHandler::grid = &grid;
-    InputHandler::flag_manager = &flag_manager;
-
-    FpsCounter fps = FpsCounter(false);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-    //setup delta_time
+    // make it more interesting
+    // object grid[240];
+    // int count = 0;
+    // for(int i=0; i<10; i++)
+    // {
+    //     float x = -0.2+0.04*i;
+    //     for(int j=0; j<6; j++)
+    //     {
+    //         float y = -0.2 + 0.07 * j;
+    //         for(int k=0; k<4; k++)
+    //         {
+    //             float z = -0.8 + k*0.1;
+    //             grid[count].meshes.push_back(mesh_tetra);
+    //             glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
+    //             grid[count].transform(hypermath::translation0(location));
+    //             s.objects.push_back(&(grid[count]));
+    //             count++;
+    //         }
+    //     }
+    // }
+                
+    //setup delta_time (must be outside of main loop)
     double current_time = glfwGetTime();
     double last_time = current_time;
     double delta_time;
 
-    // main loop
+    FpsCounter fps = FpsCounter();
+    CameraControls control = CameraControls(window, &s.camera, &hmd);
+
     while (!glfwWindowShouldClose(window))
     {
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        float initialFoV = ((float)width)/height;
+        double t = glfwGetTime();
+        float initialFoV = ((float)width / 2)/height;
 
         s.camera.set_ratio(initialFoV);
-        glViewport(0, 0, width, height);
+
+        
         // cam.set_ratio wouldn't work, since the scene refers to it by value, not by reference (should we change this?)
 
         //get current delta_time
         last_time = current_time;
         current_time = glfwGetTime();
         delta_time = current_time - last_time;
+        // obj movement
+        // glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
+        // glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
+        // location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
+        // o1.transformation = rotation1 * hypermath::translation0(location1);
+        // o2.transformation = hypermath::translation0(location2) * rotation2;
 
+        s.render_stereo(textureScale, control, left_framebuffer, right_framebuffer);
+
+        // Render to the screen
+        glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        s.render();
+        glUseProgram(quad_program);
 
-        // s.render_stereo(textureScale, cam_controls, left_framebuffer, right_framebuffer);
+        // Clear the screen
+        glClearColor(1.0, 1.0, 1.0, 1.0);
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // // Render to the screen
-        // glViewport(0, 0, width, height);
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glUseProgram(quad_program);
+        // Bind our left texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, left_texture);
+        // Set our "left_texture" sampler to user Texture Unit 0
+        glUniform1i(left_tex_id, 0);
 
-        // // Clear the screen
-        // glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (s.lens_center_loc != -1)
+        {
+           glUniform2f(s.lens_center_loc, control.left_lens_center.x, control.left_lens_center.y);
+        }
 
-        // // Bind our left texture in Texture Unit 0
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, left_texture);
-        // // Set our "left_texture" sampler to user Texture Unit 0
-        // glUniform1i(tex_id, 0);
+        // Draw the left triangles !
+        glBindVertexArray(render_left_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // if (s.lens_center_loc != -1)
-        // {
-        //    glUniform2f(s.lens_center_loc, cam_controls.left_lens_center.x, cam_controls.left_lens_center.y);
-        // }
+        // Bind our right texture in Texture Unit 0
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, right_texture);
+        // Set our "right_texture" sampler to user Texture Unit 0
+        glUniform1i(left_tex_id, 0);
 
-        // // Draw the left triangles !
-        // glBindVertexArray(render_left_vao);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        if (s.lens_center_loc != -1)
+        {
+           glUniform2f(s.lens_center_loc, control.right_lens_center.x, control.right_lens_center.y);
+        }
 
-        // // Bind our right texture in Texture Unit 0
-        // glActiveTexture(GL_TEXTURE0);
-        // glBindTexture(GL_TEXTURE_2D, right_texture);
-        // // Set our "right_texture" sampler to user Texture Unit 0
-        // glUniform1i(tex_id, 0);
-
-        // if (s.lens_center_loc != -1)
-        // {
-        //    glUniform2f(s.lens_center_loc, cam_controls.right_lens_center.x, cam_controls.right_lens_center.y);
-        // }
-
-        // // Draw the right triangles !
-        // glBindVertexArray(render_right_vao);
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        // Draw the right triangles !
+        glBindVertexArray(render_right_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        InputHandler::handle(delta_time, width, height);
+        /*Keyboard Mapping*/
+        control.handle(delta_time, width, height);
 	
         fps.update(current_time);
 

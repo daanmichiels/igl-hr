@@ -1,5 +1,6 @@
 #ifndef INPUTHANDLER_H
 #define INPUTHANDLER_H
+
 #include "object.h"
 #include <GLFW/glfw3.h>
 #include "cameracontrols.h"

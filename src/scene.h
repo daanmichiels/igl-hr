@@ -16,6 +16,7 @@
         GLuint program;
         GLuint lens_center_loc;
         GLuint barrel_power_loc;
+        bool _has_printed = false;
         
         void render();
         void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);

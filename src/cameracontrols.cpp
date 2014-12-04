@@ -135,6 +135,10 @@ void CameraControls::handle_keyboard(float delta_time)
     {
         walking_direction += glm::vec3(0,-1,0);
     }
+    if ( glfwGetKey(_window, GLFW_KEY_GRAVE_ACCENT))
+    {
+        reset_to_origin();
+    }
 
     //length is either zero or at least one, mathematically
     //but floating point
@@ -156,7 +160,6 @@ void CameraControls::handle_keyboard(float delta_time)
 
 void CameraControls::reset_to_origin()
 {
-    std::cout << "in reset\n";
 
     _shoulders.pos = glm::vec4(0,0,0,1);
     _shoulders.forward = glm::vec4(0,0,-1,0);

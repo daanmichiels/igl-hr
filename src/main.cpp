@@ -195,11 +195,13 @@ int main(int argc, const char* argv[])
 
     // set up the scene
     Scene s = Scene();
+    object sierpinski_octahedron(primitives::subdivided_octahedron(2, 2, true));
+    s.objects.push_back(&sierpinski_octahedron);
     // s.objects.push_back(&o1);
     // s.objects.push_back(&o2);
-    s.objects.push_back(&t1);
-    s.objects.push_back(&t2);
-    s.objects.push_back(&t3);
+    // s.objects.push_back(&t1);
+    // s.objects.push_back(&t2);
+    // s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");

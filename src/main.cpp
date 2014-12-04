@@ -14,6 +14,7 @@
 #include "fpscounter.h"
 #include "cameracontrols.h"
 #include "inputhandler.h"
+#include "init.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -25,69 +26,25 @@
 
 using namespace OVR;
 
-// Called on GLFW error.
-static void error_callback(int error, const char* description)
-{
-    std::cerr << description;
-}
-
-// Creates the window and gets an OpenGL context for it.
-GLFWwindow* create_window()
-{
-    GLFWwindow* window;
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit())
-     {
-        exit(EXIT_FAILURE);
-     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);	
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    window = glfwCreateWindow(1280, 800, "Hyperbolic space on the Rift", NULL, NULL);
-    if (!window)
-    {
-        std::cout << "Failed to create window. Do you have OpenGL 3.0 or higher?\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, InputHandler::key_callback);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    return window;
-}
-
-// Prints some information about the OpenGL context.
-// Requires a currect OpenGL context.
-void print_info()
-{
-    glewExperimental = GL_TRUE;
-    GLenum error = glewInit();
-    if(error != GLEW_OK)
-    {
-        std::cout << "Error: " << glewGetErrorString(error) << "\n";
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-    std::cout << "Using GLEW " << glewGetString(GLEW_VERSION) << "\n";
-    std::cout << "Using OpenGL " << glGetString(GL_VERSION) << "\n";
-}
-
-
-
-
 int main(int argc, const char* argv[])
 {
     const char* filename = "resources/teapot.obj";
-    if (argc > 1) {
-        filename = argv[1];
+    bool fullscreen = false;
+    bool rift_render = false;
+    for(int i=argc-1; i>0; i--)
+    {
+        if (strcmp(argv[i],"--fullscreen") == 0)
+            fullscreen = true;
+        else if (strcmp(argv[i],"--rift") == 0) {
+            rift_render = true;
+            fullscreen = true;
+        }
+        else
+            filename = argv[i];
     }
 
-    GLFWwindow* window = create_window();
+    GLFWwindow* window = create_window(fullscreen);
+
     print_info();
 
     int width, height;
@@ -234,7 +191,7 @@ int main(int argc, const char* argv[])
     o2.children.push_back(&o3);
 
     // create a camera
-    Camera cam(1.2f, 640.0f/800.0f, 0.001f, 100.0f);
+    Camera cam(1.2f, rift_render ? 640.0f/800.0f : 1280.0f/800.0f, 0.001f, 100.0f);
 
     // set up the scene
     Scene s = Scene();
@@ -345,7 +302,7 @@ int main(int argc, const char* argv[])
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
-        float initialFoV = ((float)width / 2)/height;
+        float initialFoV = (rift_render ? ((float)width / 2) : (float)width)/height;
 
         s.camera.set_ratio(initialFoV);
 
@@ -363,46 +320,62 @@ int main(int argc, const char* argv[])
         // o1.transformation = rotation1 * hypermath::translation0(location1);
         // o2.transformation = hypermath::translation0(location2) * rotation2;
 
-        s.render_stereo(textureScale, control, left_framebuffer, right_framebuffer);
+        if (rift_render) {
+            s.render_stereo(textureScale, control, left_framebuffer, right_framebuffer);
 
-        // Render to the screen
-        glViewport(0, 0, width, height);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glUseProgram(quad_program);
+            // Render to the screen
+            glViewport(0, 0, width, height);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glUseProgram(quad_program);
 
-        // Clear the screen
-        glClearColor(1.0, 1.0, 1.0, 1.0);
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // Clear the screen
+            glClearColor(1.0, 1.0, 1.0, 1.0);
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Bind our left texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, left_texture);
-        // Set our "left_texture" sampler to user Texture Unit 0
-        glUniform1i(left_tex_id, 0);
+            // Bind our left texture in Texture Unit 0
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, left_texture);
+            // Set our "left_texture" sampler to user Texture Unit 0
+            glUniform1i(left_tex_id, 0);
 
-        if (s.lens_center_loc != -1)
-        {
-           glUniform2f(s.lens_center_loc, control.left_lens_center.x, control.left_lens_center.y);
+            if (s.lens_center_loc != -1)
+            {
+               glUniform2f(s.lens_center_loc, control.left_lens_center.x, control.left_lens_center.y);
+            }
+
+            // Draw the left triangles !
+            glBindVertexArray(render_left_vao);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            // Bind our right texture in Texture Unit 0
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, right_texture);
+            // Set our "right_texture" sampler to user Texture Unit 0
+            glUniform1i(left_tex_id, 0);
+
+            if (s.lens_center_loc != -1)
+            {
+               glUniform2f(s.lens_center_loc, control.right_lens_center.x, control.right_lens_center.y);
+            }
+
+            // Draw the right triangles !
+            glBindVertexArray(render_right_vao);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+        else {
+            // Render to the screen
+            glViewport(0, 0, width, height);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glUseProgram(quad_program);
+
+            // Clear the screen
+            glClearColor(1.0, 1.0, 1.0, 1.0);
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            s.render();
         }
 
-        // Draw the left triangles !
-        glBindVertexArray(render_left_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        // Bind our right texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, right_texture);
-        // Set our "right_texture" sampler to user Texture Unit 0
-        glUniform1i(left_tex_id, 0);
-
-        if (s.lens_center_loc != -1)
-        {
-           glUniform2f(s.lens_center_loc, control.right_lens_center.x, control.right_lens_center.y);
-        }
-
-        // Draw the right triangles !
-        glBindVertexArray(render_right_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -18,12 +18,12 @@ namespace hypermath
     glm::dmat4 translation0(glm::dvec4 target);
     glm::dmat4 translation0inv(glm::dvec4 target);
     glm::dmat4 translation(glm::dvec4 source, glm::dvec4 target);
-    glm::dmat4 rotation0(glm::quat rotation);
-    glm::dmat4 rotationz(glm::quat rotation);
-    glm::dmat4 rotation0inv(glm::quat rotation);
-    glm::dmat4 rotation(glm::dvec4 basepoint, glm::quat rotate);
-    glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::quat rotate);
-    glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::quat rotate);
+    glm::dmat4 rotation0(glm::dquat rotation);
+    glm::dmat4 rotationz(glm::dquat rotation);
+    glm::dmat4 rotation0inv(glm::dquat rotation);
+    glm::dmat4 rotation(glm::dvec4 basepoint, glm::dquat rotate);
+    glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::dquat rotate);
+    glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::dquat rotate);
     glm::dvec4 midpoint(glm::dvec4 a, glm::dvec4 b, double t);
     glm::dvec4 gravity(glm::dvec4 basepoint);
 }

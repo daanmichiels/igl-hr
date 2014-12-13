@@ -46,8 +46,8 @@ namespace
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(0, 4, GL_double, GL_FALSE, 8*sizeof(GL_double), 0);
-        glVertexAttribPointer(1, 4, GL_double, GL_FALSE, 8*sizeof(GL_double), (void*)(4*sizeof(GL_double)));
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 8*sizeof(GL_FLOAT), 0);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8*sizeof(GL_FLOAT), (void*)(4*sizeof(GL_FLOAT)));
 
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

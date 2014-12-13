@@ -216,7 +216,7 @@ int main(int argc, const char* argv[])
     glBufferData(GL_ARRAY_BUFFER, sizeof(render_left_data), render_left_data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_float, GL_FALSE, 3*sizeof(GL_float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -242,7 +242,7 @@ int main(int argc, const char* argv[])
     glBufferData(GL_ARRAY_BUFFER, sizeof(render_right_data), render_right_data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_float, GL_FALSE, 3*sizeof(GL_float), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

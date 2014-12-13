@@ -38,7 +38,7 @@ class CameraControls
         void handle(double delta_time, int width, int height);
         void set_mouse_speed(double speed);
         void set_step_size(double size);
-        void set_orientation(glm::quat rotation);
+        void set_orientation(glm::dquat rotation);
         glm::dvec4 get_pos();
         void increase_speed();
         void decrease_speed();

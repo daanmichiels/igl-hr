@@ -139,35 +139,35 @@ namespace hypermath
     // rotation around a quaternion starting at origin. 
     // At origin, x,y,z have rotational symmetry and we can use regular Eulerian rotation.
     // Quaternion defines axis of rotation and degrees of rotation.
-    glm::dmat4 rotation0(glm::quat rotation)
+    glm::dmat4 rotation0(glm::dquat rotation)
     {
-        return glm::dmat4_cast(rotation);
+        return glm::mat4_cast(rotation);
     }
     
     //project quaternion into a rotation around z-axis
-    glm::dmat4 rotationz(glm::quat rotation)
+    glm::dmat4 rotationz(glm::dquat rotation)
     {
         rotation[0] = 0;
         rotation[2] = 0;
-        return glm::dmat4_cast((glm::normalize(rotation)));
+        return glm::mat4_cast((glm::normalize(rotation)));
     }
 
     //just invert the quaternion to get the inverse rotation.
-    glm::dmat4 rotation0inv(glm::quat rotation)
+    glm::dmat4 rotation0inv(glm::dquat rotation)
     {
-        glm::quat rotateinv = glm::inverse(rotation);
+        glm::dquat rotateinv = glm::inverse(rotation);
         return rotation0(rotateinv);
     }
 
     //need to rotate our final position since we're also rotating space
-    glm::dmat4 rotation(glm::dvec4 basepoint, glm::quat rotate)
+    glm::dmat4 rotation(glm::dvec4 basepoint, glm::dquat rotate)
     {
         glm::dmat4 rMatrix = rotation0(rotate);
         glm::dvec4 target = rMatrix*basepoint;
         return translation0(target)*rMatrix*translation0inv(basepoint);
     }
 
-    glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::quat rotate)
+    glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::dquat rotate)
     {
         return rotation(basepoint, glm::inverse(rotate));
     }
@@ -176,7 +176,7 @@ namespace hypermath
     //not sure if this works completely correctly.
     //simple changes will fix. but if this works its faster than a multiplication 
     //of our rmatrix and translation functions by a couple calculations
-    glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::quat rotate)
+    glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::dquat rotate)
     {
         glm::dmat4 rMatrix = rotation0(rotate);
         glm::dvec4 newTarget = rMatrix*target;

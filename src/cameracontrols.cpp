@@ -63,7 +63,7 @@ void CameraControls::handle_hmd()
     ovrTrackingState ts  = ovrHmd_GetTrackingState(*_hmd, ovr_GetTimeInSeconds());
     if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
         ovrQuatf orientation = ts.HeadPose.ThePose.Orientation;
-        set_orientation(glm::quat(orientation.w, orientation.x, orientation.y, orientation.z));
+        set_orientation(glm::dquat(orientation.w, orientation.x, orientation.y, orientation.z));
     }
 }
 
@@ -172,7 +172,7 @@ void CameraControls::reset_to_origin()
     _head.up = glm::dvec4(0,1,0,0);
 }
 
-void CameraControls::set_orientation(glm::quat rotation)
+void CameraControls::set_orientation(glm::dquat rotation)
 {
     glm::dmat4 rotate = hypermath::rotation0(rotation);
     glm::dmat4 rotatez = hypermath::rotationz(rotation);

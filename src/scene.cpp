@@ -14,7 +14,7 @@ void Scene::render()
     glm::dmat4 proj = camera.get_projection();
     glm::dmat4 view = camera.get_view();
     
-    glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(proj));
+    glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr((glm::mat4)proj));
     
     for(object* o : objects)
     {
@@ -65,7 +65,7 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
 void Scene::render_object(object o, glm::dmat4 modelview)
 {
     modelview = modelview * o.transformation;
-    glUniformMatrix4fv(glGetUniformLocation(program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));
+    glUniformMatrix4fv(glGetUniformLocation(program, "modelview"), 1, GL_FALSE, glm::value_ptr((glm::mat4)modelview));
     for(mesh m : o.meshes)
     {
         render_mesh(m);

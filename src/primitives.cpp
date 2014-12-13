@@ -30,18 +30,18 @@ namespace
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        double* data = new double[8*n];
+        float* data = new float[8*n];
         for(size_t i=0; i<n; i++) {
-            data[8*i+0] = pos[i].x;
-            data[8*i+1] = pos[i].y;
-            data[8*i+2] = pos[i].z;
-            data[8*i+3] = pos[i].w;
-            data[8*i+4] = col[i].r;
-            data[8*i+5] = col[i].g;
-            data[8*i+6] = col[i].b;
-            data[8*i+7] = col[i].a;
+            data[8*i+0] = (float) pos[i].x;
+            data[8*i+1] = (float) pos[i].y;
+            data[8*i+2] = (float) pos[i].z;
+            data[8*i+3] = (float) pos[i].w;
+            data[8*i+4] = (float) col[i].r;
+            data[8*i+5] = (float) col[i].g;
+            data[8*i+6] = (float) col[i].b;
+            data[8*i+7] = (float) col[i].a;
         }
-        glBufferData(GL_ARRAY_BUFFER, sizeof(double)*8*n, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8*n, data, GL_STATIC_DRAW);
         delete [] data;
 
         glEnableVertexAttribArray(0);

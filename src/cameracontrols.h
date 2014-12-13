@@ -15,42 +15,42 @@ class CameraControls
         GLFWwindow* _window;
         Camera* _camera;
         ovrHmd* _hmd;
-        float _mouse_speed = 0.3f;
-        float _move_speed = 0.2f;
-        float _ipd = 0.065f;
-        float _height = 1.80;
-        float _meter = 1.0f;
+        double _mouse_speed = 0.3f;
+        double _move_speed = 0.2f;
+        double _ipd = 0.065f;
+        double _height = 1.80;
+        double _meter = 1.0f;
         frame _shoulders;
         frame _head;
 
-        void handle_mouse(float delta_time, int width, int height);
-        void handle_keyboard(float delta_time);
+        void handle_mouse(double delta_time, int width, int height);
+        void handle_keyboard(double delta_time);
         void handle_hmd();
         void update_camera_transformation();
 
     public:
-        glm::vec2 left_lens_center = glm::vec2(0.15,0);
-        glm::vec2 right_lens_center = glm::vec2(-0.15,0);
+        glm::dvec2 left_lens_center = glm::dvec2(0.15,0);
+        glm::dvec2 right_lens_center = glm::dvec2(-0.15,0);
 
         CameraControls(GLFWwindow* window, Camera* camera, ovrHmd* hmd);
         bool bind_mouse = false;
-        void move_right(float distance);
-        void handle(float delta_time, int width, int height);
-        void set_mouse_speed(float speed);
-        void set_step_size(float size);
+        void move_right(double distance);
+        void handle(double delta_time, int width, int height);
+        void set_mouse_speed(double speed);
+        void set_step_size(double size);
         void set_orientation(glm::quat rotation);
-        glm::vec4 get_pos();
+        glm::dvec4 get_pos();
         void increase_speed();
         void decrease_speed();
-        void grow(float factor);
-        void shrink(float factor);
-        glm::mat4 get_cam_view();
-        glm::vec4 get_forward();
+        void grow(double factor);
+        void shrink(double factor);
+        glm::dmat4 get_cam_view();
+        glm::dvec4 get_forward();
         void reset_to_origin();
-        float get_ipd();
-        float get_height();
-        float get_meter();
-        glm::vec4 get_flag_pos();
+        double get_ipd();
+        double get_height();
+        double get_meter();
+        glm::dvec4 get_flag_pos();
 
 };
 

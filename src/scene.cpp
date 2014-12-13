@@ -11,8 +11,8 @@ void Scene::render()
 {
     glUseProgram(program);
 
-    glm::mat4 proj = camera.get_projection();
-    glm::mat4 view = camera.get_view();
+    glm::dmat4 proj = camera.get_projection();
+    glm::dmat4 view = camera.get_view();
     
     glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(proj));
     
@@ -62,7 +62,7 @@ void Scene::render_stereo(int textureScale, CameraControls control, GLuint left_
 // The supplied modelview matrix is the modelview matrix so far, when
 // traversing through the object's parents. For example, if the object
 // has no parent, it's the view matrix of the camera.
-void Scene::render_object(object o, glm::mat4 modelview)
+void Scene::render_object(object o, glm::dmat4 modelview)
 {
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(program, "modelview"), 1, GL_FALSE, glm::value_ptr(modelview));

@@ -165,30 +165,18 @@ int main(int argc, const char* argv[])
     GLuint left_tex_id = glGetUniformLocation(quad_program, "left_texture");
 
     // create some meshes
-    glm::vec4 a = hypermath::exp0(glm::vec4(0.0f, 0.05f, 0.0f, 0.0f));
-    glm::vec4 b = hypermath::exp0(glm::vec4(0.05f, -0.05f, 0.0f, 0.0f));
-    glm::vec4 c = hypermath::exp0(glm::vec4(-0.05f, -0.05f, 0.0f, 0.0f));
+    glm::dvec4 a = hypermath::exp0(glm::dvec4(0.0f, 0.05f, 0.0f, 0.0f));
+    glm::dvec4 b = hypermath::exp0(glm::dvec4(0.05f, -0.05f, 0.0f, 0.0f));
+    glm::dvec4 c = hypermath::exp0(glm::dvec4(-0.05f, -0.05f, 0.0f, 0.0f));
     mesh mesh_triangle = primitives::triangle(a,b,c);
     mesh mesh_tetra    = primitives::tetrahedron(0.04);
 
     // create some objects
-    object o1, o2, o3, t1, t2, t3;
-    o1.meshes.push_back(mesh_triangle);
-    o2.meshes.push_back(mesh_tetra);
-    o3.meshes.push_back(mesh_tetra);
-    glm::vec4 location1 = hypermath::exp0(glm::vec4(0.04,0,-0.1,0));
-    glm::vec4 location2 = hypermath::exp0(glm::vec4(0,0,-0.2,0));
-    glm::vec4 location3 = hypermath::exp0(glm::vec4(0,0,0.07,0));
-    o1.transform(hypermath::translation0(location1));
-    o2.transform(hypermath::translation0(location2));
-    o3.transform(hypermath::translation0(location3));
+    object t1, t2, t3;
 
     t1 = object(filename, false, 1);
     t2 = object(filename, false, 0.1);
     t3 = object(filename, false, 0.01);
-
-    // relations between the objects
-    o2.children.push_back(&o3);
 
     // create a camera
     Camera cam(1.2f, rift_render ? 640.0f/800.0f : 1280.0f/800.0f, 0.001f, 100.0f);
@@ -197,11 +185,6 @@ int main(int argc, const char* argv[])
     Scene s = Scene();
     object sierpinski_octahedron(primitives::subdivided_octahedron(2, 2, true));
     s.objects.push_back(&sierpinski_octahedron);
-    // s.objects.push_back(&o1);
-    // s.objects.push_back(&o2);
-    // s.objects.push_back(&t1);
-    // s.objects.push_back(&t2);
-    // s.objects.push_back(&t3);
     s.camera = cam;
     s.program = program;
     s.lens_center_loc = glGetUniformLocation(quad_program, "lensCenter");
@@ -233,7 +216,7 @@ int main(int argc, const char* argv[])
     glBufferData(GL_ARRAY_BUFFER, sizeof(render_left_data), render_left_data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
+    glVertexAttribPointer(0, 3, GL_float, GL_FALSE, 3*sizeof(GL_float), 0);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -259,7 +242,7 @@ int main(int argc, const char* argv[])
     glBufferData(GL_ARRAY_BUFFER, sizeof(render_right_data), render_right_data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(GL_FLOAT), 0);
+    glVertexAttribPointer(0, 3, GL_float, GL_FALSE, 3*sizeof(GL_float), 0);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -269,15 +252,15 @@ int main(int argc, const char* argv[])
     // int count = 0;
     // for(int i=0; i<10; i++)
     // {
-    //     float x = -0.2+0.04*i;
+    //     double x = -0.2+0.04*i;
     //     for(int j=0; j<6; j++)
     //     {
-    //         float y = -0.2 + 0.07 * j;
+    //         double y = -0.2 + 0.07 * j;
     //         for(int k=0; k<4; k++)
     //         {
-    //             float z = -0.8 + k*0.1;
+    //             double z = -0.8 + k*0.1;
     //             grid[count].meshes.push_back(mesh_tetra);
-    //             glm::vec4 location = hypermath::exp0(glm::vec4(x,y,z,0));
+    //             glm::dvec4 location = hypermath::exp0(glm::dvec4(x,y,z,0));
     //             grid[count].transform(hypermath::translation0(location));
     //             s.objects.push_back(&(grid[count]));
     //             count++;
@@ -304,7 +287,7 @@ int main(int argc, const char* argv[])
     while (!glfwWindowShouldClose(window))
     {
         double t = glfwGetTime();
-        float initialFoV = (rift_render ? ((float)width / 2) : (float)width)/height;
+        double initialFoV = (rift_render ? ((double)width / 2) : (double)width)/height;
 
         s.camera.set_ratio(initialFoV);
 
@@ -316,9 +299,9 @@ int main(int argc, const char* argv[])
         current_time = glfwGetTime();
         delta_time = current_time - last_time;
         // obj movement
-        // glm::mat4 rotation1 = glm::rotate((float)t,glm::vec3(0.0f,1.0f,0.0f));
-        // glm::mat4 rotation2 = glm::rotate((float)(2*t),glm::vec3(0.0f,1.0f,0.0f));
-        // location2 = hypermath::exp0(glm::vec4(0,0.1*sin(0.3*t),-0.2,0));
+        // glm::dmat4 rotation1 = glm::rotate((double)t,glm::dvec3(0.0f,1.0f,0.0f));
+        // glm::dmat4 rotation2 = glm::rotate((double)(2*t),glm::dvec3(0.0f,1.0f,0.0f));
+        // location2 = hypermath::exp0(glm::dvec4(0,0.1*sin(0.3*t),-0.2,0));
         // o1.transformation = rotation1 * hypermath::translation0(location1);
         // o2.transformation = hypermath::translation0(location2) * rotation2;
 

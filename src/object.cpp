@@ -10,12 +10,12 @@
 #include "primitives.h"
 #include "hypermath.h"
 
-void object::transform(glm::mat4 transformation)
+void object::transform(glm::dmat4 transformation)
 {
     this->transformation = transformation * this->transformation;
 }
 
-void object::set_transformation(glm::mat4 transformation)
+void object::set_transformation(glm::dmat4 transformation)
 {
     this->transformation = transformation;
 }
@@ -29,9 +29,9 @@ object::object(const char filename[], bool converted, double scale)
 {
     std::ifstream input(filename);
 
-    std::vector<glm::vec4> vertices;
+    std::vector<glm::dvec4> vertices;
 
-    std::vector<glm::vec4> v;
+    std::vector<glm::dvec4> v;
 
     for(std::string line; getline(input, line); ) {
         if (line[0] == 'v') {
@@ -53,7 +53,7 @@ object::object(const char filename[], bool converted, double scale)
                 w = std::stod(line);
             }
             else {
-                glm::vec4 conv = hypermath::exp0(glm::vec4(x * scale, y * scale, z * scale, 0));
+                glm::dvec4 conv = hypermath::exp0(glm::dvec4(x * scale, y * scale, z * scale, 0));
 
                 x = conv.x;
                 y = conv.y;
@@ -61,7 +61,7 @@ object::object(const char filename[], bool converted, double scale)
                 w = conv.w;
             }
 
-            vertices.push_back(glm::vec4(x, y, z, w));
+            vertices.push_back(glm::dvec4(x, y, z, w));
         }
         else if (line[0] == 'f') {
             std::stringstream linestream(line.substr(1));

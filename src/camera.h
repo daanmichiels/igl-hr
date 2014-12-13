@@ -7,16 +7,16 @@
 class Camera
 {
     private:
-        float _fov, _ratio, _near, _far;
-        glm::mat4 _proj;
-        glm::mat4 _view;
+        double _fov, _ratio, _near, _far;
+        glm::dmat4 _proj;
+        glm::dmat4 _view;
     public:
-        Camera(float fov=1.2f, float ratio=1.0f, float near=0.01f, float far=10.0f);
-        glm::mat4 get_projection();
-        glm::mat4 get_view();
-        void set_ratio(float ratio);
-        void transform(glm::mat4 transformationinv);
-        void set_transformation(glm::mat4 transformationinv);
+        Camera(double fov=1.2f, double ratio=1.0f, double near=0.01f, double far=10.0f);
+        glm::dmat4 get_projection();
+        glm::dmat4 get_view();
+        void set_ratio(double ratio);
+        void transform(glm::dmat4 transformationinv);
+        void set_transformation(glm::dmat4 transformationinv);
 };
 
 #endif

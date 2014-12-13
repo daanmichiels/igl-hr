@@ -22,8 +22,8 @@
         void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
 
     private:
-        float _border = 0.1f;
-        void render_object(object o, glm::mat4 modelview);
+        double _border = 0.1f;
+        void render_object(object o, glm::dmat4 modelview);
         void render_mesh(mesh m);
 };
 

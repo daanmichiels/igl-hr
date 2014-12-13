@@ -11,7 +11,7 @@ flagmanager::flagmanager(Scene* s, CameraControls camc)
 {
     //setup our flag
     _flag_num = 0;
-    _flag = primitives::sphere(0.01f, 4, glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
+    _flag = primitives::sphere(0.01f, 4, glm::dvec4(0.0f, 1.0f, 0.0f, 0.0f));
     _flags = std::vector<object*>();
     _scene = s;
     _camera_controls = &camc;

@@ -7,10 +7,10 @@
 
 struct frame
 {
-    glm::vec4 pos; //base point
-    glm::vec4 right; //positive x-direction
-    glm::vec4 up; //positive y-direction
-    glm::vec4 forward; //negative z-direction
+    glm::dvec4 pos; //base point
+    glm::dvec4 right; //positive x-direction
+    glm::dvec4 up; //positive y-direction
+    glm::dvec4 forward; //negative z-direction
     
     // Will put the frame back onto the hyperboloid
     // to prevent roundoff buildup.

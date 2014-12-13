@@ -6,26 +6,26 @@
 
 namespace hypermath
 {
-    float dot(glm::vec4 v, glm::vec4 w);
-    float length(glm::vec4 v);
-    glm::vec4 normalize(glm::vec4 v);
-    float dist(glm::vec4 p1, glm::vec4 p2);
-    glm::vec4 exp(glm::vec4 basepoint, glm::vec4 direction);
-    glm::vec4 exp0(glm::vec4 direction);
-    glm::vec4 expinv(glm::vec4 basepoint, glm::vec4 target);
-    float angle(glm::vec4 v, glm::vec4 w);
-    float angle(glm::vec4 a, glm::vec4 b, glm::vec4 c);
-    glm::mat4 translation0(glm::vec4 target);
-    glm::mat4 translation0inv(glm::vec4 target);
-    glm::mat4 translation(glm::vec4 source, glm::vec4 target);
-    glm::mat4 rotation0(glm::quat rotation);
-    glm::mat4 rotationz(glm::quat rotation);
-    glm::mat4 rotation0inv(glm::quat rotation);
-    glm::mat4 rotation(glm::vec4 basepoint, glm::quat rotate);
-    glm::mat4 rotationinv(glm::vec4 basepoint, glm::quat rotate);
-    glm::mat4 movement(glm::vec4 basepoint, glm::vec4 target, glm::quat rotate);
-    glm::vec4 midpoint(glm::vec4 a, glm::vec4 b, float t);
-    glm::vec4 gravity(glm::vec4 basepoint);
+    double dot(glm::dvec4 v, glm::dvec4 w);
+    double length(glm::dvec4 v);
+    glm::dvec4 normalize(glm::dvec4 v);
+    double dist(glm::dvec4 p1, glm::dvec4 p2);
+    glm::dvec4 exp(glm::dvec4 basepoint, glm::dvec4 direction);
+    glm::dvec4 exp0(glm::dvec4 direction);
+    glm::dvec4 expinv(glm::dvec4 basepoint, glm::dvec4 target);
+    double angle(glm::dvec4 v, glm::dvec4 w);
+    double angle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c);
+    glm::dmat4 translation0(glm::dvec4 target);
+    glm::dmat4 translation0inv(glm::dvec4 target);
+    glm::dmat4 translation(glm::dvec4 source, glm::dvec4 target);
+    glm::dmat4 rotation0(glm::quat rotation);
+    glm::dmat4 rotationz(glm::quat rotation);
+    glm::dmat4 rotation0inv(glm::quat rotation);
+    glm::dmat4 rotation(glm::dvec4 basepoint, glm::quat rotate);
+    glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::quat rotate);
+    glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::quat rotate);
+    glm::dvec4 midpoint(glm::dvec4 a, glm::dvec4 b, double t);
+    glm::dvec4 gravity(glm::dvec4 basepoint);
 }
 
 #endif

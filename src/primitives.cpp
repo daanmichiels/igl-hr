@@ -10,13 +10,13 @@
 // Everything in here can only be accessed from this file (unit).
 namespace
 {
-    const glm::vec4 red = glm::vec4(1.0f,0.0f,0.0f,1.0f);
-    const glm::vec4 green = glm::vec4(0.0f,1.0f,0.0f,1.0f);
-    const glm::vec4 blue = glm::vec4(0.0f,0.0f,1.0f,1.0f);
-    const glm::vec4 yellow = glm::vec4(1.0f,1.0f,0.0f,1.0f);
+    const glm::dvec4 red = glm::dvec4(1.0f,0.0f,0.0f,1.0f);
+    const glm::dvec4 green = glm::dvec4(0.0f,1.0f,0.0f,1.0f);
+    const glm::dvec4 blue = glm::dvec4(0.0f,0.0f,1.0f,1.0f);
+    const glm::dvec4 yellow = glm::dvec4(1.0f,1.0f,0.0f,1.0f);
 
     // Create a vao from positions and colors.
-    GLuint vao_from_pos_col(std::vector<glm::vec4> pos, std::vector<glm::vec4> col)
+    GLuint vao_from_pos_col(std::vector<glm::dvec4> pos, std::vector<glm::dvec4> col)
     {
         size_t n = pos.size();
         if(col.size() != n) {
@@ -30,7 +30,7 @@ namespace
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        float* data = new float[8*n];
+        double* data = new double[8*n];
         for(size_t i=0; i<n; i++) {
             data[8*i+0] = pos[i].x;
             data[8*i+1] = pos[i].y;
@@ -41,13 +41,13 @@ namespace
             data[8*i+6] = col[i].b;
             data[8*i+7] = col[i].a;
         }
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*8*n, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(double)*8*n, data, GL_STATIC_DRAW);
         delete [] data;
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 8*sizeof(GL_FLOAT), 0);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 8*sizeof(GL_FLOAT), (void*)(4*sizeof(GL_FLOAT)));
+        glVertexAttribPointer(0, 4, GL_double, GL_FALSE, 8*sizeof(GL_double), 0);
+        glVertexAttribPointer(1, 4, GL_double, GL_FALSE, 8*sizeof(GL_double), (void*)(4*sizeof(GL_double)));
 
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -74,12 +74,12 @@ namespace
     Can crash the program for too large of a large number of divisions.
     */
     
-    std::vector<glm::vec4> subdivide_triangle_vector(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
+    std::vector<glm::dvec4> subdivide_triangle_vector(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
 
-        std::vector<glm::vec4> triangles;
-        glm::vec4 ab, bc, ac;
-        std::vector<glm::vec4> t1, t2, t3, t4;
+        std::vector<glm::dvec4> triangles;
+        glm::dvec4 ab, bc, ac;
+        std::vector<glm::dvec4> t1, t2, t3, t4;
 
         ab = hypermath::midpoint(a, b, 0.5f);
         ac = hypermath::midpoint(a, c, 0.5f);
@@ -129,14 +129,14 @@ namespace
         }
 
     }
-    std::vector<glm::vec4> subdivide_triangle_vector_euclidean(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
+    std::vector<glm::dvec4> subdivide_triangle_vector_euclidean(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
-        std::vector<glm::vec4> triangles;
-        std::vector<glm::vec4> t1, t2, t3, t4;
+        std::vector<glm::dvec4> triangles;
+        std::vector<glm::dvec4> t1, t2, t3, t4;
 
-        glm::vec4 ab = a+b;
-        glm::vec4 ac = a+c;
-        glm::vec4 bc = b+c;
+        glm::dvec4 ab = a+b;
+        glm::dvec4 ac = a+c;
+        glm::dvec4 bc = b+c;
         ab *= 0.5f;
         ac *= 0.5f;
         bc *= 0.5f;
@@ -191,7 +191,7 @@ namespace primitives
 {
     // Create a line between two arbitrary points.
     // the line is uniformly colored
-    mesh line(glm::vec4 a, glm::vec4 b, glm::vec4 col)
+    mesh line(glm::dvec4 a, glm::dvec4 b, glm::dvec4 col)
     {
         mesh result;
         result.vao = vao_from_pos_col({a,b}, {col,col});
@@ -202,27 +202,27 @@ namespace primitives
     }
 
     // Make a set of XYZ axes, colored red green and blue respectively, inside of a sphere of given radius
-    mesh axes(float radius)
+    mesh axes(double radius)
     {
         mesh result;
-        std::vector<glm::vec4> pos;
-        std::vector<glm::vec4> col;
+        std::vector<glm::dvec4> pos;
+        std::vector<glm::dvec4> col;
         
         //first set the vectors for the axes.
-        pos.push_back(hypermath::exp0(radius * glm::vec4(-1,0,0,0)));
-        pos.push_back(hypermath::exp0(radius * glm::vec4(1,0,0,0)));
-        pos.push_back(hypermath::exp0(radius * glm::vec4(0,-1,0,0)));
-        pos.push_back(hypermath::exp0(radius * glm::vec4(0,1,0,0)));
-        pos.push_back(hypermath::exp0(radius * glm::vec4(0,0,-1,0)));
-        pos.push_back(hypermath::exp0(radius * glm::vec4(0,0,1,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(-1,0,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(1,0,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(0,-1,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(0,1,0,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,-1,0)));
+        pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,1,0)));
         
         //set the colors for each corresponding axis. each line is uniformly colored
-        col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-        col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-        col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
-        col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
-        col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
-        col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+        col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
+        col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
+        col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
+        col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
+        col.push_back(glm::dvec4(0.0f,1.0f,0.0f,1.0f));
+        col.push_back(glm::dvec4(0.0f,1.0f,0.0f,1.0f));
 
         result.vao = vao_from_pos_col(pos, col);
         result.mode = GL_LINES;
@@ -235,15 +235,15 @@ namespace primitives
     mesh grid(double grid_space)
     {
         mesh result;
-        std::vector<glm::vec4> pos;
-        std::vector<glm::vec4> col;
+        std::vector<glm::dvec4> pos;
+        std::vector<glm::dvec4> col;
         int steps = (int) ceil(10/grid_space);
-        glm::vec4 x_pos(hypermath::exp0(glm::vec4(10, 0, 0, 0)));
-        glm::vec4 x_neg(hypermath::exp0(glm::vec4(-10, 0, 0, 0)));
-        glm::vec4 y_pos(hypermath::exp0(glm::vec4(0, 10, 0, 0)));
-        glm::vec4 y_neg(hypermath::exp0(glm::vec4(0, -10, 0, 0)));
-        glm::vec4 z_pos(hypermath::exp0(glm::vec4(0, 0, 10, 0)));
-        glm::vec4 z_neg(hypermath::exp0(glm::vec4(0, 0, -10, 0)));
+        glm::dvec4 x_pos(hypermath::exp0(glm::dvec4(10, 0, 0, 0)));
+        glm::dvec4 x_neg(hypermath::exp0(glm::dvec4(-10, 0, 0, 0)));
+        glm::dvec4 y_pos(hypermath::exp0(glm::dvec4(0, 10, 0, 0)));
+        glm::dvec4 y_neg(hypermath::exp0(glm::dvec4(0, -10, 0, 0)));
+        glm::dvec4 z_pos(hypermath::exp0(glm::dvec4(0, 0, 10, 0)));
+        glm::dvec4 z_neg(hypermath::exp0(glm::dvec4(0, 0, -10, 0)));
 
         for(int j=0; j<= 2*steps; j++)
         {
@@ -252,21 +252,21 @@ namespace primitives
                 int j_prime = -1 * steps + j;
                 int i_prime = -1 * steps + i;
                 // X Grid
-                pos.push_back(x_pos * hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
-                pos.push_back(x_neg * hypermath::translation0(hypermath::exp0(glm::vec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
+                pos.push_back(x_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
+                pos.push_back(x_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
                 // Y Grid
-                pos.push_back(y_pos * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i_prime, -0, grid_space*j_prime, 0))));
-                pos.push_back(y_neg * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
+                pos.push_back(y_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, -0, grid_space*j_prime, 0))));
+                pos.push_back(y_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
                 // Z Grid
-                pos.push_back(z_pos * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
-                pos.push_back(z_neg * hypermath::translation0(hypermath::exp0(glm::vec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
+                pos.push_back(z_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
+                pos.push_back(z_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
 
-                col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-                col.push_back(glm::vec4(1.0f,0.0f,0.0f,1.0f));
-                col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
-                col.push_back(glm::vec4(0.0f,0.0f,1.0f,1.0f));
-                col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
-                col.push_back(glm::vec4(0.0f,1.0f,0.0f,1.0f));
+                col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
+                col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
+                col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
+                col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
+                col.push_back(glm::dvec4(0.0f,1.0f,0.0f,1.0f));
+                col.push_back(glm::dvec4(0.0f,1.0f,0.0f,1.0f));
             }
         }            
         
@@ -279,7 +279,7 @@ namespace primitives
     
     // Create a triangle.
     // The corners will be red, green, blue.
-    mesh triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c)
+    mesh triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c)
     {
         mesh result;
         result.vao = vao_from_pos_col({a,b,c},{red,green,blue});
@@ -292,14 +292,14 @@ namespace primitives
     // Create a rectangle.
     // Lies in the xz-plane, and is centered at the origin.
     // It's uniformly colored.
-    mesh rectangle(float width, float depth, glm::vec4 color)
+    mesh rectangle(double width, double depth, glm::dvec4 color)
     {
-        float w = width / 2;
-        float d = depth / 2;
-        std::vector<glm::vec4> pos = {hypermath::exp0(glm::vec4(-w,0,d,0)), \
-            hypermath::exp0(glm::vec4( w,0, d,0)), \
-            hypermath::exp0(glm::vec4(-w,0,-d,0)), \
-            hypermath::exp0(glm::vec4( w,0,-d,0))};
+        double w = width / 2;
+        double d = depth / 2;
+        std::vector<glm::dvec4> pos = {hypermath::exp0(glm::dvec4(-w,0,d,0)), \
+            hypermath::exp0(glm::dvec4( w,0, d,0)), \
+            hypermath::exp0(glm::dvec4(-w,0,-d,0)), \
+            hypermath::exp0(glm::dvec4( w,0,-d,0))};
 
         mesh result;
         result.vao = vao_from_pos_col(pos, {color,color,color,color});
@@ -309,17 +309,17 @@ namespace primitives
         return result;
     }
     // Create a n sided polygon inside a circle of given radius.
-    mesh circumscribed_ngon(int n, float radius, glm::vec4 color)
+    mesh circumscribed_ngon(int n, double radius, glm::dvec4 color)
     {
         const double PI = 3.141592653589793238463;
         double radians_between_vertices = 2*PI/n;
-        std::vector<glm::vec4> vertices;
-        std::vector<glm::vec4> col;
+        std::vector<glm::dvec4> vertices;
+        std::vector<glm::dvec4> col;
         for(int i = 0; i <= n; i++)
         {
-            float a = sin(i * radians_between_vertices);
-            float b = cos(i * radians_between_vertices);
-            vertices.push_back(hypermath::exp0(radius * glm::vec4(a, 0, b, 0)));
+            double a = sin(i * radians_between_vertices);
+            double b = cos(i * radians_between_vertices);
+            vertices.push_back(hypermath::exp0(radius * glm::dvec4(a, 0, b, 0)));
             col.push_back(color);
         }
         mesh result;
@@ -335,12 +335,12 @@ namespace primitives
     // It will be centered at (0,0,0,1) and one of its tips will
     // point in the positive y-direction (up).
     // It will have nice colors.
-    mesh tetrahedron(float radius)
+    mesh tetrahedron(double radius)
     {
-        glm::vec4 a = radius * glm::vec4(0,1,0,0);
-        glm::vec4 b = radius * glm::vec4(-sqrt(2)/3,-1.0/3,-sqrt(2.0/3),0);
-        glm::vec4 c = radius * glm::vec4(-sqrt(2)/3,-1.0/3, sqrt(2.0/3),0);
-        glm::vec4 d = radius * glm::vec4(2*sqrt(2.0)/3,-1.0/3,0,0);
+        glm::dvec4 a = radius * glm::dvec4(0,1,0,0);
+        glm::dvec4 b = radius * glm::dvec4(-sqrt(2)/3,-1.0/3,-sqrt(2.0/3),0);
+        glm::dvec4 c = radius * glm::dvec4(-sqrt(2)/3,-1.0/3, sqrt(2.0/3),0);
+        glm::dvec4 d = radius * glm::dvec4(2*sqrt(2.0)/3,-1.0/3,0,0);
 
         a = hypermath::exp0(a);
         b = hypermath::exp0(b);
@@ -355,16 +355,16 @@ namespace primitives
         return result;
     }
     // Creates an octahedron at the origin. Each triangle is colored with red, green, and blue vertices.
-    mesh octahedron(float radius)
+    mesh octahedron(double radius)
     {
-        glm::vec4 a = hypermath::exp0(radius * glm::vec4(0,0,1,0));
-        glm::vec4 b = hypermath::exp0(radius * glm::vec4(0,1,0,0));
-        glm::vec4 c = hypermath::exp0(radius * glm::vec4(0,-1,0,0));
-        glm::vec4 d = hypermath::exp0(radius * glm::vec4(1,0,0,0));
-        glm::vec4 e = hypermath::exp0(radius * glm::vec4(-1,0,0,0));
-        glm::vec4 f = hypermath::exp0(radius * glm::vec4(0,0,-1,0));
+        glm::dvec4 a = hypermath::exp0(radius * glm::dvec4(0,0,1,0));
+        glm::dvec4 b = hypermath::exp0(radius * glm::dvec4(0,1,0,0));
+        glm::dvec4 c = hypermath::exp0(radius * glm::dvec4(0,-1,0,0));
+        glm::dvec4 d = hypermath::exp0(radius * glm::dvec4(1,0,0,0));
+        glm::dvec4 e = hypermath::exp0(radius * glm::dvec4(-1,0,0,0));
+        glm::dvec4 f = hypermath::exp0(radius * glm::dvec4(0,0,-1,0));
         mesh result;
-        std::vector<glm::vec4> colors;
+        std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < 24; i++)
         {
             switch (i % 3) 
@@ -389,9 +389,9 @@ namespace primitives
         return result;
     }
 
-    mesh object(std::vector<glm::vec4> v)
+    mesh object(std::vector<glm::dvec4> v)
     {
-        std::vector<glm::vec4> colors;
+        std::vector<glm::dvec4> colors;
 
         for (unsigned int i = 0; i < v.size(); i++) {
             switch (i % 3) {
@@ -420,11 +420,11 @@ namespace primitives
     // Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
     // See the comment for the subdivision algorithm for more information
     
-    mesh subdivided_triangle(glm::vec4 a, glm::vec4 b, glm::vec4 c, int divisions, bool sierpinski)
+    mesh subdivided_triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
-        std::vector<glm::vec4> triangle;
+        std::vector<glm::dvec4> triangle;
         triangle = subdivide_triangle_vector(a,b,c,divisions,sierpinski);
-        std::vector<glm::vec4> colors;
+        std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < triangle.size()/3; i++)
         {
             colors.push_back(red);
@@ -444,16 +444,16 @@ namespace primitives
     // Creates a subdivided octahedron mesh. Again, passing sierpinski as true creates sierpinski triangles
     // See the comment for the subdivision algorithm for more information
 
-    mesh subdivided_octahedron(float radius, int divisions, bool sierpinski)
+    mesh subdivided_octahedron(double radius, int divisions, bool sierpinski)
     {
-        glm::vec4 a = hypermath::exp0(radius * glm::vec4(0,0,1,0));
-        glm::vec4 b = hypermath::exp0(radius * glm::vec4(0,1,0,0));
-        glm::vec4 c = hypermath::exp0(radius * glm::vec4(0,-1,0,0));
-        glm::vec4 d = hypermath::exp0(radius * glm::vec4(1,0,0,0));
-        glm::vec4 e = hypermath::exp0(radius * glm::vec4(-1,0,0,0));
-        glm::vec4 f = hypermath::exp0(radius * glm::vec4(0,0,-1,0));
+        glm::dvec4 a = hypermath::exp0(radius * glm::dvec4(0,0,1,0));
+        glm::dvec4 b = hypermath::exp0(radius * glm::dvec4(0,1,0,0));
+        glm::dvec4 c = hypermath::exp0(radius * glm::dvec4(0,-1,0,0));
+        glm::dvec4 d = hypermath::exp0(radius * glm::dvec4(1,0,0,0));
+        glm::dvec4 e = hypermath::exp0(radius * glm::dvec4(-1,0,0,0));
+        glm::dvec4 f = hypermath::exp0(radius * glm::dvec4(0,0,-1,0));
 
-        std::vector<glm::vec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
+        std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
         //generate each subdivided triangle
         
@@ -508,7 +508,7 @@ namespace primitives
         }
 
         //setup colors
-        std::vector<glm::vec4> colors;
+        std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < collected.size()/3; i++)
         {
             colors.push_back(red);
@@ -528,16 +528,16 @@ namespace primitives
         Then we normalize every vertex, scale it according to the passed radius value.
         Finally we exponentiate the resulting vector.
     */
-    mesh sphere(float radius, int divisions, glm::vec4 col, bool sierpinski)
+    mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski)
     {
-        glm::vec4 a = glm::vec4(0,0,1,0);
-        glm::vec4 b = glm::vec4(0,1,0,0);
-        glm::vec4 c = glm::vec4(0,-1,0,0);
-        glm::vec4 d = glm::vec4(1,0,0,0);
-        glm::vec4 e = glm::vec4(-1,0,0,0);
-        glm::vec4 f = glm::vec4(0,0,-1,0);
+        glm::dvec4 a = glm::dvec4(0,0,1,0);
+        glm::dvec4 b = glm::dvec4(0,1,0,0);
+        glm::dvec4 c = glm::dvec4(0,-1,0,0);
+        glm::dvec4 d = glm::dvec4(1,0,0,0);
+        glm::dvec4 e = glm::dvec4(-1,0,0,0);
+        glm::dvec4 f = glm::dvec4(0,0,-1,0);
 
-        std::vector<glm::vec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
+        std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
         //generate each subdivided triangle
         
@@ -591,14 +591,14 @@ namespace primitives
             collected.push_back(t8[i]);
         }
 
-        std::vector<glm::vec4> normalized;
+        std::vector<glm::dvec4> normalized;
         for(unsigned int i=0; i < collected.size(); i++)
         {
             normalized.push_back(hypermath::exp0(radius * hypermath::normalize(collected[i])));
         }
 
         //setup colors
-        std::vector<glm::vec4> colors;
+        std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < collected.size()/3; i++)
         {
             colors.push_back(yellow);

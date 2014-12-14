@@ -8,14 +8,6 @@
 
 // TODO: store hConsole handle during initialization
 
-void Logger::log_fatal_error(std::string message) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole, 0x0C);
-    std::cout << "Fatal error: ";
-    std::cout << message << std::endl;
-    SetConsoleTextAttribute(hConsole, 0x07);
-}
-
 void Logger::log_error(std::string message) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0C);

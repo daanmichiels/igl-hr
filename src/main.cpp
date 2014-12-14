@@ -29,7 +29,6 @@ using namespace OVR;
 
 int main(int argc, const char* argv[])
 {
-    Logger::log_fatal_error("Fatal error.");
     Logger::log_error("This is an error.");
     Logger::log_warning("This is a warning.");
     Logger::log_info("This is interesting.");

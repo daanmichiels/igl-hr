@@ -40,6 +40,13 @@ void LogManager::log_info(std::string message) {
 
 #else
 
+void LogManager::startup() {
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+}
+
+void LogManager::shutdown() {
+}
+
 void LogManager::log_error(std::string message) {
     std::cout << "Error:   " << message << std::endl;
 }

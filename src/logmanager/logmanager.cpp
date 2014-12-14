@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "logger.h"
+#include "logmanager.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -8,7 +8,7 @@
 
 // TODO: store hConsole handle during initialization
 
-void Logger::log_error(std::string message) {
+void LogManager::log_error(std::string message) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0C);
     std::cout << "Error:   ";
@@ -16,7 +16,7 @@ void Logger::log_error(std::string message) {
     std::cout << message << std::endl;
 }
 
-void Logger::log_warning(std::string message) {
+void LogManager::log_warning(std::string message) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0E);
     std::cout << "Warning: ";
@@ -24,7 +24,7 @@ void Logger::log_warning(std::string message) {
     std::cout << message << std::endl;
 }
 
-void Logger::log_info(std::string message) {
+void LogManager::log_info(std::string message) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0A);
     std::cout << "Info:    ";
@@ -34,20 +34,15 @@ void Logger::log_info(std::string message) {
 
 #else
 
-void Logger::log_fatal_error(std::string message) {
-    
-    std::cout << "Fatal error: " << message << std::endl;
-}
-
-void Logger::log_error(std::string message) {
+void LogManager::log_error(std::string message) {
     std::cout << "Error:   " << message << std::endl;
 }
 
-void Logger::log_warning(std::string message) {
+void LogManager::log_warning(std::string message) {
     std::cout << "Warning: " << message << std::endl;
 }
 
-void Logger::log_info(std::string message) {
+void LogManager::log_info(std::string message) {
     std::cout << "Info:    " << message << std::endl;
 }
 #endif

@@ -15,7 +15,7 @@
 #include "cameracontrols.h"
 #include "inputhandler.h"
 #include "init.h"
-#include "logging/logger.h"
+#include "logmanager/logmanager.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -29,9 +29,9 @@ using namespace OVR;
 
 int main(int argc, const char* argv[])
 {
-    Logger::log_error("This is an error.");
-    Logger::log_warning("This is a warning.");
-    Logger::log_info("This is interesting.");
+    LogManager::log_error("This is an error.");
+    LogManager::log_warning("This is a warning.");
+    LogManager::log_info("This is interesting.");
 
     const char* filename = "resources/teapot.obj";
     bool fullscreen = false;

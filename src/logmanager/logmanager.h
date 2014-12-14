@@ -1,9 +1,9 @@
-#ifndef LOGGER_H
-#define LOGGER_H
+#ifndef LOGMANAGER_H
+#define LOGMANAGER_H
 
 #include <string>
 
-class Logger {
+class LogManager {
 public:
     static void log_error(std::string message);
     static void log_warning(std::string message);

@@ -6,10 +6,18 @@
 #include <windows.h>
 #include <winnt.h>
 
-// TODO: store hConsole handle during initialization
+namespace {
+    HANDLE hConsole;
+}
+
+void LogManager::startup() {
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+}
+
+void LogManager::shutdown() {
+}
 
 void LogManager::log_error(std::string message) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0C);
     std::cout << "Error:   ";
     SetConsoleTextAttribute(hConsole, 0x07);
@@ -17,7 +25,6 @@ void LogManager::log_error(std::string message) {
 }
 
 void LogManager::log_warning(std::string message) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0E);
     std::cout << "Warning: ";
     SetConsoleTextAttribute(hConsole, 0x07);
@@ -25,7 +32,6 @@ void LogManager::log_warning(std::string message) {
 }
 
 void LogManager::log_info(std::string message) {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, 0x0A);
     std::cout << "Info:    ";
     SetConsoleTextAttribute(hConsole, 0x07);

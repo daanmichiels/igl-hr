@@ -29,6 +29,7 @@ using namespace OVR;
 
 int main(int argc, const char* argv[])
 {
+    LogManager::startup();
     LogManager::log_error("This is an error.");
     LogManager::log_warning("This is a warning.");
     LogManager::log_info("This is interesting.");
@@ -386,6 +387,7 @@ int main(int argc, const char* argv[])
     glfwTerminate();
     ovrHmd_Destroy(hmd);
     ovr_Shutdown();
+    LogManager::shutdown();
     exit(EXIT_SUCCESS);
 }
 

@@ -1,11 +1,18 @@
 CXX=cl.exe
-CXXFLAGS=/nologo /DGLM_FORCE_RADIANS /Foobj\ /DGLEW_STATIC /MD /EHsc
+CXXFLAGS=/nologo /DGLM_FORCE_RADIANS /DGLEW_STATIC /MD /EHsc
 INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include
 LIBPATHS=/LIBPATH:"thirdparty\glew\lib" /LIBPATH:"thirdparty\glfw\lib" /LIBPATH:"thirdparty\libovr\lib"
 LIBRARIES= libovr64.lib winmm.lib shell32.lib ws2_32.lib glfw3.lib glew32s.lib glu32.lib gdi32.lib opengl32.lib user32.lib
 EXECUTABLE=bin\hr.exe
 
-OBJECTS=$(patsubst src/%.cpp,obj\\%.obj,$(wildcard src/*.cpp))
+# List of all cpp files that need to be compiled
+# The wildcard function does not support backslashes
+TRANSLATION_UNITS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+# List of the obj files they need to be compiled into
+# Change extensions, then change folder, then replace remaining forward slashes
+OBJECTS = $(subst /,\,$(subst src/,obj\,$(subst .cpp,.obj,$(TRANSLATION_UNITS))))
+
+# List of header files where shaders are stored
 SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src\shaders\\%.h,$(wildcard src/shaders/*.glsl))
 
 all: $(EXECUTABLE)
@@ -15,17 +22,24 @@ $(EXECUTABLE): $(OBJECTS)
 	@echo $(EXECUTABLE)
 	@$(CXX) $(CXXFLAGS) $(OBJECTS) /Fe$(EXECUTABLE) /link $(LIBPATHS) $(LIBRARIES)
 
+# Note: shaderwriter.py will run once for every shader,
+# but on every invocation it will write all shaders.
+# This is inefficient.
 src\shaders\\%.h: src\shaders\\%.glsl
 	python shaderwriter.py
 
 obj\\%.obj: src\\%.cpp $(SHADER_HEADERS)
-	@$(CXX) $(CXXFLAGS) $(INCLUDES) /c $<
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) /Fo$@ /c $<
 
 clean:
 	cmd /C "del $(OBJECTS)"
 	cmd /C "del $(EXECUTABLE)"
 
-.PHONY: all clean
+test:
+	@echo $(TRANSLATION_UNITS)
+	@echo $(OBJECTS)
+
+.PHONY: all clean test
 
 
 

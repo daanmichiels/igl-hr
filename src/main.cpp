@@ -15,6 +15,7 @@
 #include "cameracontrols.h"
 #include "inputhandler.h"
 #include "init.h"
+#include "logging/logger.h"
 
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "../thirdparty/glm/glm/gtx/string_cast.hpp"
@@ -28,6 +29,8 @@ using namespace OVR;
 
 int main(int argc, const char* argv[])
 {
+    Logger::log_warning("You still have to improve your logger.");
+
     const char* filename = "resources/teapot.obj";
     bool fullscreen = false;
     bool rift_render = false;

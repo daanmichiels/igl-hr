@@ -11,7 +11,7 @@ class Camera
         glm::dmat4 _proj;
         glm::dmat4 _view;
     public:
-        Camera(double fov=1.2f, double ratio=1.0f, double near=0.01f, double far=10.0f);
+        Camera(double fov=1.2, double ratio=1.0, double near=0.01, double far=10.0);
         glm::dmat4 get_projection();
         glm::dmat4 get_view();
         void set_ratio(double ratio);

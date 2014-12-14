@@ -1,3 +1,4 @@
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
@@ -8,20 +9,6 @@
 #include "shaders/vertex.h"
 #include "shaders/rift_fragment.h"
 #include "shaders/rift_vertex.h"
-
-// Shaders will be linked to these
-// extern char _binary_src_shaders_rift_vertex_glsl_start[];
-// extern char _binary_src_shaders_rift_vertex_glsl_end[];
-// extern char _binary_src_shaders_rift_vertex_glsl_size[];
-// extern char _binary_src_shaders_rift_fragment_glsl_start[];
-// extern char _binary_src_shaders_rift_fragment_glsl_end[];
-// extern char _binary_src_shaders_rift_fragment_glsl_size[];
-// extern char _binary_src_shaders_vertex_glsl_start[];
-// extern char _binary_src_shaders_vertex_glsl_end[];
-// extern char _binary_src_shaders_vertex_glsl_size[];
-// extern char _binary_src_shaders_fragment_glsl_start[];
-// extern char _binary_src_shaders_fragment_glsl_end[];
-// extern char _binary_src_shaders_fragment_glsl_size[];
 
 // Create and compile a shader.
 // This is not supposed to be called by other files, and

@@ -15,11 +15,11 @@ class CameraControls
         GLFWwindow* _window;
         Camera* _camera;
         ovrHmd* _hmd;
-        double _mouse_speed = 0.3f;
-        double _move_speed = 0.2f;
-        double _ipd = 0.065f;
+        double _mouse_speed = 0.3;
+        double _move_speed = 0.2;
+        double _ipd = 0.065;
         double _height = 1.80;
-        double _meter = 1.0f;
+        double _meter = 1.0;
         frame _shoulders;
         frame _head;
 

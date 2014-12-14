@@ -17,6 +17,7 @@ struct frame
     // This method is idempotent, which is important to
     // not have the frame 'wander around' when this
     // method is applied to it repeatedly.
+    // TODO: is this method idempotent?
     void correct_roundoff()
     {
         //correct position

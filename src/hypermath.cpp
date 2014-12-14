@@ -41,7 +41,8 @@ namespace hypermath
         }
         // is this numerically stable enough?
         // maybe we should do something about the sinh(r)/r
-        return ((double)cosh(r)) * basepoint + ((double)(sinh(r)/r)) * direction;
+        // It is perfect. See testing of sinh_over_id.
+        return cosh(r) * basepoint + (sinh(r)/r) * direction;
     }
 
     // exponential map with basepoint (0,0,0,1)
@@ -63,8 +64,8 @@ namespace hypermath
         // the sinh(r) can be calculated nicer, since it's
         // arccosh of something
         // same for cosh(r)
-        glm::dvec4 u = target - ((double)cosh(r)) * basepoint;
-        return ((double)(r/sinh(r))) * u;
+        glm::dvec4 u = target - cosh(r) * basepoint;
+        return (r/sinh(r)) * u;
     }
 
     // the angle between two tangent vectors

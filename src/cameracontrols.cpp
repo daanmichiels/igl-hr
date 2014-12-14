@@ -141,7 +141,7 @@ void CameraControls::handle_keyboard(double delta_time)
     }
 
     //length is either zero or at least one, mathematically
-    //but doubleing point
+    //but floating point
     if(glm::length(walking_direction) >= 0.5)
     {
         walking_direction = glm::normalize(walking_direction);
@@ -218,10 +218,10 @@ glm::dvec4 CameraControls::get_pos()
 //increase step size. max is 1.0f
 void CameraControls::increase_speed()
 {
-    double size = _move_speed + .05f;
-    if(size > 1.0f)
+    double size = _move_speed + .05;
+    if(size > 1.0)
     {
-        size = 1.0f;
+        size = 1.0;
     }
     set_step_size(size);
 }
@@ -229,10 +229,10 @@ void CameraControls::increase_speed()
 //decrease step size. minimum is 0.01f
 void CameraControls::decrease_speed()
 {
-    double size = _move_speed - .05f;
+    double size = _move_speed - .05;
     if(size <= 0)
     {
-        size = 0.01f;
+        size = 0.01;
     }
 
     set_step_size(size);
@@ -262,5 +262,5 @@ glm::dvec4 CameraControls::get_forward()
 
 glm::dvec4 CameraControls::get_flag_pos()
 {
-    return hypermath::midpoint(_shoulders.forward, -_shoulders.up, 0.5f);
+    return hypermath::midpoint(_shoulders.forward, -_shoulders.up, 0.5);
 }

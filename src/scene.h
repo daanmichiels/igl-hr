@@ -16,13 +16,14 @@
         GLuint program;
         GLuint lens_center_loc;
         GLuint barrel_power_loc;
+        // TODO: what is this?
         bool _has_printed = false;
         
         void render();
         void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
 
     private:
-        double _border = 0.1f;
+        double _border = 0.1;
         void render_object(object o, glm::dmat4 modelview);
         void render_mesh(mesh m);
 };

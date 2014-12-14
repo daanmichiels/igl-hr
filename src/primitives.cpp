@@ -10,15 +10,17 @@
 // Everything in here can only be accessed from this file (unit).
 namespace
 {
-    const glm::dvec4 red = glm::dvec4(1.0f,0.0f,0.0f,1.0f);
-    const glm::dvec4 green = glm::dvec4(0.0f,1.0f,0.0f,1.0f);
-    const glm::dvec4 blue = glm::dvec4(0.0f,0.0f,1.0f,1.0f);
-    const glm::dvec4 yellow = glm::dvec4(1.0f,1.0f,0.0f,1.0f);
+    const glm::dvec4 red = glm::dvec4(1.0,0.0,0.0,1.0);
+    const glm::dvec4 green = glm::dvec4(0.0,1.0,0.0,1.0);
+    const glm::dvec4 blue = glm::dvec4(0.0,0.0,1.0,1.0);
+    const glm::dvec4 yellow = glm::dvec4(1.0,1.0,0.0,1.0);
 
     // Create a vao from positions and colors.
     GLuint vao_from_pos_col(std::vector<glm::dvec4> pos, std::vector<glm::dvec4> col)
     {
         size_t n = pos.size();
+
+        // TODO: turn this into an assertion
         if(col.size() != n) {
             return 0;
         }
@@ -77,13 +79,14 @@ namespace
     std::vector<glm::dvec4> subdivide_triangle_vector(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
 
+        // TODO: precalculate the sizes of the vectors
         std::vector<glm::dvec4> triangles;
         glm::dvec4 ab, bc, ac;
         std::vector<glm::dvec4> t1, t2, t3, t4;
 
-        ab = hypermath::midpoint(a, b, 0.5f);
-        ac = hypermath::midpoint(a, c, 0.5f);
-        bc = hypermath::midpoint(b, c, 0.5f);
+        ab = hypermath::midpoint(a, b, 0.5);
+        ac = hypermath::midpoint(a, c, 0.5);
+        bc = hypermath::midpoint(b, c, 0.5);
 
         //recursive calls to each subdivided triangle
         if(divisions > 0)
@@ -131,15 +134,16 @@ namespace
     }
     std::vector<glm::dvec4> subdivide_triangle_vector_euclidean(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
+        // TODO: precalculate sizes
         std::vector<glm::dvec4> triangles;
         std::vector<glm::dvec4> t1, t2, t3, t4;
 
         glm::dvec4 ab = a+b;
         glm::dvec4 ac = a+c;
         glm::dvec4 bc = b+c;
-        ab *= 0.5f;
-        ac *= 0.5f;
-        bc *= 0.5f;
+        ab *= 0.5;
+        ac *= 0.5;
+        bc *= 0.5;
         //recursive calls to each subdivided triangle
         if(divisions > 0)
         {
@@ -235,6 +239,7 @@ namespace primitives
     mesh grid(double grid_space)
     {
         mesh result;
+        // TODO: precalculate sizes
         std::vector<glm::dvec4> pos;
         std::vector<glm::dvec4> col;
         int steps = (int) ceil(10/grid_space);

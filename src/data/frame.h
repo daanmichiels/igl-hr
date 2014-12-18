@@ -1,9 +1,9 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
 #include <math.h>
-#include "hypermath.h"
+#include "../math/hypermath.h"
 
 struct frame
 {

@@ -1,12 +1,12 @@
 #ifndef INPUTHANDLER_H
 #define INPUTHANDLER_H
 
-#include "object.h"
+#include "data/object.h"
 #include <GLFW/glfw3.h>
-#include "cameracontrols.h"
+#include "charactermanager/cameracontrols.h"
 #include <vector>
-#include "camera.h"
-#include "mesh.h"
+#include "data/camera.h"
+#include "data/mesh.h"
 #include "flagmanager.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 

@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 
 class Camera
 {

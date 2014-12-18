@@ -1,10 +1,10 @@
-#include "object.h"
-#include "cameracontrols.h"
+#include "data/object.h"
+#include "charactermanager/cameracontrols.h"
 #include "flagmanager.h"
 #include "../thirdparty/glm/glm/glm.hpp"
-#include "scene.h"
-#include "hypermath.h"
-#include "primitives.h"
+#include "data/scene.h"
+#include "math/hypermath.h"
+#include "math/primitives.h"
 #include <iostream>
 
 flagmanager::flagmanager(Scene* s, CameraControls camc)

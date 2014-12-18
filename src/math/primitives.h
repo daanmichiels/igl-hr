@@ -2,8 +2,8 @@
 #define PRIMITIVES_H
 
 #include <GL/glew.h>
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "mesh.h"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../data/mesh.h"
 
 namespace primitives
 {

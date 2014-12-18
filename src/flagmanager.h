@@ -1,8 +1,8 @@
 #ifndef FLAGMANAGER_H
 #define FLAGMANAGER_H
-#include "object.h"
-#include "cameracontrols.h"
-#include "scene.h"
+#include "data/object.h"
+#include "charactermanager/cameracontrols.h"
+#include "data/scene.h"
 #include <vector>
 
 class flagmanager

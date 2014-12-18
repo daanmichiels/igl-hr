@@ -1,14 +1,14 @@
 
 #include "object.h"
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string.h>
 #include <cmath>
-#include "primitives.h"
-#include "hypermath.h"
+#include "../math/primitives.h"
+#include "../math/hypermath.h"
 
 void object::transform(glm::dmat4 transformation)
 {

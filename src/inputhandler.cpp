@@ -1,8 +1,8 @@
 #include "inputhandler.h"
-#include "object.h"
+#include "data/object.h"
 #include <vector>
-#include "camera.h"
-#include "mesh.h"
+#include "data/camera.h"
+#include "data/mesh.h"
 #include "../thirdparty/glm/glm/glm.hpp"
 #include "flagmanager.h"
 #include <iostream>

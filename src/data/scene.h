@@ -4,9 +4,9 @@
 #include <vector>
 #include "object.h"
 #include "camera.h"
-#include "cameracontrols.h"
+#include "../charactermanager/cameracontrols.h"
 #include "mesh.h"
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
 
  class Scene
 {

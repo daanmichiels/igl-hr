@@ -5,10 +5,10 @@
 #include <iostream>
 #include <string>
 #include "shaders.h"
-#include "shaders/fragment.h"
-#include "shaders/vertex.h"
-#include "shaders/rift_fragment.h"
-#include "shaders/rift_vertex.h"
+#include "../shaders/fragment.h"
+#include "../shaders/vertex.h"
+#include "../shaders/rift_fragment.h"
+#include "../shaders/rift_vertex.h"
 
 // Create and compile a shader.
 // This is not supposed to be called by other files, and

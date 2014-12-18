@@ -1,5 +1,5 @@
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtc/matrix_transform.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/gtc/matrix_transform.hpp"
 
 #include <GL/glew.h>
 #include "camera.h"

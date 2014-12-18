@@ -2,12 +2,12 @@
 #define CAMERACONTROLS_H
 
 #include <GLFW/glfw3.h>
-#include "camera.h"
-#include "frame.h"
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include "../thirdparty/libovr/src/OVR_CAPI.h"
-#include "../thirdparty/libovr/include/OVR.h"
+#include "../data/camera.h"
+#include "../data/frame.h"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "../../thirdparty/libovr/src/OVR_CAPI.h"
+#include "../../thirdparty/libovr/include/OVR.h"
 
 class CameraControls
 {

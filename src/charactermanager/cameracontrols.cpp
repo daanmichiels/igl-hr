@@ -1,13 +1,13 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "camera.h"
-#include "hypermath.h"
-#include "scene.h"
+#include "../data/camera.h"
+#include "../math/hypermath.h"
+#include "../data/scene.h"
 #include "cameracontrols.h"
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtx/transform.hpp"
-#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/gtx/transform.hpp"
+#include "../../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "../../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <math.h>
 #include <iostream>
 

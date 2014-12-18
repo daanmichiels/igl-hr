@@ -1,9 +1,9 @@
 #include "scene.h"
 #include <GL/glew.h>
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/gtc/type_ptr.hpp"
 #include <iostream>
-#include "hypermath.h"
+#include "../math/hypermath.h"
 
 // Renders the objects (and their children, and ...)
 // using the provided camera and program.

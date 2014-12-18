@@ -1,6 +1,6 @@
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "../../thirdparty/glm/glm/glm.hpp"
 #include <vector>
-#include "../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include "../../thirdparty/glm/glm/gtx/string_cast.hpp"
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"

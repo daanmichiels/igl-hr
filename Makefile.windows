@@ -1,6 +1,6 @@
 CXX=cl.exe
 CXXFLAGS=/nologo /DGLM_FORCE_RADIANS /DGLEW_STATIC /DWIN32 /MD /EHsc
-INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include
+INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include /I thirdparty\libovr\include
 LIBPATHS=/LIBPATH:"thirdparty\glew\lib" /LIBPATH:"thirdparty\glfw\lib" /LIBPATH:"thirdparty\libovr\lib"
 LIBRARIES= libovr64.lib winmm.lib shell32.lib ws2_32.lib glfw3.lib glew32s.lib glu32.lib gdi32.lib opengl32.lib user32.lib
 EXECUTABLE=bin\hr.exe

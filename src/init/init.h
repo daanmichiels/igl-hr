@@ -3,7 +3,7 @@
 #define INIT_H
 
 #include "GLFW/glfw3.h"
-#include "../../thirdparty/libovr/include/OVR.h"
+#include "OVR/OVR.h"
 
 class Init {
 public:

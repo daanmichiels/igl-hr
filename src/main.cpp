@@ -17,7 +17,7 @@
 #include "../thirdparty/glm/glm/gtx/transform.hpp"
 #include "../thirdparty/glm/glm/gtc/quaternion.hpp"
 #include "../thirdparty/libovr/src/OVR_CAPI.h"
-#include "../thirdparty/libovr/include/OVR.h"
+#include "OVR/OVR.h"
 
 using namespace OVR;
 

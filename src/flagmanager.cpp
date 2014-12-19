@@ -1,7 +1,7 @@
 #include "data/object.h"
 #include "charactermanager/cameracontrols.h"
 #include "flagmanager.h"
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 #include "data/scene.h"
 #include "math/hypermath.h"
 #include "math/primitives.h"

@@ -1,7 +1,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "../../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 #include <math.h>
 #include "../math/hypermath.h"
 

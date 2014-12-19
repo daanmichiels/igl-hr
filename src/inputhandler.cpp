@@ -3,7 +3,7 @@
 #include <vector>
 #include "data/camera.h"
 #include "data/mesh.h"
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 #include "flagmanager.h"
 #include <iostream>
 

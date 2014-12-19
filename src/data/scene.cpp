@@ -1,7 +1,7 @@
 #include "scene.h"
 #include <GL/glew.h>
-#include "../../thirdparty/glm/glm/glm.hpp"
-#include "../../thirdparty/glm/glm/gtc/type_ptr.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include <iostream>
 #include "../math/hypermath.h"
 

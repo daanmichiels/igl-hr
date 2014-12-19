@@ -8,7 +8,7 @@
 #include "data/camera.h"
 #include "data/mesh.h"
 #include "flagmanager.h"
-#include "../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
 class InputHandler
 {

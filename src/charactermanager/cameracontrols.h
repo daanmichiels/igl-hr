@@ -4,8 +4,9 @@
 #include <GLFW/glfw3.h>
 #include "../data/camera.h"
 #include "../data/frame.h"
-#include "../../thirdparty/glm/glm/glm.hpp"
-#include "../../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+// what is this include for?
 #include "../../thirdparty/libovr/src/OVR_CAPI.h"
 #include "OVR/OVR.h"
 

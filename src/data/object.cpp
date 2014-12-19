@@ -1,6 +1,6 @@
 
 #include "object.h"
-#include "../../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 #include <stdio.h>
 #include <iostream>
 #include <fstream>

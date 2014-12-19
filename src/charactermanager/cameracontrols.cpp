@@ -4,10 +4,10 @@
 #include "../math/hypermath.h"
 #include "../data/scene.h"
 #include "cameracontrols.h"
-#include "../../thirdparty/glm/glm/glm.hpp"
-#include "../../thirdparty/glm/glm/gtx/transform.hpp"
-#include "../../thirdparty/glm/glm/gtc/quaternion.hpp"
-#include "../../thirdparty/glm/glm/gtx/string_cast.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/string_cast.hpp"
 #include <math.h>
 #include <iostream>
 

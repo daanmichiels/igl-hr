@@ -1,7 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "../../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
 #include <vector>
 #include <string>

@@ -1,6 +1,6 @@
 
-#include "../../thirdparty/glm/glm/glm.hpp"
-#include "../../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
 #include <iostream>
 
 namespace hypermath

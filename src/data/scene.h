@@ -6,7 +6,7 @@
 #include "camera.h"
 #include "../charactermanager/cameracontrols.h"
 #include "mesh.h"
-#include "../../thirdparty/glm/glm/glm.hpp"
+#include "glm/glm.hpp"
 
  class Scene
 {

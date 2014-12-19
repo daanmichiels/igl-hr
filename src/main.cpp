@@ -11,11 +11,12 @@
 #include "assetmanager/assetmanager.h"
 #include "loopmanager/loopmanager.h"
 
-#include "../thirdparty/glm/glm/glm.hpp"
-#include "../thirdparty/glm/glm/gtx/string_cast.hpp"
-#include "../thirdparty/glm/glm/gtc/type_ptr.hpp"
-#include "../thirdparty/glm/glm/gtx/transform.hpp"
-#include "../thirdparty/glm/glm/gtc/quaternion.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/transform.hpp"
+#include "glm/gtc/quaternion.hpp"
+//what is this include for?
 #include "../thirdparty/libovr/src/OVR_CAPI.h"
 #include "OVR/OVR.h"
 

@@ -1,6 +1,6 @@
 
 class AssetManager {
 public:
-    static void startup();
+    static bool startup();
     static void shutdown();
 };

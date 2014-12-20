@@ -2,8 +2,9 @@
 #include "../logmanager/logmanager.h"
 #include "assetmanager.h"
 
-void AssetManager::startup() {
+bool AssetManager::startup() {
     LogManager::log_info("AssetManager started.", 2);
+    return true;
 }
 
 void AssetManager::shutdown() {

@@ -2,8 +2,9 @@
 #include "../logmanager/logmanager.h"
 #include "loopmanager.h"
 
-void LoopManager::startup() {
+bool LoopManager::startup() {
     LogManager::log_info("LoopManager started.", 2);
+    return true;
 }
 
 void LoopManager::shutdown() {

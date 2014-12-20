@@ -5,7 +5,7 @@
 
 class LogManager {
 public:
-    static void startup();
+    static bool startup();
     static void log_error(std::string message);
     static void log_warning(std::string message, int level);
     static void log_info(std::string message, int level);

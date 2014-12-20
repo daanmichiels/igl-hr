@@ -11,9 +11,10 @@ namespace {
     HANDLE hConsole;
 }
 
-void LogManager::startup() {
+bool LogManager::startup() {
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     log_info("LogManager started.", 2);
+    return true;
 }
 
 void LogManager::shutdown() {

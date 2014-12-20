@@ -1,8 +1,4 @@
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
-#include <string>
 #include <vector>
 #include "init/init.h"
 #include "logmanager/logmanager.h"
@@ -10,49 +6,59 @@
 #include "shadermanager/shadermanager.h"
 #include "assetmanager/assetmanager.h"
 #include "loopmanager/loopmanager.h"
+#include "rendermanager/rendermanager.h"
+#include "charactermanager/charactermanager.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtx/string_cast.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "glm/gtx/transform.hpp"
-#include "glm/gtc/quaternion.hpp"
-//what is this include for?
-#include "../thirdparty/libovr/src/OVR_CAPI.h"
-#include "OVR/OVR.h"
+#include <iostream>
 
-using namespace OVR;
 
 int main(int argc, const char* argv[]) {
-    // We want this to be the first thing, to be able to log errors
-    LogManager::startup();
-    ShaderManager::startup();
-    AssetManager::startup();
-    LoopManager::startup();
+
+    // vectors of function pointers
+    // for some reason the compiler requires a cast
+
+    // these indicate startup order
+    const std::vector<bool (*) ()> startups
+        {(bool (*) ()) &(LogManager::startup),
+         (bool (*) ()) &(RenderManager::startup),
+         (bool (*) ()) &(AssetManager::startup),
+         (bool (*) ()) &(LoopManager::startup),
+         (bool (*) ()) &(ShaderManager::startup),
+         (bool (*) ()) &(CharacterManager::startup)};
+    // these are the corresponding shutdowns
+    const std::vector<bool (*) ()> shutdowns
+        {(bool (*) ()) &(LogManager::shutdown),
+         (bool (*) ()) &(RenderManager::shutdown),
+         (bool (*) ()) &(AssetManager::shutdown),
+         (bool (*) ()) &(LoopManager::shutdown),
+         (bool (*) ()) &(ShaderManager::shutdown),
+         (bool (*) ()) &(CharacterManager::shutdown)};
+
+    assert(startups.size() == shutdowns.size());
+
+    std::cout << startups.size() << std::endl;
+
+    // start up everything
+    for(int i=0; i<startups.size(); i++) {
+        // if something fails...
+        if(!startups[i]()) {
+            // shut down everything we've started already
+            for(int j=i-1; j>=0; j--) {
+                shutdowns[j]();
+            }
+            // and quit
+            return 0;
+        }
+        std::cout << "h" << std::endl;
+    }
 
     Init::welcome_message();
-
-    GLFWwindow* window = Init::open_window();
-    if(!window) {
-        LoopManager::shutdown();
-        AssetManager::shutdown();
-        ShaderManager::shutdown();
-        LogManager::shutdown();
-        return 0;
-    }
-    if(!Init::init_glew()) {
-        LoopManager::shutdown();
-        AssetManager::shutdown();
-        ShaderManager::shutdown();
-        LogManager::shutdown();
-        return 0;
-    }
-
     Configuration::configure(argc, argv);
 
-    LoopManager::shutdown();
-    AssetManager::shutdown();
-    ShaderManager::shutdown();
-    LogManager::shutdown();
+    // shut down everything
+    for(int j=shutdowns.size()-1; j>=0; j--) {
+        shutdowns[j]();
+    }
     return 0;
 }
 

@@ -2,8 +2,9 @@
 #include "../logmanager/logmanager.h"
 #include "shadermanager.h"
 
-void ShaderManager::startup() {
+bool ShaderManager::startup() {
     LogManager::log_info("ShaderManager started.", 2);
+    return true;
 }
 
 void ShaderManager::shutdown() {

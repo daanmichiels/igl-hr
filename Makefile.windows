@@ -35,10 +35,6 @@ clean:
 	cmd /C "del $(OBJECTS)"
 	cmd /C "del $(EXECUTABLE)"
 
-test:
-	@echo $(TRANSLATION_UNITS)
-	@echo $(OBJECTS)
-
 .PHONY: all clean test shaders
 
 

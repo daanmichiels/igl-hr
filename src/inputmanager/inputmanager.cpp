@@ -1,5 +1,6 @@
 #include "inputmanager.h"
 #include "../logmanager/logmanager.h"
+#include "../rendermanager/rendermanager.h"
 #include "../data/object.h"
 #include <vector>
 #include "../data/camera.h"
@@ -13,6 +14,9 @@ object* InputManager::grid = NULL;
 flagmanager* InputManager::flag_manager = NULL;
 
 bool InputManager::startup() {
+    assert(RenderManager::window);
+    glfwSetKeyCallback(RenderManager::window, key_callback);
+
     LogManager::log_info("InputManager started.", 2);
     return true;
 }
@@ -27,6 +31,7 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+    /*
     if(key == GLFW_KEY_M && action == GLFW_PRESS)
     {
         int width, height;
@@ -66,10 +71,11 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         cameracontrols.reset_to_origin();
     }
+    */
 }
 
 void InputManager::handle(double delta_time, int width, int height)
 {
-    cameracontrols.handle(delta_time, width, height);
+    //cameracontrols.handle(delta_time, width, height);
 }
 

@@ -10,9 +10,11 @@ class RenderManager {
 public:
     static bool startup();
     static void shutdown();
+    static void render();
+
+    static GLFWwindow* window;
 
 private:
-    static GLFWwindow* window;
     static ovrHmd hmd;
     static bool rift_render;
 

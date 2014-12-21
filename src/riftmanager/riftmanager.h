@@ -8,7 +8,7 @@ public:
     static bool startup();
     static void shutdown();
 
-	static bool rift_active;
+	static bool rift_connected;
 	static ovrHmd rift;
 };
 

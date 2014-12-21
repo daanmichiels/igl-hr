@@ -2,12 +2,14 @@
 #include "rendermanager.h"
 #include "../logmanager/logmanager.h"
 #include "../configuration/configuration.h"
+#include "../riftmanager/riftmanager.h"
 #include "../strings.h"
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;
 
 bool RenderManager::startup() {
@@ -15,6 +17,12 @@ bool RenderManager::startup() {
         return false;
     if(!init_glew())
         return false;
+
+    if((Configuration::rift_output == OnOffAuto::on) || (Configuration::rift_output == OnOffAuto::automatic && RiftManager::rift_connected)) {
+        rift_render = true;
+    } else {
+        rift_render = false;
+    }
 
     LogManager::log_info("RenderManager started.", 2);
     return true;
@@ -27,6 +35,18 @@ void RenderManager::shutdown() {
     glfwTerminate();
 
     LogManager::log_info("RenderManager stopped.", 2);
+}
+
+void RenderManager::render() {
+    if(rift_render) {
+        glClearColor(0.8, 0.6, 0.0, 1.0);
+    } else {
+        glClearColor(0.0, 0.2, 0.7, 1.0);
+    }
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glfwSwapBuffers(window);
 }
 
 void RenderManager::glfw_error_callback(int error, const char* description) {

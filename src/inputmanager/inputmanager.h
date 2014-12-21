@@ -1,18 +1,20 @@
-#ifndef INPUTHANDLER_H
-#define INPUTHANDLER_H
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
 
-#include "data/object.h"
+#include "../data/object.h"
 #include <GLFW/glfw3.h>
-#include "charactermanager/cameracontrols.h"
+#include "../charactermanager/cameracontrols.h"
 #include <vector>
-#include "data/camera.h"
-#include "data/mesh.h"
-#include "flagmanager.h"
+#include "../data/camera.h"
+#include "../data/mesh.h"
+#include "../flagmanager.h"
 #include "glm/glm.hpp"
 
-class InputHandler
+class InputManager
 {
     public:
+        static bool startup();
+        static void shutdown();
         static object* grid;
         static CameraControls cameracontrols;
         static flagmanager* flag_manager;

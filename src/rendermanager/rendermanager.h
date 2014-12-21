@@ -14,9 +14,9 @@ public:
 private:
     static GLFWwindow* window;
     static ovrHmd hmd;
+    static bool rift_render;
 
     static bool init_glew();
-    static bool init_rift();
     static bool open_window();
     static void glfw_error_callback(int error, const char* description);
 };

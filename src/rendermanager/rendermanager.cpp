@@ -15,14 +15,18 @@ bool RenderManager::startup() {
         return false;
     if(!init_glew())
         return false;
-    if(!init_rift())
-        return false;
 
+    LogManager::log_info("RenderManager started.", 2);
     return true;
 }
 
 void RenderManager::shutdown() {
-    // TODO: close glfw window, shut down opengl, ...
+    if(window) {
+        glfwDestroyWindow(window);
+    }
+    glfwTerminate();
+
+    LogManager::log_info("RenderManager stopped.", 2);
 }
 
 void RenderManager::glfw_error_callback(int error, const char* description) {
@@ -82,14 +86,9 @@ bool RenderManager::init_glew() {
         return false;
     }
 
-    LogManager::log_info(std::string("Using GLEW ") + (char *)glewGetString(GLEW_VERSION), 2);
-    LogManager::log_info(std::string("Using OpenGL ") + (char *)glGetString(GL_VERSION), 2);
+    LogManager::log_info(std::string("Using GLEW ") + (char *)glewGetString(GLEW_VERSION), 1);
+    LogManager::log_info(std::string("Using OpenGL ") + (char *)glGetString(GL_VERSION), 1);
 
-    return true;
-}
-
-bool RenderManager::init_rift() {
-    // TODO: change this
     return true;
 }
 

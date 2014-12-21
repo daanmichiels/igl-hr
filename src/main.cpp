@@ -8,57 +8,90 @@
 #include "loopmanager/loopmanager.h"
 #include "rendermanager/rendermanager.h"
 #include "charactermanager/charactermanager.h"
+#include "riftmanager/riftmanager.h"
+#include "inputmanager/inputmanager.h"
 
-#include <iostream>
-
-
-int main(int argc, const char* argv[]) {
-
-    // vectors of function pointers
-    // for some reason the compiler requires a cast
-
-    // these indicate startup order
-    const std::vector<bool (*) ()> startups
-        {(bool (*) ()) &(LogManager::startup),
-         (bool (*) ()) &(RenderManager::startup),
-         (bool (*) ()) &(AssetManager::startup),
-         (bool (*) ()) &(LoopManager::startup),
-         (bool (*) ()) &(ShaderManager::startup),
-         (bool (*) ()) &(CharacterManager::startup)};
-    // these are the corresponding shutdowns
-    const std::vector<bool (*) ()> shutdowns
-        {(bool (*) ()) &(LogManager::shutdown),
-         (bool (*) ()) &(RenderManager::shutdown),
-         (bool (*) ()) &(AssetManager::shutdown),
-         (bool (*) ()) &(LoopManager::shutdown),
-         (bool (*) ()) &(ShaderManager::shutdown),
-         (bool (*) ()) &(CharacterManager::shutdown)};
-
-    assert(startups.size() == shutdowns.size());
-
-    std::cout << startups.size() << std::endl;
-
-    // start up everything
-    for(int i=0; i<startups.size(); i++) {
-        // if something fails...
-        if(!startups[i]()) {
-            // shut down everything we've started already
-            for(int j=i-1; j>=0; j--) {
-                shutdowns[j]();
-            }
-            // and quit
-            return 0;
-        }
-        std::cout << "h" << std::endl;
-    }
-
-    Init::welcome_message();
-    Configuration::configure(argc, argv);
-
-    // shut down everything
+// vectors of function pointers
+// for some reason the compiler requires a cast
+void shutdown_managers(std::vector<bool (*) ()> shutdowns) {
     for(int j=shutdowns.size()-1; j>=0; j--) {
         shutdowns[j]();
     }
+}
+
+int main(int argc, const char* argv[]) {
+
+    // list of calls that are needed to shut down everything we started
+    std::vector<bool (*) ()> shutdowns = {};
+
+    // first thing we need
+    // all other things log errors using this
+    if(LogManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(LogManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // say hello
+    Init::welcome_message();
+
+    // read configuration from stdin (and config files?)
+    Configuration::configure(argc, argv);
+
+    // detect rift, set it up
+    if(RiftManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(RiftManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // start opengl, open a window
+    if(RenderManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(RenderManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // handle input
+    if(InputManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(InputManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // load and compile shaders
+    if(ShaderManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(ShaderManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // start handling characters
+    if(CharacterManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(CharacterManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // set up game loop
+    if(LoopManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(LoopManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // Run! (forrest?)
+    LoopManager::run();
+
+    // shut down everything
+    shutdown_managers(shutdowns);
     return 0;
 }
 
@@ -323,7 +356,7 @@ int main(int argc, const char* argv[]) {
     //CameraControls control = CameraControls(window, &s.camera, &hmd);
     //flagmanager flag_manager = flagmanager(&s, control);
 //
-    //// Set up input handler
+    //// Set up input manager
     //InputHandler::cameracontrols = control;
     //InputHandler::grid = &grid;
     //InputHandler::flag_manager = &flag_manager;

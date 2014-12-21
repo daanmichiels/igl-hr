@@ -11,3 +11,7 @@ void LoopManager::shutdown() {
     LogManager::log_info("LoopManager stopped.", 2);
 }
 
+void LoopManager::run() {
+    return;
+}
+

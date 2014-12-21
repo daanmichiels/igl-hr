@@ -13,22 +13,22 @@ TRANSLATION_UNITS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 OBJECTS = $(subst /,\,$(subst src/,obj\,$(subst .cpp,.obj,$(TRANSLATION_UNITS))))
 
 # List of header files where shaders are stored
-SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src\shaders\\%.h,$(wildcard src/shaders/*.glsl))
+SHADER_FILES=$(wildcard src/shaders/*.glsl)
 
 all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS) 
 	@echo.
 	@echo $(EXECUTABLE)
 	@$(CXX) $(CXXFLAGS) $(OBJECTS) /Fe$(EXECUTABLE) /link $(LIBPATHS) $(LIBRARIES)
 
-# Note: shaderwriter.py will run once for every shader,
-# but on every invocation it will write all shaders.
-# This is inefficient.
 src\shaders\\%.h: src\shaders\\%.glsl
 	python shaderwriter.py
 
-obj\\%.obj: src\\%.cpp $(SHADER_HEADERS)
+shaders: $(SHADER_FILES)
+	python shaderwriter.py
+
+obj\\%.obj: src\\%.cpp shaders
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) /Fo$@ /c $<
 
 clean:
@@ -39,7 +39,7 @@ test:
 	@echo $(TRANSLATION_UNITS)
 	@echo $(OBJECTS)
 
-.PHONY: all clean test
+.PHONY: all clean test shaders
 
 
 

@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+FpsCounter LoopManager::fpscounter = FpsCounter();
+
 bool LoopManager::startup() {
     LogManager::log_info("LoopManager started.", 2);
     return true;
@@ -29,7 +31,7 @@ void LoopManager::run() {
         //TODO: handle animation
 
         RenderManager::render();
-
+        fpscounter.update(dt);
         glfwPollEvents();
     }
 }

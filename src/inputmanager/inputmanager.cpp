@@ -1,6 +1,7 @@
 #include "inputmanager.h"
 #include "../logmanager/logmanager.h"
 #include "../rendermanager/rendermanager.h"
+#include "../loopmanager/loopmanager.h"
 #include "../data/object.h"
 #include <vector>
 #include "../data/camera.h"
@@ -30,6 +31,9 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
+    } else if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS)
+    {
+        LogManager::log_info(std::to_string(LoopManager::fpscounter.fps) + " fps", 0);
     }
     /*
     if(key == GLFW_KEY_M && action == GLFW_PRESS)

@@ -25,17 +25,17 @@ $(EXECUTABLE): $(OBJECTS)
 src\shaders\\%.h: src\shaders\\%.glsl
 	python shaderwriter.py
 
-shaders: $(SHADER_FILES)
+src\shaders\shaders.h: $(SHADER_FILES)
 	python shaderwriter.py
 
-obj\\%.obj: src\\%.cpp shaders
+obj\\%.obj: src\\%.cpp src\shaders\shaders.h
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) /Fo$@ /c $<
 
 clean:
 	cmd /C "del $(OBJECTS)"
 	cmd /C "del $(EXECUTABLE)"
 
-.PHONY: all clean test shaders
+.PHONY: all clean test
 
 
 

@@ -78,6 +78,7 @@ bool RenderManager::open_window() {
         window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, HR_WINDOW_TITLE.c_str(), monitor, NULL);
     }
     else {
+        // TODO: set window size in an appropriate way
         window = glfwCreateWindow(800, 600, HR_WINDOW_TITLE.c_str(), NULL, NULL);
     }
 
@@ -88,8 +89,6 @@ bool RenderManager::open_window() {
     }
 
     glfwMakeContextCurrent(window);
-    // TODO
-    //glfwSetKeyCallback(window, InputHandler::key_callback);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);

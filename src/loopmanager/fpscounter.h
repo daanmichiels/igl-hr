@@ -4,14 +4,12 @@
 class FpsCounter
 {
     private:
-        bool _verbose;
-        double _last_time;
-        double _fps;
-        int _framecount;
+        double time;
+        int framecount;
     public:
-        FpsCounter(bool verbose = false);
+        double fps;
+        FpsCounter();
         void update(double time);
-        double get_fps();
 };
 
 #endif

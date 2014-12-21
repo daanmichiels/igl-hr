@@ -2,29 +2,23 @@
 #include <iostream>
 #include <string>
 
-FpsCounter::FpsCounter(bool verbose)
+FpsCounter::FpsCounter()
 {
-    _verbose = verbose;
-    _fps = 0.0f;
-    _last_time = 0.0f;
-    _framecount = 0;
+    fps = 0.0f;
+    time = 0.0f;
+    framecount = 0;
 }
 
-void FpsCounter::update(double time)
+void FpsCounter::update(double dt)
 {
-    if(time >= _last_time + 1.0)
+    time += dt;
+    if(time >= 1.0)
     {
-        _last_time += 1.0;
-        _fps = _framecount;
-        if(_verbose)
-            std::cout << std::to_string(_framecount) << "\n";
-        _framecount = 0;
+        time -= 1.0;
+        fps = framecount;
+        framecount = 0;
     }
-    _framecount++;
+    framecount++;
 }
 
-double FpsCounter::get_fps()
-{
-    return _fps;
-}
 

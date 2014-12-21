@@ -27,6 +27,10 @@ bool RiftManager::startup() {
 		}
 	}
 
+	if(rift_active) {
+		ovrHmd_ConfigureTracking(rift, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
+	}
+
     LogManager::log_info("RiftManager started.", 2);
     return true;
 }

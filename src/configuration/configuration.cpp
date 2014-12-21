@@ -11,7 +11,7 @@
 int width = 800;
 int height = 600;
 bool Configuration::fullscreen = false;
-OnOffAuto Configuration::rift_input = OnOffAuto::on;
+OnOffAuto Configuration::rift_input = OnOffAuto::automatic;
 OnOffAuto Configuration::rift_output = OnOffAuto::automatic;
 std::vector<std::string> Configuration::filenames = std::vector<std::string>();
 

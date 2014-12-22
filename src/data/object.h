@@ -19,7 +19,7 @@ struct object
     void transform(glm::dmat4 transformation);
     void set_transformation(glm::dmat4 transform);
     object();
-    object(const char filename[], bool converted, double scale);
+    //object(const char filename[], bool converted, double scale);
     object(mesh object_mesh);
 };
 

@@ -25,6 +25,7 @@ object::object(mesh object_mesh)
     this->meshes.push_back(object_mesh);
 }
 
+/*
 object::object(const char filename[], bool converted, double scale)
 {
     std::ifstream input(filename);
@@ -81,6 +82,7 @@ object::object(const char filename[], bool converted, double scale)
 
     meshes.push_back(primitives::object(v));
 }
+*/
 
 object::object()
 {

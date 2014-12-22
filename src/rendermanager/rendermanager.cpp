@@ -1,6 +1,7 @@
 
 #include "rendermanager.h"
 #include "../logmanager/logmanager.h"
+#include "../charactermanager/charactermanager.h"
 #include "../levelmanager/levelmanager.h"
 #include "../configuration/configuration.h"
 #include "../riftmanager/riftmanager.h"
@@ -72,8 +73,10 @@ void RenderManager::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(ShaderManager::default_program);
 
+    // TODO: handle rift case
+    // TODO: store these in the rendermanager
     glm::dmat4 proj = LevelManager::scene.camera.get_projection();
-    glm::dmat4 view = LevelManager::scene.camera.get_view();
+    glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
 
     glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr((glm::mat4)proj));
     
@@ -116,8 +119,7 @@ bool RenderManager::open_window() {
         window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, HR_WINDOW_TITLE.c_str(), monitor, NULL);
     }
     else {
-        // TODO: set window size in an appropriate way
-        window = glfwCreateWindow(800, 600, HR_WINDOW_TITLE.c_str(), NULL, NULL);
+        window = glfwCreateWindow(Configuration::width, Configuration::height, HR_WINDOW_TITLE.c_str(), NULL, NULL);
     }
 
     if (!window) {
@@ -148,4 +150,34 @@ bool RenderManager::init_glew() {
 
     return true;
 }
+
+glm::dmat4 RenderManager::view_matrix_from_frame(frame eyes) {
+    glm::dmat4 view = glm::dmat4();
+
+    view[0][0] = eyes.right.x;
+    view[0][1] = eyes.right.y;
+    view[0][2] = eyes.right.z;
+    view[0][3] = eyes.right.w;
+
+    view[1][0] = eyes.up.x;
+    view[1][1] = eyes.up.y;
+    view[1][2] = eyes.up.z;
+    view[1][3] = eyes.up.w;
+
+    view[2][0] = -1*eyes.forward.x;
+    view[2][1] = -1*eyes.forward.y;
+    view[2][2] = -1*eyes.forward.z;
+    view[2][3] = -1*eyes.forward.w;
+
+    view[3][0] = eyes.pos.x;
+    view[3][1] = eyes.pos.y;
+    view[3][2] = eyes.pos.z;
+    view[3][3] = eyes.pos.w;
+
+    //TODO: invert by ourselves
+    view = glm::inverse(view);
+
+    return view;
+}
+
 

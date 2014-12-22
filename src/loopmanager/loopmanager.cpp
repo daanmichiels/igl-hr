@@ -1,5 +1,6 @@
 
 #include "../logmanager/logmanager.h"
+#include "../charactermanager/charactermanager.h"
 #include "loopmanager.h"
 #include "../rendermanager/rendermanager.h"
 #include <GL/glew.h>
@@ -31,6 +32,7 @@ void LoopManager::run() {
         //TODO: handle animation
         //TODO: make sure rift orientation is polled late
 
+        CharacterManager::handle(dt);
         RenderManager::render();
         fpscounter.update(dt);
         glfwPollEvents();

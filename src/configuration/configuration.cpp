@@ -8,12 +8,17 @@
 // Whatever is not supplied on the command line is read from a file.
 // The parameters are the ones supplied to main.
 
-int width = 800;
-int height = 600;
+int Configuration::width = 1200;
+int Configuration::height = 800;
 bool Configuration::fullscreen = false;
 OnOffAuto Configuration::rift_input = OnOffAuto::automatic;
 OnOffAuto Configuration::rift_output = OnOffAuto::automatic;
 std::vector<std::string> Configuration::filenames = std::vector<std::string>();
+
+const double Configuration::mouse_speed = 0.3;
+const double Configuration::walking_speed = 1.1; //in m/s
+const double Configuration::ipd = 0.065; //interpupillary distance in meters
+const double Configuration::eye_height = 1.60; //in m
 
 void Configuration::configure(int argc, const char* argv[]) {
 

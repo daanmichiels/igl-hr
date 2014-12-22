@@ -29,6 +29,7 @@ private:
     // TODO: reduce precision of this matrix?
     static void render_object(object o, glm::dmat4 modelview);
     static void render_mesh(mesh m);
+    static glm::dmat4 view_matrix_from_frame(frame eyes);
 };
 
 

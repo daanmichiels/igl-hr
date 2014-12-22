@@ -39,7 +39,7 @@ void CameraControls::handle_mouse(double delta_time, int width, int height)
     double mouse_x, mouse_y;
     double center_x = floor(width/2);
     double center_y = floor(height/2);
-    double PI = 3.141592653589793238463;
+    const double PI = 3.141592653589793238463;
 
     glfwGetCursorPos(_window, &mouse_x, &mouse_y);
     glfwSetCursorPos(_window, center_x, center_y);

@@ -6,13 +6,12 @@
 #include "shadermanager/shadermanager.h"
 #include "assetmanager/assetmanager.h"
 #include "loopmanager/loopmanager.h"
+#include "levelmanager/levelmanager.h"
 #include "rendermanager/rendermanager.h"
 #include "charactermanager/charactermanager.h"
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
 
-// vectors of function pointers
-// for some reason the compiler requires a cast
 void shutdown_managers(std::vector<bool (*) ()> shutdowns) {
     for(int j=shutdowns.size()-1; j>=0; j--) {
         shutdowns[j]();
@@ -22,10 +21,12 @@ void shutdown_managers(std::vector<bool (*) ()> shutdowns) {
 int main(int argc, const char* argv[]) {
 
     // list of calls that are needed to shut down everything we started
+    // vector of function pointers (for some reason, the compiler requires
+    // a cast)
     std::vector<bool (*) ()> shutdowns = {};
 
     // first thing we need
-    // all other things log errors using this
+    // all other managers log errors using this
     if(LogManager::startup()) {
         shutdowns.push_back((bool (*) ()) &(LogManager::shutdown));
     } else {
@@ -36,7 +37,7 @@ int main(int argc, const char* argv[]) {
     // say hello
     Init::welcome_message();
 
-    // read configuration from stdin (and config files?)
+    // read configuration from command line (and config files?)
     Configuration::configure(argc, argv);
 
     // detect rift, set it up
@@ -66,6 +67,14 @@ int main(int argc, const char* argv[]) {
     // load and compile shaders
     if(ShaderManager::startup()) {
         shutdowns.push_back((bool (*) ()) &(ShaderManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // load the world
+    if(LevelManager::startup()) {
+        shutdowns.push_back((bool (*) ()) &(LevelManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;

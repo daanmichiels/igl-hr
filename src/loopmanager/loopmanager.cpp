@@ -29,6 +29,7 @@ void LoopManager::run() {
 
         //TODO: handle input
         //TODO: handle animation
+        //TODO: make sure rift orientation is polled late
 
         RenderManager::render();
         fpscounter.update(dt);

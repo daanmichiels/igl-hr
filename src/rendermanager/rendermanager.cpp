@@ -1,13 +1,17 @@
 
 #include "rendermanager.h"
 #include "../logmanager/logmanager.h"
+#include "../levelmanager/levelmanager.h"
 #include "../configuration/configuration.h"
 #include "../riftmanager/riftmanager.h"
+#include "../shadermanager/shadermanager.h"
 #include "../strings.h"
 #include <iostream>
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;
@@ -37,15 +41,49 @@ void RenderManager::shutdown() {
     LogManager::log_info("RenderManager stopped.", 2);
 }
 
+void RenderManager::render_object(object o, glm::dmat4 modelview) {
+    modelview = modelview * o.transformation;
+    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "modelview"), 1, GL_FALSE, glm::value_ptr((glm::mat4)modelview));
+
+    for(mesh m : o.meshes)
+    {
+        render_mesh(m);
+    }
+    for(object* child : o.children)
+    {
+        render_object(*child, modelview);
+    }
+}
+
+// Renders a mesh.
+void RenderManager::render_mesh(mesh m)
+{
+    glBindVertexArray(m.vao);
+    glDrawArrays(m.mode, m.first, m.count);
+}
+
+
 void RenderManager::render() {
     if(rift_render) {
         glClearColor(0.8, 0.6, 0.0, 1.0);
     } else {
         glClearColor(0.0, 0.2, 0.7, 1.0);
     }
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(ShaderManager::default_program);
 
+    glm::dmat4 proj = LevelManager::scene.camera.get_projection();
+    glm::dmat4 view = LevelManager::scene.camera.get_view();
+
+    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr((glm::mat4)proj));
+    
+    for(object* o : LevelManager::scene.objects) {
+        if(o->visible) {
+            render_object(*o, view);
+        }
+    }
+
+    glUseProgram(0);
     glfwSwapBuffers(window);
 }
 

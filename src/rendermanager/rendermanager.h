@@ -18,6 +18,9 @@ public:
     static GLFWwindow* window;
     static Scene scene;
 
+    static int get_window_width();
+    static int get_window_height();
+
 private:
     static ovrHmd hmd;
     static bool rift_render;
@@ -30,6 +33,11 @@ private:
     static void render_object(object o, glm::dmat4 modelview);
     static void render_mesh(mesh m);
     static glm::dmat4 view_matrix_from_frame(frame eyes);
+
+    // we store these, but we could also call
+    // glfwGetFrameBufferSize every time
+    static int window_width;
+    static int window_height;
 };
 
 

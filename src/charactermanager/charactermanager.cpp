@@ -81,6 +81,30 @@ void CharacterManager::handle_keyboard(double dt) {
 }
 
 void CharacterManager::handle_mouse(double dt) {
+
+    double mouse_x, mouse_y;
+    double center_x = floor(RenderManager::get_window_width() / 2);
+    double center_y = floor(RenderManager::get_window_height() / 2);
+    // TODO: put PI in a sensible place
+    const double PI = 3.141592653589793238463;
+
+    GLFWwindow* win = RenderManager::window;
+    glfwGetCursorPos(win, &mouse_x, &mouse_y);
+    glfwSetCursorPos(win, center_x, center_y);
+
+    double angle_ver = Configuration::mouse_speed * (center_y - mouse_y);
+    altitude += angle_ver;
+    if(altitude > PI/2) {
+        altitude = PI/2;
+    } else if(altitude < -PI/2) {
+        altitude = -PI/2;
+    }
+
+    double angle_hor = Configuration::mouse_speed * (center_x - mouse_x);
+    shoulders.forward = ((double)cos(angle_hor))*shoulders.forward - ((double)sin(angle_hor))*shoulders.right;
+    shoulders.right = ((double)sin(angle_hor))*shoulders.forward + ((double)cos(angle_hor))*shoulders.right;
+
+    return; 
 }
 
 void CharacterManager::handle_rift(double dt) {

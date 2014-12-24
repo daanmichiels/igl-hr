@@ -14,6 +14,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+int RenderManager::window_width = 100;
+int RenderManager::window_height = 100;
 bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;
 
@@ -116,10 +118,14 @@ bool RenderManager::open_window() {
 
     if(Configuration::fullscreen) {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        window = glfwCreateWindow(glfwGetVideoMode(monitor)->width, glfwGetVideoMode(monitor)->height, HR_WINDOW_TITLE.c_str(), monitor, NULL);
+        window_width = glfwGetVideoMode(monitor)->width;
+        window_height = glfwGetVideoMode(monitor)->height;
+        window = glfwCreateWindow(window_width, window_height, HR_WINDOW_TITLE.c_str(), monitor, NULL);
     }
     else {
-        window = glfwCreateWindow(Configuration::width, Configuration::height, HR_WINDOW_TITLE.c_str(), NULL, NULL);
+        window_width = Configuration::width;
+        window_height = Configuration::height;
+        window = glfwCreateWindow(window_width, window_height, HR_WINDOW_TITLE.c_str(), NULL, NULL);
     }
 
     if (!window) {
@@ -180,4 +186,11 @@ glm::dmat4 RenderManager::view_matrix_from_frame(frame eyes) {
     return view;
 }
 
+int RenderManager::get_window_width() {
+    return window_width;
+}
+
+int RenderManager::get_window_height() {
+    return window_height;
+}
 

@@ -24,6 +24,7 @@ private:
     static void handle_mouse(double dt);
     static void handle_rift(double dt);
     
+    static void move_cursor_to_center();
 };
 
 #endif

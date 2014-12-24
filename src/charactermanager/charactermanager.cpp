@@ -30,6 +30,8 @@ bool CharacterManager::startup() {
     shoulders.up = glm::dvec4(0,1,0,0);
     shoulders.forward = glm::dvec4(0,0,-1,0);
 
+    move_cursor_to_center();
+
     LogManager::log_info("CharacterManager started.", 2);
     return true;
 }
@@ -56,6 +58,8 @@ void CharacterManager::handle_keyboard(double dt) {
     if( glfwGetKey(win, GLFW_KEY_RIGHT) || glfwGetKey(win, GLFW_KEY_D )) {
         walking_direction += glm::dvec3(1,0,0);
     }
+    // TODO: do something sensible with these keys (we want to walk on the
+    // floor, eye level constant, but for debug this may be useful)
     if( glfwGetKey(win, GLFW_KEY_PAGE_UP) || glfwGetKey(win, GLFW_KEY_R)) {
         walking_direction += glm::dvec3(0,1,0);
     }
@@ -90,15 +94,11 @@ void CharacterManager::handle_mouse(double dt) {
 
     GLFWwindow* win = RenderManager::window;
     glfwGetCursorPos(win, &mouse_x, &mouse_y);
-    glfwSetCursorPos(win, center_x, center_y);
+    move_cursor_to_center();
 
     double angle_ver = Configuration::mouse_speed * (center_y - mouse_y);
     altitude += angle_ver;
-    if(altitude > PI/2) {
-        altitude = PI/2;
-    } else if(altitude < -PI/2) {
-        altitude = -PI/2;
-    }
+    altitude = fmin(PI/2, fmax(-PI/2, altitude)); //clamp
 
     double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
     shoulders.rotate_right(angle_hor);
@@ -124,5 +124,12 @@ frame CharacterManager::get_position_eyes() {
     frame result = shoulders;
     result.rotate_up(altitude);
     return result;
+}
+
+void CharacterManager::move_cursor_to_center() {
+    double center_x = floor(RenderManager::get_window_width() / 2);
+    double center_y = floor(RenderManager::get_window_height() / 2);
+    GLFWwindow* win = RenderManager::window;
+    glfwSetCursorPos(win, center_x, center_y);
 }
 

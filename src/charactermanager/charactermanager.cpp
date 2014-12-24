@@ -100,9 +100,8 @@ void CharacterManager::handle_mouse(double dt) {
         altitude = -PI/2;
     }
 
-    double angle_hor = Configuration::mouse_speed * (center_x - mouse_x);
-    shoulders.forward = ((double)cos(angle_hor))*shoulders.forward - ((double)sin(angle_hor))*shoulders.right;
-    shoulders.right = ((double)sin(angle_hor))*shoulders.forward + ((double)cos(angle_hor))*shoulders.right;
+    double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
+    shoulders.rotate_right(angle_hor);
 
     return; 
 }
@@ -121,7 +120,9 @@ frame CharacterManager::get_position_right_eye() {
 }
 
 frame CharacterManager::get_position_eyes() {
-    // TODO: fix this
-    return shoulders;
+    // TODO: add character height
+    frame result = shoulders;
+    result.rotate_up(altitude);
+    return result;
 }
 

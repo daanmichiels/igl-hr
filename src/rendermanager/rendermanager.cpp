@@ -18,6 +18,7 @@ int RenderManager::window_width = 100;
 int RenderManager::window_height = 100;
 bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;
+glm::mat4 RenderManager::projection = glm::mat4();
 
 bool RenderManager::startup() {
     if(!open_window())
@@ -25,14 +26,33 @@ bool RenderManager::startup() {
     if(!init_glew())
         return false;
 
+    calculate_projection();
+
     if((Configuration::rift_output == OnOffAuto::on) || (Configuration::rift_output == OnOffAuto::automatic && RiftManager::rift_connected)) {
         rift_render = true;
     } else {
         rift_render = false;
     }
 
+    glfwSetWindowSizeCallback(window, handle_resize);
+
     LogManager::log_info("RenderManager started.", 2);
     return true;
+}
+
+void RenderManager::calculate_projection() {
+    float fov = 1.2f; // TODO: set a sensible value
+    float ratio = ((float) window_width) / window_height;
+    float near = 0.03 * CharacterManager::meter; // TODO: find sensible near and far planes
+    float far = 20 * CharacterManager::meter;
+    projection = glm::perspective(fov, ratio, near, far);
+}
+
+void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
+    window_width = width;
+    window_height = height;
+    glViewport(0,0,width,height);
+    calculate_projection();
 }
 
 void RenderManager::shutdown() {
@@ -77,10 +97,9 @@ void RenderManager::render() {
 
     // TODO: handle rift case
     // TODO: store these in the rendermanager
-    glm::dmat4 proj = LevelManager::scene.camera.get_projection();
     glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
 
-    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr((glm::mat4)proj));
+    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     
     for(object* o : LevelManager::scene.objects) {
         if(o->visible) {

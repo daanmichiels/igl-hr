@@ -20,7 +20,6 @@ void CharacterManager::handle(double dt) {
     }
 
     shoulders.correct_roundoff();
-    //update_camera_transformation();
 }
 
 bool CharacterManager::startup() {
@@ -94,7 +93,8 @@ void CharacterManager::handle_mouse(double dt) {
 
     GLFWwindow* win = RenderManager::window;
     glfwGetCursorPos(win, &mouse_x, &mouse_y);
-    move_cursor_to_center();
+    //this is inefficient, because the center is calculated twice
+    move_cursor_to_center(); 
 
     double angle_ver = Configuration::mouse_speed * (center_y - mouse_y);
     altitude += angle_ver;

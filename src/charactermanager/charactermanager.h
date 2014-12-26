@@ -10,6 +10,10 @@ public:
     static void shutdown();
     static void handle(double dt);
 
+    static void bind_mouse();
+    static void unbind_mouse();
+    static bool is_mouse_bound();
+
     static double meter;
 
     static frame get_position_left_eye();
@@ -17,6 +21,7 @@ public:
     static frame get_position_eyes();
 private:
     static bool rift_input;
+    static bool mouse_bound;
     static frame shoulders;
     static double altitude; //in the sense of http://en.wikipedia.org/wiki/Horizontal_coordinate_system
 

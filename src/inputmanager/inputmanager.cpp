@@ -1,5 +1,6 @@
 #include "inputmanager.h"
 #include "../logmanager/logmanager.h"
+#include "../charactermanager/charactermanager.h"
 #include "../rendermanager/rendermanager.h"
 #include "../loopmanager/loopmanager.h"
 #include "../data/object.h"
@@ -35,24 +36,18 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     {
         LogManager::log_info(std::to_string(LoopManager::fpscounter.fps) + " fps", 0);
     }
-    /*
     if(key == GLFW_KEY_M && action == GLFW_PRESS)
     {
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        double center_x = floor(width/2);
-        double center_y = floor(height/2);
-        glfwSetCursorPos(window, center_x, center_y);
-        cameracontrols.bind_mouse = !cameracontrols.bind_mouse;
-        if(cameracontrols.bind_mouse)
-        {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-        }
-        else
-        {
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        // TODO: ensure charactermanager is started
+        //       because it is later in the startup sequence
+        //       (cyclic dependency?)
+        if(CharacterManager::is_mouse_bound()) {
+            CharacterManager::unbind_mouse();
+        } else {
+            CharacterManager::bind_mouse();
         }
     }
+    /*
     if(key == GLFW_KEY_G && action == GLFW_PRESS )
     {
         grid->visible = !grid->visible;

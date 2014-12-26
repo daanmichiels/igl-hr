@@ -8,6 +8,7 @@
 
 frame CharacterManager::shoulders = frame();
 bool CharacterManager::rift_input = false;
+bool CharacterManager::mouse_bound = true;
 double CharacterManager::meter = 0.1;
 double CharacterManager::altitude = 0.0;
 
@@ -15,11 +16,31 @@ void CharacterManager::handle(double dt) {
     handle_keyboard(dt);
     if(rift_input) {
         handle_rift(dt);
-    } else {
+    } else if(mouse_bound) {
         handle_mouse(dt);
     }
 
     shoulders.correct_roundoff();
+}
+
+void CharacterManager::bind_mouse() {
+    // avoid centering the mouse when it was bound already
+    if(mouse_bound) {
+        return;
+    }
+    move_cursor_to_center();
+    mouse_bound = true;
+
+    // TODO: make cursor invisible
+}
+
+void CharacterManager::unbind_mouse() {
+    mouse_bound = false;
+    // TODO: make cursor visible
+}
+
+bool CharacterManager::is_mouse_bound() {
+    return mouse_bound;
 }
 
 bool CharacterManager::startup() {

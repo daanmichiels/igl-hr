@@ -31,11 +31,18 @@ src\shaders\shaders.h: $(SHADER_FILES)
 obj\\%.obj: src\\%.cpp src\shaders\shaders.h
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) /Fo$@ /c $<
 
+# TODO: find a better way of integrating the tool compilationn process
+# and something that's more automated
+tools:
+	$(CXX) $(CXXFLAGS) /Fetools\obj2bin.exe $(INCLUDES) src\math\hypermath.cpp tools\obj2bin.cpp
+	cmd /C "del hypermath.obj"
+	cmd /C "del obj2bin.obj"
+
 clean:
 	cmd /C "del $(OBJECTS)"
 	cmd /C "del $(EXECUTABLE)"
 
-.PHONY: all clean test
+.PHONY: all clean tools
 
 
 

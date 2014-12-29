@@ -4,6 +4,8 @@
 #ifndef HYPERMATH_H
 #define HYPERMATH_H
 
+#include "glm/glm.hpp"
+
 namespace hypermath
 {
     double dot(glm::dvec4 v, glm::dvec4 w);

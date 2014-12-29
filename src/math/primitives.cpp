@@ -20,10 +20,8 @@ namespace
     {
         size_t n = pos.size();
 
-        // TODO: turn this into an assertion
-        if(col.size() != n) {
-            return 0;
-        }
+        // should be satisfied
+        assert(col.size() == n);
 
         GLuint vao;
         glGenVertexArrays(1, &vao);

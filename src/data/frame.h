@@ -23,6 +23,7 @@ struct frame
     void rotate_up(double angle);
 };
 
+// allow application of a matrix to a frame
 frame operator*(glm::dmat4 mat, frame f);
 
 #endif /* FRAME_H */

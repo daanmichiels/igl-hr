@@ -10,7 +10,6 @@
 
 struct object
 {
-    std::string name;
     glm::dmat4 transformation;
     std::vector<object*> children;
     std::vector<mesh> meshes;

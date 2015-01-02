@@ -18,6 +18,7 @@
         bool _has_printed = false;
         
     private:
+        // what is this?
         double _border = 0.1;
         void render_object(object o, glm::dmat4 modelview);
         void render_mesh(mesh m);

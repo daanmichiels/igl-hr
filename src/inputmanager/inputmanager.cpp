@@ -8,12 +8,9 @@
 #include "../data/camera.h"
 #include "../data/mesh.h"
 #include "glm/glm.hpp"
-#include "../flagmanager.h"
 #include <iostream>
 
-CameraControls InputManager::cameracontrols = CameraControls(NULL, NULL, NULL);
 object* InputManager::grid = NULL;
-flagmanager* InputManager::flag_manager = NULL;
 
 bool InputManager::startup() {
     assert(RenderManager::window);

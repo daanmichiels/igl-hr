@@ -4,8 +4,8 @@
 #include <vector>
 #include "object.h"
 #include "camera.h"
-#include "../charactermanager/cameracontrols.h"
 #include "mesh.h"
+#include "frame.h"
 #include "glm/glm.hpp"
 
  class Scene
@@ -19,9 +19,6 @@
         // TODO: what is this?
         bool _has_printed = false;
         
-        void render();
-        void render_stereo(int textureScale, CameraControls control, GLuint left_framebuffer, GLuint right_framebuffer);
-
     private:
         double _border = 0.1;
         void render_object(object o, glm::dmat4 modelview);

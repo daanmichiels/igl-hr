@@ -1,3 +1,5 @@
+//TODO: do we need the Scene class?
+
 #ifndef SCENE_H
 #define SCENE_H
 

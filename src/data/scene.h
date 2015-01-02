@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "object.h"
-#include "camera.h"
 #include "mesh.h"
 #include "frame.h"
 #include "glm/glm.hpp"
@@ -12,7 +11,6 @@
 {
     public:
         std::vector<object*> objects;
-        Camera camera;
         GLuint program;
         GLuint lens_center_loc;
         GLuint barrel_power_loc;

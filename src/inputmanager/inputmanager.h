@@ -4,7 +4,6 @@
 #include "../data/object.h"
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "../data/camera.h"
 #include "../data/mesh.h"
 #include "glm/glm.hpp"
 

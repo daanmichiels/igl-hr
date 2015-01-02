@@ -5,7 +5,6 @@
 #include "../loopmanager/loopmanager.h"
 #include "../data/object.h"
 #include <vector>
-#include "../data/camera.h"
 #include "../data/mesh.h"
 #include "glm/glm.hpp"
 #include <iostream>

@@ -190,6 +190,7 @@ namespace hypermath
     }
 
     // Returns vector towards a point at (0,-Infinity,0, Infinity)
+    // TODO: fix this code, and indent it correctly
     glm::dvec4 gravity(glm::dvec4 basepoint) 
     {
     double a = basepoint.x;

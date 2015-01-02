@@ -15,7 +15,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-int RenderManager::window_width = 100;
+int RenderManager::window_width = 100; // These don't matter: they get overwritten
 int RenderManager::window_height = 100;
 bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;

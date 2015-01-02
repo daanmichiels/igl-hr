@@ -5,6 +5,7 @@
 #include "../logmanager/logmanager.h"
 #include <string>
 
+// TODO: Is this worth a class?
 void Init::welcome_message() {
     LogManager::log_general(HR_WELCOME_MESSAGE, 1);
 }

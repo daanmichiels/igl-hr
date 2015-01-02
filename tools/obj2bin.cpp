@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 int main(int argc, const char* argv[]) {
     if(argc < 2) {
@@ -16,8 +17,21 @@ int main(int argc, const char* argv[]) {
 		std::cout << "Couldn't open " << filename << "." << std::endl;
 	}
 
+    std::vector<glm::vec4> positions;
+    std::vector<size_t> indices;
 	// TODO: parse the file and layout the vertex data in memory
 	// (we want to use indexed rendering)
+    
+    for(std::string line; getline(s, line); ) {
+        if(line.size() < 2) {
+            continue;
+        }
+
+        if(line[0] == 'v' && line[1] == ' ') {
+            line = line.substr(2);
+            double x, y, z;
+        }
+    }
 
 	// TODO: write the vertex data to a file
 

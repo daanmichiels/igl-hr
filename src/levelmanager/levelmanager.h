@@ -9,6 +9,9 @@ public:
     static void shutdown();
 
     static Scene scene;
+
+private:
+    static void load_initial_level();
 };
 
 #endif

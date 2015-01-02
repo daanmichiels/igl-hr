@@ -8,7 +8,16 @@
 Scene LevelManager::scene = Scene();
 
 bool LevelManager::startup() {
+    load_initial_level();
+    LogManager::log_info("LevelManager started.", 2);
+    return true;
+}
 
+void LevelManager::shutdown() {
+    LogManager::log_info("LevelManager stopped.", 2);
+}
+
+void LevelManager::load_initial_level() {
     mesh m = primitives::tetrahedron(0.04);
     //TODO: get rid of this heap allocation
     //(but we can't make it a stack variable)
@@ -17,11 +26,6 @@ bool LevelManager::startup() {
     o->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
     scene.objects.push_back(o);
 
-    LogManager::log_info("LevelManager started.", 2);
-    return true;
-}
-
-void LevelManager::shutdown() {
-    LogManager::log_info("LevelManager stopped.", 2);
+    return;
 }
 

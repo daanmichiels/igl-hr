@@ -59,7 +59,7 @@ void LogManager::log_general(std::string message, int level) {
 #else
 
 void LogManager::startup() {
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
 }
 
 void LogManager::shutdown() {

@@ -41,7 +41,7 @@ void LogManager::log_info(std::string message) {
 #else
 
 void LogManager::startup() {
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
 }
 
 void LogManager::shutdown() {

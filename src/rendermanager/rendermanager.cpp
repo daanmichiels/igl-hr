@@ -201,6 +201,7 @@ glm::dmat4 RenderManager::view_matrix_from_frame(frame eyes) {
     view[3][3] = eyes.pos.w;
 
     //TODO: invert by ourselves
+    //      this should make a difference in stability
     view = glm::inverse(view);
 
     return view;

@@ -6,6 +6,7 @@
 #include <string>
 
 // TODO: Is this worth a class?
+//       No. Move it to main.
 void Init::welcome_message() {
     LogManager::log_general(HR_WELCOME_MESSAGE, 1);
 }

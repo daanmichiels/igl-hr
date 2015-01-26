@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 
 //TODO: make all the explanations here doxygen-style
+//      actually, do that for the whole project
 
 struct mesh
 {

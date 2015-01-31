@@ -6,8 +6,9 @@
 #include "hypermath.h"
 
 
-// Anonymous namespace.
-// Everything in here can only be accessed from this file (unit).
+/** Anonymous namespace.
+ * Everything in here can only be accessed from this file (unit).
+ */
 namespace
 {
     const glm::dvec4 red = glm::dvec4(1.0,0.0,0.0,1.0);
@@ -15,12 +16,15 @@ namespace
     const glm::dvec4 blue = glm::dvec4(0.0,0.0,1.0,1.0);
     const glm::dvec4 yellow = glm::dvec4(1.0,1.0,0.0,1.0);
 
-    // Create a vao from positions and colors.
+    /** \brief Create a vao from positions and colors.
+     * \param A vector of position vectors, and a vector of color vectors
+     * \return GLuint
+     */
     GLuint vao_from_pos_col(std::vector<glm::dvec4> pos, std::vector<glm::dvec4> col)
     {
         size_t n = pos.size();
 
-        // should be satisfied
+        /*! should be satisfied */
         assert(col.size() == n);
 
         GLuint vao;
@@ -55,29 +59,32 @@ namespace
         return vao;
     }
 
-    /* Subdivision Algorithm
-    This works by finding the mid point between each pair of vertices, and generating 4 triangles.
+    /** Subdivision Algorithm
+     * \brief This works by finding the mid point between each pair of vertices, and generating 4 triangles.
 
-                        a
-                       *
-                      * *
-                     *   *
-    midpoint a,b    * * * *  midpoint a,c
-                   *       *
-                  * *     * *
-                 *   *   *   *
-              b * * * * * * * * c 
-                  midpoint b,c
+     *                    a
+     *                    *
+     *                   * *
+     *                  *   *
+     * midpoint a,b    * * * *  midpoint a,c
+     *                *       *
+     *               * *     * *
+     *              *   *   *   *
+     *           b * * * * * * * * c 
+     *               midpoint b,c
 
-    Passing true as the last argument discards the "middle" each step, resulting in sierpinski subdivision
-    Increasing the number of divisions from 1 to 2 will perform the first division, then divide all of the newly generated triangles.
-    Can crash the program for too large of a large number of divisions.
-    */
+     * Passing true as the last argument discards the "middle" each step, resulting in sierpinski subdivision
+     * Increasing the number of divisions from 1 to 2 will perform the first division, then divide all of the newly generated triangles.
+     * Can crash the program for too large of a large number of divisions.
+     * 
+     * \param Three vectors for the initial triangle, number of divisions (WARNING GETS UNSTABLE FOR HIGH VALUES >7), and a boolean for whether or not to discard middle
+     * \return Vector of triangles which are subdivided. These can be assembled using GL_TRIANGLES
+     */
     
     std::vector<glm::dvec4> subdivide_triangle_vector(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
 
-        // TODO: precalculate the sizes of the vectors
+        /*! TODO: precalculate the sizes of the vectors */
         std::vector<glm::dvec4> triangles;
         glm::dvec4 ab, bc, ac;
         std::vector<glm::dvec4> t1, t2, t3, t4;
@@ -86,7 +93,7 @@ namespace
         ac = hypermath::midpoint(a, c, 0.5);
         bc = hypermath::midpoint(b, c, 0.5);
 
-        //recursive calls to each subdivided triangle
+        /*! recursive calls to each subdivided triangle */
         if(divisions > 0)
         {
             t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1, sierpinski);
@@ -122,7 +129,7 @@ namespace
         }
         else
         {
-            //base case
+            /*! base case */
             triangles.push_back(a);
             triangles.push_back(b);
             triangles.push_back(c);
@@ -132,7 +139,7 @@ namespace
     }
     std::vector<glm::dvec4> subdivide_triangle_vector_euclidean(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
-        // TODO: precalculate sizes
+        /*! TODO: precalculate sizes */
         std::vector<glm::dvec4> triangles;
         std::vector<glm::dvec4> t1, t2, t3, t4;
 
@@ -142,7 +149,7 @@ namespace
         ab *= 0.5;
         ac *= 0.5;
         bc *= 0.5;
-        //recursive calls to each subdivided triangle
+        /*! recursive calls to each subdivided triangle */
         if(divisions > 0)
         {
             t1 = subdivide_triangle_vector_euclidean(a, ab, ac, divisions - 1, sierpinski);
@@ -179,7 +186,7 @@ namespace
         }
         else
         {
-            //base case
+            /*! base case */
             triangles.push_back(a);
             triangles.push_back(b);
             triangles.push_back(c);
@@ -191,8 +198,11 @@ namespace
 
 namespace primitives
 {
-    // Create a line between two arbitrary points.
-    // the line is uniformly colored
+    /** \brief Create a line between two arbitrary points.
+     *  the line is uniformly colored
+     * \param Two vectors (call exp0!) and a color vector
+     * \return Line mesh
+     */
     mesh line(glm::dvec4 a, glm::dvec4 b, glm::dvec4 col)
     {
         mesh result;
@@ -203,14 +213,17 @@ namespace primitives
         return result;
     }
 
-    // Make a set of XYZ axes, colored red green and blue respectively, inside of a sphere of given radius
+    /** \brief Make a set of XYZ axes, colored red green and blue respectively, inside of a sphere of given radius
+     * \param The radius for which to set the axes within
+     * \return Axes mesh
+     */
     mesh axes(double radius)
     {
         mesh result;
         std::vector<glm::dvec4> pos;
         std::vector<glm::dvec4> col;
         
-        //first set the vectors for the axes.
+        /*! first set the vectors for the axes. */
         pos.push_back(hypermath::exp0(radius * glm::dvec4(-1,0,0,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(1,0,0,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,-1,0,0)));
@@ -218,7 +231,7 @@ namespace primitives
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,-1,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,1,0)));
         
-        //set the colors for each corresponding axis. each line is uniformly colored
+        /*! set the colors for each corresponding axis. each line is uniformly colored */
         col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
@@ -233,11 +246,14 @@ namespace primitives
         return result;
     }
 
-    // Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
+    /** \brief Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
+     * \param Spacing between the grid
+     * \return Grid Mesh
+     */
     mesh grid(double grid_space)
     {
         mesh result;
-        // TODO: precalculate sizes
+        /*! TODO: precalculate sizes */
         std::vector<glm::dvec4> pos;
         std::vector<glm::dvec4> col;
         int steps = (int) ceil(10/grid_space);
@@ -254,13 +270,13 @@ namespace primitives
             {
                 int j_prime = -1 * steps + j;
                 int i_prime = -1 * steps + i;
-                // X Grid
+                /*! X Grid */
                 pos.push_back(x_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
                 pos.push_back(x_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
-                // Y Grid
+                /*! Y Grid */
                 pos.push_back(y_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, -0, grid_space*j_prime, 0))));
                 pos.push_back(y_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
-                // Z Grid
+                /*! Z Grid */
                 pos.push_back(z_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
                 pos.push_back(z_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
 
@@ -280,8 +296,10 @@ namespace primitives
         return result;
     }
     
-    // Create a triangle.
-    // The corners will be red, green, blue.
+    /** \brief Create a triangle. The corners will be red, green, blue.
+     * \param Three vectors for where to draw the triangle
+     * \return Triangle mesh
+     */
     mesh triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c)
     {
         mesh result;
@@ -292,9 +310,10 @@ namespace primitives
         return result;
     }
     
-    // Create a rectangle.
-    // Lies in the xz-plane, and is centered at the origin.
-    // It's uniformly colored.
+    /** \brief Create a rectangle which lies in the xz-plane, and is centered at the origin. It's uniformly colored. 
+     * \param The width of the rectangle,the depth of the rectangle, and the color of the rectangle.
+     * \return Rectangle mesh
+     */
     mesh rectangle(double width, double depth, glm::dvec4 color)
     {
         double w = width / 2;
@@ -311,7 +330,10 @@ namespace primitives
         result.count = 4;
         return result;
     }
-    // Create a n sided polygon inside a circle of given radius.
+    /** \brief Create a n sided polygon inside a circle of given radius.
+     * \param The number of sides to give the n-gon, the radius to inscribe the n-gon within, the color of the n-gon.
+     * \return n sided polygon inscribed in given radius.
+     */
     mesh circumscribed_ngon(int n, double radius, glm::dvec4 color)
     {
         const double PI = 3.141592653589793238463;
@@ -333,11 +355,16 @@ namespace primitives
         return result;
     }
 
-    // Create a tetrahedron.
-    // It will be inscribed in a sphere of the given radius.
-    // It will be centered at (0,0,0,1) and one of its tips will
-    // point in the positive y-direction (up).
-    // It will have nice colors.
+    /** \brief Create a tetrahedron.
+     * 
+     *It will be inscribed in a sphere of the given radius.
+     *It will be centered at (0,0,0,1) and one of its tips will
+     *point in the positive y-direction (up).
+     *It will have nice colors. 
+     * 
+     * \param The radius within which to inscribe the tetrahedron
+     * \return Tetrahedron mesh
+    */
     mesh tetrahedron(double radius)
     {
         glm::dvec4 a = radius * glm::dvec4(0,1,0,0);
@@ -357,7 +384,10 @@ namespace primitives
         result.count = 6;
         return result;
     }
-    // Creates an octahedron at the origin. Each triangle is colored with red, green, and blue vertices.
+    /** \brief Creates an octahedron at the origin. Each triangle is colored with red, green, and blue vertices.
+     * \param Radius within which to inscribe the octahedron
+     * \return Octahedron mesh.
+     */
     mesh octahedron(double radius)
     {
         glm::dvec4 a = hypermath::exp0(radius * glm::dvec4(0,0,1,0));
@@ -420,8 +450,13 @@ namespace primitives
         return result;
     }
     
-    // Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
-    // See the comment for the subdivision algorithm for more information
+    /** \brief Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
+     * See the comment for the subdivision algorithm for more information 
+     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)
+     * 
+     * \param Three vertices for the triangle, the number of divisions to make, and a boolean whether or not to discard the middle.
+     * \return Subdivided Triangle Mesh
+     */
     
     mesh subdivided_triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
@@ -444,8 +479,13 @@ namespace primitives
 
     }
 
-    // Creates a subdivided octahedron mesh. Again, passing sierpinski as true creates sierpinski triangles
-    // See the comment for the subdivision algorithm for more information
+    /** \brief Creates a subdivided octahedron mesh. Again, passing sierpinski as true creates sierpinski triangles
+     * See the comment for the subdivision algorithm for more information 
+     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 7)
+     * 
+     * \param Radius within which to inscribe the octahedron, number of divisions to make, and a boolean whether or not to discard the middle.
+     * \return Subdivided Octahedron Mesh
+     */
 
     mesh subdivided_octahedron(double radius, int divisions, bool sierpinski)
     {
@@ -458,7 +498,7 @@ namespace primitives
 
         std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
-        //generate each subdivided triangle
+        /*! generate each subdivided triangle */
         
         t1 = subdivide_triangle_vector(a, b, d, divisions, sierpinski);
         t2 = subdivide_triangle_vector(a, d, c, divisions, sierpinski);
@@ -469,12 +509,11 @@ namespace primitives
         t7 = subdivide_triangle_vector(f, c, e, divisions, sierpinski);
         t8 = subdivide_triangle_vector(f, e, b, divisions, sierpinski);
 
-        //push back each subdivision to the final vector.
+        /*! push back each subdivision to the final vector. */
         for(unsigned int i=0; i < t1.size(); i++)
         {
             collected.push_back(t1[i]);
         }
-        //this format will be useful when we turn this octahedron into a sphere.
         for(unsigned int i=0; i < t2.size(); i++)
         {
             collected.push_back(t2[i]);
@@ -510,7 +549,6 @@ namespace primitives
             collected.push_back(t8[i]);
         }
 
-        //setup colors
         std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < collected.size()/3; i++)
         {
@@ -518,7 +556,6 @@ namespace primitives
             colors.push_back(green);
             colors.push_back(blue);
         }
-        //create mesh
         mesh result;
         result.vao = vao_from_pos_col(collected, colors);
         result.mode = GL_TRIANGLES;
@@ -527,10 +564,14 @@ namespace primitives
         return result;
     }
 
-    /* This is made by making an octahedron, subdividing the octahedron (euclidean!).
-        Then we normalize every vertex, scale it according to the passed radius value.
-        Finally we exponentiate the resulting vector.
-    */
+    /** \brief This is made by making an octahedron, subdividing the octahedron, and normalizing all vectors.
+     *    Then we normalize every vertex, scale it according to the passed radius value.
+     *    Finally we exponentiate the resulting vector.
+     *    ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 7)
+     * 
+     * \param Radius of sphere, number of subdivisions to make, color of the sphere, and whether or not to perform sierpinski subdivision.
+     * \return Sphere Mesh
+     */
     mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski)
     {
         glm::dvec4 a = glm::dvec4(0,0,1,0);
@@ -542,7 +583,7 @@ namespace primitives
 
         std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
-        //generate each subdivided triangle
+        /*! generate each subdivided triangle */
         
         t1 = subdivide_triangle_vector_euclidean(a, b, d, divisions, sierpinski);
         t2 = subdivide_triangle_vector_euclidean(a, d, c, divisions, sierpinski);
@@ -553,7 +594,7 @@ namespace primitives
         t7 = subdivide_triangle_vector_euclidean(f, c, e, divisions, sierpinski);
         t8 = subdivide_triangle_vector_euclidean(f, e, b, divisions, sierpinski);
         
-        //push back each subdivision to the final vector.
+        /*! push back each subdivision to the final vector. */
         for(unsigned int i=0; i < t1.size(); i++)
         {
             collected.push_back(t1[i]);
@@ -600,7 +641,6 @@ namespace primitives
             normalized.push_back(hypermath::exp0(radius * hypermath::normalize(collected[i])));
         }
 
-        //setup colors
         std::vector<glm::dvec4> colors;
         for(unsigned int i = 0; i < collected.size()/3; i++)
         {
@@ -608,7 +648,6 @@ namespace primitives
             colors.push_back(green);
             colors.push_back(blue);
         }
-        //create mesh
         mesh result;
         result.vao = vao_from_pos_col(normalized, colors);
         result.mode = GL_TRIANGLES;

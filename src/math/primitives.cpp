@@ -17,7 +17,8 @@ namespace
     const glm::dvec4 yellow = glm::dvec4(1.0,1.0,0.0,1.0);
 
     /** \brief Create a vao from positions and colors.
-     * \param A vector of position vectors, and a vector of color vectors
+     * \param A vector of position vectors
+     * \param A vector of color vectors
      * \return GLuint
      */
     GLuint vao_from_pos_col(std::vector<glm::dvec4> pos, std::vector<glm::dvec4> col)
@@ -77,7 +78,9 @@ namespace
      * Increasing the number of divisions from 1 to 2 will perform the first division, then divide all of the newly generated triangles.
      * Can crash the program for too large of a large number of divisions.
      * 
-     * \param Three vectors for the initial triangle, number of divisions (WARNING GETS UNSTABLE FOR HIGH VALUES >7), and a boolean for whether or not to discard middle
+     * \param Three vectors for the initial triangle
+     * \param Number of divisions (WARNING GETS UNSTABLE FOR HIGH VALUES >7)
+     * \param A Bboolean for whether or not to discard middle
      * \return Vector of triangles which are subdivided. These can be assembled using GL_TRIANGLES
      */
     
@@ -200,7 +203,8 @@ namespace primitives
 {
     /** \brief Create a line between two arbitrary points.
      *  the line is uniformly colored
-     * \param Two vectors (call exp0!) and a color vector
+     * \param Two position vectors (call exp0!)
+     * \param A color vector
      * \return Line mesh
      */
     mesh line(glm::dvec4 a, glm::dvec4 b, glm::dvec4 col)
@@ -311,7 +315,9 @@ namespace primitives
     }
     
     /** \brief Create a rectangle which lies in the xz-plane, and is centered at the origin. It's uniformly colored. 
-     * \param The width of the rectangle,the depth of the rectangle, and the color of the rectangle.
+     * \param The width of the rectangle
+     * \param The depth of the rectangle
+     * \param The color of the rectangle
      * \return Rectangle mesh
      */
     mesh rectangle(double width, double depth, glm::dvec4 color)
@@ -331,7 +337,9 @@ namespace primitives
         return result;
     }
     /** \brief Create a n sided polygon inside a circle of given radius.
-     * \param The number of sides to give the n-gon, the radius to inscribe the n-gon within, the color of the n-gon.
+     * \param The number of sides to give the n-gon
+     * \param The radius to inscribe the n-gon within
+     * \param The color of the n-gon
      * \return n sided polygon inscribed in given radius.
      */
     mesh circumscribed_ngon(int n, double radius, glm::dvec4 color)
@@ -454,7 +462,9 @@ namespace primitives
      * See the comment for the subdivision algorithm for more information 
      * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)
      * 
-     * \param Three vertices for the triangle, the number of divisions to make, and a boolean whether or not to discard the middle.
+     * \param Three vertices for the triangle
+     * \param The number of divisions to make
+     * \param A boolean whether or not to discard the middle
      * \return Subdivided Triangle Mesh
      */
     
@@ -483,7 +493,9 @@ namespace primitives
      * See the comment for the subdivision algorithm for more information 
      * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 7)
      * 
-     * \param Radius within which to inscribe the octahedron, number of divisions to make, and a boolean whether or not to discard the middle.
+     * \param Radius within which to inscribe the octahedron
+     * \param Number of divisions to make
+     * \param A boolean whether or not to discard the middle.
      * \return Subdivided Octahedron Mesh
      */
 
@@ -569,7 +581,10 @@ namespace primitives
      *    Finally we exponentiate the resulting vector.
      *    ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 7)
      * 
-     * \param Radius of sphere, number of subdivisions to make, color of the sphere, and whether or not to perform sierpinski subdivision.
+     * \param Radius of the sphere
+     * \param Number of subdivisions to make
+     * \param Color of the sphere
+     * \param Boolean for whether to discard the middle.
      * \return Sphere Mesh
      */
     mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski)

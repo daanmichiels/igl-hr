@@ -5,7 +5,7 @@
 #include "primitives.h"
 #include "hypermath.h"
 
-
+/*! \file Primitives */
 /** Anonymous namespace.
  * Everything in here can only be accessed from this file (unit).
  */

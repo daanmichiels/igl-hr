@@ -1,12 +1,13 @@
 CXX=clang++
 CXXFLAGS=-ig -Wall -std=c++11 -DGLM_FORCE_RADIANS
 CXXFLAGS+= -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo
-INCLUDES=-I/usr/include -I/usr/local/include thirdparty/LibOVR/Lib/Mac/Release/libovr.a
+INCLUDES=-I/usr/include -I/usr/local/include thirdparty/libovr/Lib/Mac/Release/libovr.a
 LIBPATHS=-L/usr/lib
 LIBRARIES=-lglfw3 -pthread -lGLEW
 EXECUTABLE=bin/hsor
 
-OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp))
+TRANSLATION_UNITS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(TRANSLATION_UNITS))
 SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))
 
 all: $(EXECUTABLE)

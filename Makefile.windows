@@ -1,6 +1,6 @@
 CXX=cl.exe
 CXXFLAGS=/nologo /DGLM_FORCE_RADIANS /DGLEW_STATIC /DWIN32 /MD /EHsc
-INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include
+INCLUDES=/I thirdparty\glfw\include /I thirdparty\glew\include /I thirdparty\libovr\include /I thirdparty\glm
 LIBPATHS=/LIBPATH:"thirdparty\glew\lib" /LIBPATH:"thirdparty\glfw\lib" /LIBPATH:"thirdparty\libovr\lib"
 LIBRARIES= libovr64.lib winmm.lib shell32.lib ws2_32.lib glfw3.lib glew32s.lib glu32.lib gdi32.lib opengl32.lib user32.lib
 EXECUTABLE=bin\hr.exe
@@ -13,33 +13,36 @@ TRANSLATION_UNITS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 OBJECTS = $(subst /,\,$(subst src/,obj\,$(subst .cpp,.obj,$(TRANSLATION_UNITS))))
 
 # List of header files where shaders are stored
-SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src\shaders\\%.h,$(wildcard src/shaders/*.glsl))
+SHADER_FILES=$(wildcard src/shaders/*.glsl)
 
 all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS) 
 	@echo.
 	@echo $(EXECUTABLE)
 	@$(CXX) $(CXXFLAGS) $(OBJECTS) /Fe$(EXECUTABLE) /link $(LIBPATHS) $(LIBRARIES)
 
-# Note: shaderwriter.py will run once for every shader,
-# but on every invocation it will write all shaders.
-# This is inefficient.
 src\shaders\\%.h: src\shaders\\%.glsl
 	python shaderwriter.py
 
-obj\\%.obj: src\\%.cpp $(SHADER_HEADERS)
+src\shaders\shaders.h: $(SHADER_FILES)
+	python shaderwriter.py
+
+obj\\%.obj: src\\%.cpp src\shaders\shaders.h
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) /Fo$@ /c $<
+
+# TODO: find a better way of integrating the tool compilationn process
+# and something that's more automated
+tools:
+	$(CXX) $(CXXFLAGS) /Fetools\obj2bin.exe $(INCLUDES) src\math\hypermath.cpp tools\obj2bin.cpp
+	cmd /C "del hypermath.obj"
+	cmd /C "del obj2bin.obj"
 
 clean:
 	cmd /C "del $(OBJECTS)"
 	cmd /C "del $(EXECUTABLE)"
 
-test:
-	@echo $(TRANSLATION_UNITS)
-	@echo $(OBJECTS)
-
-.PHONY: all clean test
+.PHONY: all clean tools
 
 
 

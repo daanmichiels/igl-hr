@@ -17,9 +17,19 @@
 
 int RenderManager::window_width = 100; // These don't matter: they get overwritten
 int RenderManager::window_height = 100;
-bool RenderManager::rift_render = false;
 GLFWwindow* RenderManager::window = NULL;
 glm::mat4 RenderManager::projection = glm::mat4();
+glm::mat4 RenderManager::projection_one_eye = glm::mat4();
+
+bool RenderManager::rift_render = false;
+GLuint RenderManager::left_framebuffer = 0;
+GLuint RenderManager::right_framebuffer = 0;
+GLuint RenderManager::left_texture = 0;
+GLuint RenderManager::right_texture = 0;
+GLuint RenderManager::left_depth_buffer = 0;
+GLuint RenderManager::right_depth_buffer = 0;
+GLuint RenderManager::left_vao = 0;
+GLuint RenderManager::right_vao = 0;
 
 bool RenderManager::startup() {
     if(!open_window())
@@ -27,12 +37,20 @@ bool RenderManager::startup() {
     if(!init_glew())
         return false;
 
-    calculate_projection();
-
     if((Configuration::rift_output == OnOffAuto::on) || (Configuration::rift_output == OnOffAuto::automatic && RiftManager::rift_connected)) {
         rift_render = true;
     } else {
         rift_render = false;
+    }
+
+    calculate_projection();
+
+    if(rift_render) {
+        if(!create_eye_framebuffer(left_framebuffer, left_texture, left_depth_buffer))
+            return false;
+        if(!create_eye_framebuffer(right_framebuffer, right_texture, right_depth_buffer))
+            return false;
+        create_eye_vaos(); //TODO: should we check for failure here?
     }
 
     glfwSetWindowSizeCallback(window, handle_resize);
@@ -41,12 +59,49 @@ bool RenderManager::startup() {
     return true;
 }
 
+// calculate projection or projection_one_eye depending on whether
+// rift-output is used
 void RenderManager::calculate_projection() {
     float fov = 1.2f; // TODO: set a sensible value
     float ratio = ((float) window_width) / window_height;
     float near = 0.03 * CharacterManager::meter; // TODO: find sensible near and far planes
     float far = 20 * CharacterManager::meter;
-    projection = glm::perspective(fov, ratio, near, far);
+
+    if(rift_render) {
+        ratio = ratio / 2.0;
+        projection_one_eye = glm::perspective(fov, ratio, near, far);
+    } else {
+        projection = glm::perspective(fov, ratio, near, far);
+    }
+}
+
+bool RenderManager::create_eye_framebuffer(GLuint &framebuffer, GLuint &texture, GLuint &depth_buffer) {
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, window_width / 2.0, window_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glGenRenderbuffers(1, &depth_buffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, window_width / 2.0, window_height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture, 0);
+    GLenum draw_buffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, draw_buffers);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        return false;
+    }
+
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return true;
 }
 
 void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
@@ -54,6 +109,17 @@ void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
     window_height = height;
     glViewport(0,0,width,height);
     calculate_projection();
+
+    glDeleteRenderbuffers(1, &left_depth_buffer);
+    glDeleteRenderbuffers(1, &right_depth_buffer);
+    glDeleteTextures(1, &left_texture);
+    glDeleteTextures(1, &right_texture);
+    glDeleteFramebuffers(1, &left_framebuffer);
+    glDeleteFramebuffers(1, &right_framebuffer);
+    if((!create_eye_framebuffer(left_framebuffer, left_texture, left_depth_buffer)) ||
+       (!create_eye_framebuffer(right_framebuffer, right_texture, right_depth_buffer))) {
+        LogManager::log_error("Failed to resize framebuffer.");
+    }
 }
 
 void RenderManager::shutdown() {
@@ -88,28 +154,118 @@ void RenderManager::render_mesh(mesh m)
 
 
 void RenderManager::render() {
-    if(rift_render) {
-        glClearColor(0.8, 0.6, 0.0, 1.0);
-    } else {
+    if(!rift_render) {
         glClearColor(0.0, 0.2, 0.7, 1.0);
-    }
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(ShaderManager::default_program);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // TODO: handle rift case
-    // TODO: store these in the rendermanager
-    glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
+        glUseProgram(ShaderManager::default_program);
+        glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
+        glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    
-    for(object* o : LevelManager::scene.objects) {
-        if(o->visible) {
-            render_object(*o, view);
+        for(object* o : LevelManager::scene.objects) {
+            if(o->visible) {
+                render_object(*o, view);
+            }
         }
+
+        glUseProgram(0);
+    } else {
+        glClearColor(0.8, 0.6, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUseProgram(ShaderManager::default_program);
+        glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
+        glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection_one_eye));
+
+        // render left eye to texture
+        glBindFramebuffer(GL_FRAMEBUFFER, left_framebuffer);
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for(object* o : LevelManager::scene.objects) {
+            if(o->visible) {
+                render_object(*o, view);
+            }
+        }
+
+        // render right eye to texture
+        glBindFramebuffer(GL_FRAMEBUFFER, right_framebuffer);
+        glClearColor(0.1, 0.1, 0.1, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        for(object* o : LevelManager::scene.objects) {
+            if(o->visible) {
+                render_object(*o, view);
+            }
+        }
+
+        // render to screen
+        glUseProgram(ShaderManager::quad_program);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, left_texture);
+        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "texture"), 0);
+        glUniform1f(glGetUniformLocation(ShaderManager::quad_program, "aspect_ratio"), 1.0); 
+        glUniform2f(glGetUniformLocation(ShaderManager::quad_program, "lens_center"), 0.0, 0.0); //TODO: set correct values
+        glBindVertexArray(left_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6); // TODO: maybe this should be a triangle strip
+
+        glBindTexture(GL_TEXTURE_2D, right_texture);
+        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "texture"), 0);
+        glUniform1f(glGetUniformLocation(ShaderManager::quad_program, "aspect_ratio"), ((float)window_width) / 2.0 / window_height); 
+        glUniform2f(glGetUniformLocation(ShaderManager::quad_program, "lens_center"), 0.0, 0.0); //TODO: set correct values
+        glBindVertexArray(right_vao);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        glUseProgram(0);
     }
 
-    glUseProgram(0);
     glfwSwapBuffers(window);
+}
+
+void RenderManager::create_eye_vaos() {
+    glGenVertexArrays(1, &left_vao);
+    glBindVertexArray(left_vao);
+    GLuint buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    // data in the form
+    // (   x ,    y ,    u ,   v )
+    const float left_data[] = {
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         0.0f, -1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         0.0f, -1.0f,  1.0f, 0.0f,
+         0.0f,  1.0f,  1.0f, 1.0f};
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, left_data, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(2*sizeof(float)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    glGenVertexArrays(1, &right_vao);
+    glBindVertexArray(right_vao);
+    buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    // data in the form
+    // (   x ,    y ,    u ,   v )
+    const float right_data[] = {
+         0.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 1.0f,
+         0.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f};
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24, right_data, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(2*sizeof(float)));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void RenderManager::glfw_error_callback(int error, const char* description) {

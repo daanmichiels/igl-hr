@@ -12,4 +12,4 @@ The project started in the fall semester of 2014. Undergraduate team members wer
 
 #### Spring 2015
 
-The project will continue in the spring semester of 2015. Undergraduate team members are Xun Lao, Kyle McDaniel, Daniel Pugliese and Byron Wooden.
+The project will continue in the spring semester of 2015. Undergraduate team members are Kyle McDaniel, Daniel Pugliese and Byron Wooden.

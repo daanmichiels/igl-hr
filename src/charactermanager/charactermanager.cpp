@@ -12,6 +12,10 @@ bool CharacterManager::mouse_bound = true;
 double CharacterManager::meter = 0.1;
 double CharacterManager::altitude = 0.0;
 
+/** \brief Call to handle keyboard, and the oculus rift or the mouse
+ *  \param deltatime as a double
+ * \return void
+ */
 void CharacterManager::handle(double dt) {
     handle_keyboard(dt);
     if(rift_input) {
@@ -23,6 +27,10 @@ void CharacterManager::handle(double dt) {
     shoulders.correct_roundoff();
 }
 
+/** \brief Binds the mouse to the window
+ *  \param void
+ * \return void
+ */
 void CharacterManager::bind_mouse() {
     // avoid centering the mouse when it was bound already
     if(mouse_bound) {
@@ -31,18 +39,33 @@ void CharacterManager::bind_mouse() {
     move_cursor_to_center();
     mouse_bound = true;
 
-    // TODO: make cursor invisible
+    // TODO: make cursor invisible. Added kyle 2/7/15 make sure this compiles before leaving it in
+    //glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
+/** \brief Unbinds the mouse from the window
+ *  \param void
+ * \return void
+ */
 void CharacterManager::unbind_mouse() {
     mouse_bound = false;
     // TODO: make cursor visible
+    // glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
+/** \brief Check if the mouse is bound
+ *  \param void
+ * \return void
+ */
 bool CharacterManager::is_mouse_bound() {
     return mouse_bound;
 }
 
+/** \brief Start the character manager. Sets the shoulders up, moves the mouse to center, and logs starting of character
+ *  manager
+ *  \param void
+ * \return boolean (true)
+ */
 bool CharacterManager::startup() {
     // TODO: read the initial position from the level data instead
     shoulders.pos = glm::dvec4(0,0,0,1);
@@ -56,10 +79,18 @@ bool CharacterManager::startup() {
     return true;
 }
 
+/** \brief Shuts down the Character Manager. Logs character manager stopped
+ *  \param void
+ * \return void
+ */
 void CharacterManager::shutdown() {
     LogManager::log_info("CharacterManager stopped.", 2);
 }
 
+/** \brief Handles the keyboard input. 
+ *  \param deltatime as a double
+ * \return void
+ */
 void CharacterManager::handle_keyboard(double dt) {
     GLFWwindow* win = RenderManager::window;
 
@@ -103,7 +134,10 @@ void CharacterManager::handle_keyboard(double dt) {
         shoulders.forward = transf * shoulders.forward;
     }
 }
-
+/** \brief Handles the mouse input. 
+ *  \param deltatime as a double
+ *  \return void
+ */
 void CharacterManager::handle_mouse(double dt) {
 
     double mouse_x, mouse_y;
@@ -126,27 +160,42 @@ void CharacterManager::handle_mouse(double dt) {
 
     return; 
 }
-
+/** \brief Handles rift input (empty function)
+ *  \param deltatime as a double
+ *  \return void
+ */
 void CharacterManager::handle_rift(double dt) {
 }
-
+/** \brief Get left eye position (needs fixed)
+ *  \param void
+ *  \return frame of the eye position
+ */
 frame CharacterManager::get_position_left_eye() {
     // TODO: fix this
     return shoulders;
 }
-
+/** \brief Get right eye position (needs fixed)
+ *  \param void
+ *  \return frame of the eye position
+ */
 frame CharacterManager::get_position_right_eye() {
     // TODO: fix this
     return shoulders;
 }
-
+/** \brief Get eye positions
+ *  \param void
+ *  \return frame of the eye position
+ */
 frame CharacterManager::get_position_eyes() {
     // TODO: add character height
     frame result = shoulders;
     result.rotate_up(altitude);
     return result;
 }
-
+/** \brief Moves the mouse cursor to the center of the window
+ *  \param void
+ *  \return void
+ */
 void CharacterManager::move_cursor_to_center() {
     double center_x = floor(RenderManager::get_window_width() / 2);
     double center_y = floor(RenderManager::get_window_height() / 2);

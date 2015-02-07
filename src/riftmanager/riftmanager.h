@@ -1,7 +1,7 @@
 #ifndef RIFTMANAGER_H
 #define RIFTMANAGER_H
 
-#include "OVR/OVR.h"
+#include "OVR.h"
 
 class RiftManager {
 public:

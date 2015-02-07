@@ -7,16 +7,28 @@
 
 Scene LevelManager::scene = Scene();
 
+/** \brief Startup LevelManager. Logs LevelManager started at level 2
+ * \param void
+ * \return boolean true
+ */
 bool LevelManager::startup() {
     load_initial_level();
     LogManager::log_info("LevelManager started.", 2);
     return true;
 }
 
+/** \brief Shutdown levelmanager. Logs levelmanager stopped at level 2
+ * \param void
+ * \return void
+ */
 void LevelManager::shutdown() {
     LogManager::log_info("LevelManager stopped.", 2);
 }
 
+/** \brief Loads initial level (for example it is currently a tetrahedron)
+ * \param void
+ * \return void
+ */
 void LevelManager::load_initial_level() {
     mesh m = primitives::tetrahedron(0.04);
     //TODO: get rid of this heap allocation

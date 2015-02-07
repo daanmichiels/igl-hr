@@ -1,6 +1,6 @@
 
 #include "configuration.h"
-#include <string>
+#include <string.h>
 #include <algorithm>
 
 int Configuration::width = 1200;

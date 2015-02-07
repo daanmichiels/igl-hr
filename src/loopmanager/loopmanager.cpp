@@ -8,15 +8,27 @@
 
 FpsCounter LoopManager::fpscounter = FpsCounter();
 
+/** \brief Startup LoopManage. Logs LoopManager started at level 2
+ * \param void
+ * \return true
+ */
 bool LoopManager::startup() {
     LogManager::log_info("LoopManager started.", 2);
     return true;
 }
 
+/** \brief Shutdown LoopManager. Logs LoopManager stopped at level 2
+ * \param void
+ * \return void
+ */
 void LoopManager::shutdown() {
     LogManager::log_info("LoopManager stopped.", 2);
 }
 
+/** \brief Run the loopmanager (the main loop)
+ * \param void
+ * \return void
+ */
 void LoopManager::run() {
 
     double t = glfwGetTime();

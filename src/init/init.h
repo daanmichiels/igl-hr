@@ -4,7 +4,7 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-#include "OVR/OVR.h"
+#include "OVR.h"
 
 class Init {
 public:

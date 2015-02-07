@@ -3,11 +3,6 @@
 #include <string>
 #include <algorithm>
 
-// Sets up the configuration of the program
-// given command line arguments.
-// TODO: Whatever is not supplied on the command line is read from a file.
-// The parameters are the ones supplied to main.
-
 int Configuration::width = 1200;
 int Configuration::height = 800;
 bool Configuration::fullscreen = false;
@@ -20,6 +15,11 @@ const double Configuration::walking_speed = 1.1; //in m/s
 const double Configuration::ipd = 0.065; //interpupillary distance in meters
 const double Configuration::eye_height = 1.60; //in m
 
+/** \brief Sets up the configuration of the program given command line args.  TODO: Whatever is not supplied
+ *  on the command line is read from a file. 
+ *  \param argc and argv passed from main
+ *  \return void
+ */
 void Configuration::configure(int argc, const char* argv[]) {
 
     for(int i=0; i<argc; ++i) {

@@ -1,11 +1,12 @@
 CXX=clang++
-LIBPATHS=-L/usr/lib
-LIBRARIES=-lglfw3 -pthread -lGLEW -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11  -lm
-INCLUDES=-I/usr/include -I/usr/local/include
+LIBPATHS=-L/usr/lib -Lthirdparty/libovr/Lib/Linux/Release/x86_64/
+LIBRARIES=-lglfw3 -pthread -lGLEW -lGLU -lGL -lrt -lXrandr -lXxf86vm -lXi -lXinerama -lX11  -lm -lovr
+INCLUDES=-I/usr/include -I/usr/local/include -Ithirdparty/libovr/include
 CXXFLAGS=-g -Wall -std=c++11 -DGLM_FORCE_RADIANS
 EXECUTABLE=bin/HSOR
 
-OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(wildcard src/*.cpp))
+TRANSLATION_UNITS = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+OBJECTS=$(patsubst src/%.cpp,obj/%.o,$(TRANSLATION_UNITS))
 SHADER_HEADERS=$(patsubst src/shaders/%.glsl,src/shaders/%.h,$(wildcard src/shaders/*.glsl))
 
 all: $(EXECUTABLE)

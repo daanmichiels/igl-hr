@@ -3,35 +3,50 @@
 #include "glm/gtc/quaternion.hpp"
 #include <iostream>
 
+/*! \file Hypermath */
+
 namespace hypermath
 {
-    // inner product of two tangent vectors
-    // note that the basepoint is irrelevant
+    /** \brief Computes the inner product of two tangent vectors note that the basepoint is irrelevant
+     * \param Two glm dvec4's
+     * \return Inner product as a double
+     */
     double dot(glm::dvec4 v, glm::dvec4 w)
     {
         return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
     }
 
-    // length of a tangent vector
+    /** \brief Computes the length of a tangent vector
+     *  \param One glm dvec4
+     * \return Length of the vector as a double
+     */
     double length(glm::dvec4 v)
     {
         return sqrt(dot(v,v));
     }
 
-    // normalizes a vector
-    // basepoint is irrelevant
+    /** \brief Normalizes a vector, the basepoint is irrelevant
+     * \param One glm dvec4
+     * \return Normalized glm dvec4
+     */
     glm::dvec4 normalize(glm::dvec4 v)
     {
         return v / length(v);
     }
 
-    // distance between two points
+    /** \brief Computes the distance between two points.
+     * \param Two glm dvec4's
+     * \return The distance between the vectors as a double.
+    */
     double dist(glm::dvec4 p1, glm::dvec4 p2)
     {
         return acosh(-dot(p1,p2));
     }
 
-    // exponential map
+    /** \brief Exponential map
+     * \param Basepoint and direction vectors
+     * \return Exponentiated glm dvec4
+     */
     glm::dvec4 exp(glm::dvec4 basepoint, glm::dvec4 direction)
     {
         double r = length(direction);
@@ -45,13 +60,19 @@ namespace hypermath
         return cosh(r) * basepoint + (sinh(r)/r) * direction;
     }
 
-    // exponential map with basepoint (0,0,0,1)
+    /** \brief Exponential map with basepoint (0,0,0,1)
+     * \param One glm dvec4 for the direction
+     * \return Exponentiated dvec4
+     */
     glm::dvec4 exp0(glm::dvec4 direction)
     {
         return exp(glm::dvec4(0,0,0,1), direction);
     }
 
-    // inverse of the exponential map
+    /** \brief Inverse of the exponential map
+     * \param Basepoint and targed glm dvec4's
+     * \return One exponentiated glm dvec4
+     */
     glm::dvec4 expinv(glm::dvec4 basepoint, glm::dvec4 target)
     {
         double r = dist(basepoint, target);
@@ -68,21 +89,29 @@ namespace hypermath
         return (r/sinh(r)) * u;
     }
 
-    // the angle between two tangent vectors
+    /** \brief Computes the angle between two tangent vectors
+     * \param Two glm dvec4's
+     * \return The angle between the vectors as a double
+     */
     double angle(glm::dvec4 v, glm::dvec4 w)
     {
         return acos(dot(normalize(v),normalize(w)));
     }
 
-    // the angle determined by three points
-    // it's measured at the point b
+    /** \brief Computes the angle determined by three points, it's measured at the middle parameter
+     * \param Three glm dvec4's. The middle one denotes the point from which we measure the angle
+     * \return The angle between the vectors as a double
+     */
     double angle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c)
     {
         return angle(expinv(b,a),expinv(b,c));
     }
 
-    // translation (see wiki for definition)
-    // this one is a translation starting at (0,0,0,1)
+    /** Computes a translation matrix ((wiki) moves every point by a fixed distance in the same direction) 
+     * this one is a translation starting at (0,0,0,1)
+     * \param One glm dvec4 for the direction of the translation.
+     * \return glm 4x4 matrix of doubles
+     */
     glm::dmat4 translation0(glm::dvec4 target)
     {
         glm::dmat4 result = glm::dmat4(); // start with id
@@ -104,8 +133,10 @@ namespace hypermath
         return result;
     }
 
-    // inverse matrix of the one calculated by
-    // translation0
+    /** \brief This calculates the inverse matrix of the one calculated by translation0
+     * \param Target of the translation
+     * \return one glm 4x4 matrix
+     */
     glm::dmat4 translation0inv(glm::dvec4 target)
     {
         glm::dmat4 result = glm::dmat4(); // start with id
@@ -127,9 +158,11 @@ namespace hypermath
         return result;
     }
 
-    // translation that maps source to target
-    // (in matrix form). This is the generalization of translation0
-    // for arbitrary starting point.
+    /** \brief Computes the translation that maps source to target (in matrix form). This is the generalization of
+     * translation0 for arbitrary starting point.
+     * \param Two glm dvec4's. The first is the source, the second is the target
+     * \return One glm 4x4 matrix of doubles
+     */
     glm::dmat4 translation(glm::dvec4 source, glm::dvec4 target)
     {
         glm::dmat4 Q = translation0inv(source);
@@ -137,15 +170,20 @@ namespace hypermath
         return translation0(source) * translation0(intermediate_target) * Q;
     }
 
-    // rotation around a quaternion starting at origin. 
-    // At origin, x,y,z have rotational symmetry and we can use regular Eulerian rotation.
-    // Quaternion defines axis of rotation and degrees of rotation.
+    /** \brief Rotation around a quaternion starting at origin. At origin, x,y,z have rotational symmetry
+     * and we can use regular Eulerian rotation. Quaternion defines axis of rotation and degrees of rotation.
+     * \param One glm double quaternion
+     * \return glm 4x4 matrix
+     */
     glm::dmat4 rotation0(glm::dquat rotation)
     {
         return glm::mat4_cast(rotation);
     }
     
-    //project quaternion into a rotation around z-axis
+    /** \brief Project quaternion into a rotation around z-axis
+     * \param One glm double quaternion
+     * \return glm 4x4 matrix
+     */
     glm::dmat4 rotationz(glm::dquat rotation)
     {
         rotation[0] = 0;
@@ -153,44 +191,59 @@ namespace hypermath
         return glm::mat4_cast((glm::normalize(rotation)));
     }
 
-    //just invert the quaternion to get the inverse rotation.
+    /** \brief Computes the inverse of the rotation for a given quaternion
+     * \param One glm double quaternion
+     * \return Inverse 4x4 double matrix of the given quaternion
+     */
     glm::dmat4 rotation0inv(glm::dquat rotation)
     {
         glm::dquat rotateinv = glm::inverse(rotation);
         return rotation0(rotateinv);
     }
 
-    //need to rotate our final position since we're also rotating space
+    /** \brief Compute the rotation matrix from a given basepoint and a quaternion
+     * \param glm dvec4 for the basepoint, and a glm dquat for the rotation.
+     * \return the glm 4x4 double matrix
+     */
     glm::dmat4 rotation(glm::dvec4 basepoint, glm::dquat rotate)
     {
         glm::dmat4 rMatrix = rotation0(rotate);
         glm::dvec4 target = rMatrix*basepoint;
         return translation0(target)*rMatrix*translation0inv(basepoint);
     }
-
+    /** \brief Compute the inverse rotation matrix from a given basepoint and a quaternion
+     *  \param One glm dvec4 for the basepoint, and one glm dquat for the rotation
+     *  \return The inverse glm 4x4 double matrix of the rotation.
+     */
     glm::dmat4 rotationinv(glm::dvec4 basepoint, glm::dquat rotate)
     {
         return rotation(basepoint, glm::inverse(rotate));
     }
 
-    //now allows to rotate space while moving.
-    //not sure if this works completely correctly.
-    //simple changes will fix. but if this works its faster than a multiplication 
-    //of our rmatrix and translation functions by a couple calculations
+    /** \brief Rotates space while moving. not sure if this works completely correctly.
+     * simple changes will fix. but if this works its faster than a multiplication 
+     * of our rmatrix and translation functions by a couple calculations
+     * \param basepoint double vector, target double vector, and the rotation quaternion
+     * \return glm Double 4x4 matrix for the movement
+     */
     glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::dquat rotate)
     {
         glm::dmat4 rMatrix = rotation0(rotate);
         glm::dvec4 newTarget = rMatrix*target;
         return translation0(newTarget)*rMatrix*translation0inv(basepoint);
     }
-
+    /** \brief Calculates the point at double t between two vectors. (ex) use 0.5 for midpoint
+     * \param two double vectors, and the double t for how far between them
+     * \return Vector at given position between the two vectors
+     */
     glm::dvec4 midpoint(glm::dvec4 a, glm::dvec4 b, double t)
     {
         return hypermath::exp(b,t*hypermath::expinv(b,a));
     }
 
-    // Returns vector towards a point at (0,-Infinity,0, Infinity)
-    // TODO: fix this code, and indent it correctly
+    /** \brief Returns vector towards a point at (0,-Infinity,0, Infinity) TODO: fix this code, and indent it correctly
+     * 
+     */
     glm::dvec4 gravity(glm::dvec4 basepoint) 
     {
     double a = basepoint.x;

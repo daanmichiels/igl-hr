@@ -25,7 +25,7 @@ namespace
     {
         size_t n = pos.size();
 
-        /*! should be satisfied */
+        /* should be satisfied */
         assert(col.size() == n);
 
         GLuint vao;
@@ -87,7 +87,7 @@ namespace
     std::vector<glm::dvec4> subdivide_triangle_vector(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
 
-        /*! TODO: precalculate the sizes of the vectors */
+        /* TODO: precalculate the sizes of the vectors */
         std::vector<glm::dvec4> triangles;
         glm::dvec4 ab, bc, ac;
         std::vector<glm::dvec4> t1, t2, t3, t4;
@@ -96,7 +96,7 @@ namespace
         ac = hypermath::midpoint(a, c, 0.5);
         bc = hypermath::midpoint(b, c, 0.5);
 
-        /*! recursive calls to each subdivided triangle */
+        /* recursive calls to each subdivided triangle */
         if(divisions > 0)
         {
             t1 = subdivide_triangle_vector(a, ab, ac, divisions - 1, sierpinski);
@@ -132,7 +132,7 @@ namespace
         }
         else
         {
-            /*! base case */
+            /* base case */
             triangles.push_back(a);
             triangles.push_back(b);
             triangles.push_back(c);
@@ -142,7 +142,7 @@ namespace
     }
     std::vector<glm::dvec4> subdivide_triangle_vector_euclidean(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
     {
-        /*! TODO: precalculate sizes */
+        /* TODO: precalculate sizes */
         std::vector<glm::dvec4> triangles;
         std::vector<glm::dvec4> t1, t2, t3, t4;
 
@@ -152,7 +152,7 @@ namespace
         ab *= 0.5;
         ac *= 0.5;
         bc *= 0.5;
-        /*! recursive calls to each subdivided triangle */
+        /* recursive calls to each subdivided triangle */
         if(divisions > 0)
         {
             t1 = subdivide_triangle_vector_euclidean(a, ab, ac, divisions - 1, sierpinski);
@@ -189,7 +189,7 @@ namespace
         }
         else
         {
-            /*! base case */
+            /* base case */
             triangles.push_back(a);
             triangles.push_back(b);
             triangles.push_back(c);
@@ -227,7 +227,7 @@ namespace primitives
         std::vector<glm::dvec4> pos;
         std::vector<glm::dvec4> col;
         
-        /*! first set the vectors for the axes. */
+        /* first set the vectors for the axes. */
         pos.push_back(hypermath::exp0(radius * glm::dvec4(-1,0,0,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(1,0,0,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,-1,0,0)));
@@ -235,7 +235,7 @@ namespace primitives
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,-1,0)));
         pos.push_back(hypermath::exp0(radius * glm::dvec4(0,0,1,0)));
         
-        /*! set the colors for each corresponding axis. each line is uniformly colored */
+        /* set the colors for each corresponding axis. each line is uniformly colored */
         col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::dvec4(1.0f,0.0f,0.0f,1.0f));
         col.push_back(glm::dvec4(0.0f,0.0f,1.0f,1.0f));
@@ -257,7 +257,7 @@ namespace primitives
     mesh grid(double grid_space)
     {
         mesh result;
-        /*! TODO: precalculate sizes */
+        /* TODO: precalculate sizes */
         std::vector<glm::dvec4> pos;
         std::vector<glm::dvec4> col;
         int steps = (int) ceil(10/grid_space);
@@ -274,13 +274,13 @@ namespace primitives
             {
                 int j_prime = -1 * steps + j;
                 int i_prime = -1 * steps + i;
-                /*! X Grid */
+                /* X Grid */
                 pos.push_back(x_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
                 pos.push_back(x_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(0, grid_space * j_prime, grid_space * i_prime, 0))));
-                /*! Y Grid */
+                /* Y Grid */
                 pos.push_back(y_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, -0, grid_space*j_prime, 0))));
                 pos.push_back(y_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space*i_prime, 0, grid_space*j_prime, 0))));
-                /*! Z Grid */
+                /* Z Grid */
                 pos.push_back(z_pos * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
                 pos.push_back(z_neg * hypermath::translation0(hypermath::exp0(glm::dvec4(grid_space * j_prime, grid_space * i_prime, 0, 0))));
 
@@ -510,7 +510,7 @@ namespace primitives
 
         std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
-        /*! generate each subdivided triangle */
+        /* generate each subdivided triangle */
         
         t1 = subdivide_triangle_vector(a, b, d, divisions, sierpinski);
         t2 = subdivide_triangle_vector(a, d, c, divisions, sierpinski);
@@ -521,7 +521,7 @@ namespace primitives
         t7 = subdivide_triangle_vector(f, c, e, divisions, sierpinski);
         t8 = subdivide_triangle_vector(f, e, b, divisions, sierpinski);
 
-        /*! push back each subdivision to the final vector. */
+        /* push back each subdivision to the final vector. */
         for(unsigned int i=0; i < t1.size(); i++)
         {
             collected.push_back(t1[i]);
@@ -598,7 +598,7 @@ namespace primitives
 
         std::vector<glm::dvec4> t1, t2, t3, t4, t5, t6, t7, t8, collected;
 
-        /*! generate each subdivided triangle */
+        /* generate each subdivided triangle */
         
         t1 = subdivide_triangle_vector_euclidean(a, b, d, divisions, sierpinski);
         t2 = subdivide_triangle_vector_euclidean(a, d, c, divisions, sierpinski);
@@ -609,7 +609,7 @@ namespace primitives
         t7 = subdivide_triangle_vector_euclidean(f, c, e, divisions, sierpinski);
         t8 = subdivide_triangle_vector_euclidean(f, e, b, divisions, sierpinski);
         
-        /*! push back each subdivision to the final vector. */
+        /* push back each subdivision to the final vector. */
         for(unsigned int i=0; i < t1.size(); i++)
         {
             collected.push_back(t1[i]);

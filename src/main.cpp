@@ -12,7 +12,7 @@
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
 
-void shutdown_managers(std::vector<bool (*) ()> shutdowns) {
+void shutdown_managers(std::vector<void (*) ()> shutdowns) {
     for(int j=shutdowns.size()-1; j>=0; j--) {
         shutdowns[j]();
     }
@@ -23,12 +23,12 @@ int main(int argc, const char* argv[]) {
     // list of calls that are needed to shut down everything we started
     // vector of function pointers (for some reason, the compiler requires
     // a cast)
-    std::vector<bool (*) ()> shutdowns = {};
+    std::vector<void (*) ()> shutdowns = {};
 
     // first thing we need
     // all other managers log errors using this
     if(LogManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(LogManager::shutdown));
+        shutdowns.push_back(&(LogManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -42,7 +42,7 @@ int main(int argc, const char* argv[]) {
 
     // detect rift, set it up
     if(RiftManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(RiftManager::shutdown));
+        shutdowns.push_back(&(RiftManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -50,7 +50,7 @@ int main(int argc, const char* argv[]) {
 
     // start opengl, open a window
     if(RenderManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(RenderManager::shutdown));
+        shutdowns.push_back(&(RenderManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -58,7 +58,7 @@ int main(int argc, const char* argv[]) {
 
     // handle input
     if(InputManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(InputManager::shutdown));
+        shutdowns.push_back(&(InputManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -66,7 +66,7 @@ int main(int argc, const char* argv[]) {
 
     // load and compile shaders
     if(ShaderManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(ShaderManager::shutdown));
+        shutdowns.push_back(&(ShaderManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -74,7 +74,7 @@ int main(int argc, const char* argv[]) {
 
     // load the world
     if(LevelManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(LevelManager::shutdown));
+        shutdowns.push_back(&(LevelManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -82,7 +82,7 @@ int main(int argc, const char* argv[]) {
 
     // start handling characters
     if(CharacterManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(CharacterManager::shutdown));
+        shutdowns.push_back(&(CharacterManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;
@@ -90,7 +90,7 @@ int main(int argc, const char* argv[]) {
 
     // set up game loop
     if(LoopManager::startup()) {
-        shutdowns.push_back((bool (*) ()) &(LoopManager::shutdown));
+        shutdowns.push_back(&(LoopManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;

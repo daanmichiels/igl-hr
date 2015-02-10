@@ -5,7 +5,7 @@
 #include "../data/scene.h"
 #include "../data/object.h"
 #include "../data/mesh.h"
-#include "OVR/OVR.h"
+#include "OVR.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 

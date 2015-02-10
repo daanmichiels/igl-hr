@@ -174,7 +174,8 @@ void RenderManager::render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(ShaderManager::default_program);
-        glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
+        glm::dmat4 view_left = view_matrix_from_frame(CharacterManager::get_position_left_eye());
+        glm::dmat4 view_right = view_matrix_from_frame(CharacterManager::get_position_right_eye());
         glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection_one_eye));
 
         // render left eye to texture
@@ -183,7 +184,7 @@ void RenderManager::render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(object* o : LevelManager::scene.objects) {
             if(o->visible) {
-                render_object(*o, view);
+                render_object(*o, view_left);
             }
         }
 
@@ -193,7 +194,7 @@ void RenderManager::render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for(object* o : LevelManager::scene.objects) {
             if(o->visible) {
-                render_object(*o, view);
+                render_object(*o, view_right);
             }
         }
 
@@ -203,14 +204,14 @@ void RenderManager::render() {
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, left_texture);
-        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "texture"), 0);
+        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "the_texture"), 0);
         glUniform1f(glGetUniformLocation(ShaderManager::quad_program, "aspect_ratio"), 1.0); 
         glUniform2f(glGetUniformLocation(ShaderManager::quad_program, "lens_center"), 0.0, 0.0); //TODO: set correct values
         glBindVertexArray(left_vao);
         glDrawArrays(GL_TRIANGLES, 0, 6); // TODO: maybe this should be a triangle strip
 
         glBindTexture(GL_TEXTURE_2D, right_texture);
-        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "texture"), 0);
+        glUniform1i(glGetUniformLocation(ShaderManager::quad_program, "the_texture"), 0);
         glUniform1f(glGetUniformLocation(ShaderManager::quad_program, "aspect_ratio"), ((float)window_width) / 2.0 / window_height); 
         glUniform2f(glGetUniformLocation(ShaderManager::quad_program, "lens_center"), 0.0, 0.0); //TODO: set correct values
         glBindVertexArray(right_vao);

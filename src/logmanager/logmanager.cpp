@@ -58,8 +58,9 @@ void LogManager::log_general(std::string message, int level) {
 
 #else
 
-void LogManager::startup() {
-
+bool LogManager::startup() {
+    log_info("LogManager started.", 2);
+    return true;
 }
 
 void LogManager::shutdown() {

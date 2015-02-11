@@ -4,7 +4,7 @@ in vec2 theUV; //TODO: rename this
 
 out vec4 color;
  
-uniform sampler2D texture;
+uniform sampler2D the_texture;
 uniform float aspect_ratio;
 uniform vec2 lens_center; // in the range [-1,1]x[-1,1]
 uniform vec4 distortion_params = vec4(1, 0.22, 0.24, 0);
@@ -46,6 +46,6 @@ vec2 distort(vec2 p) {
 
 void main() {
     vec2 new_uv = from_oculus_coordinates(distort(to_oculus_coordinates(theUV)));
-    color = texture(texture, new_uv);
+    color = texture(the_texture, new_uv);
 }
 

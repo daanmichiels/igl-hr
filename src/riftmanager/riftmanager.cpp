@@ -3,6 +3,7 @@
 #include "../logmanager/logmanager.h"
 #include "../configuration/configuration.h"
 #include "OVR.h"
+#include "../charactermanager/charactermanager.h"
 
 bool RiftManager::rift_connected = false;
 ovrHmd RiftManager::rift = NULL;
@@ -15,7 +16,8 @@ bool RiftManager::startup() {
 	if(Configuration::rift_input == OnOffAuto::off) {
 		rift_connected = false;
 	} else {
-		ovrHmd rift = ovrHmd_Create(0);
+		ovr_Initialize();
+		rift = ovrHmd_Create(0);
 		if(!rift) {
             rift_connected = false;
 			if(Configuration::rift_input == OnOffAuto::on) {
@@ -32,6 +34,7 @@ bool RiftManager::startup() {
 
 	if(rift_connected) {
 		ovrHmd_ConfigureTracking(rift, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
+//		CharacterManager::set_hmd(&rift);
 	}
 
     LogManager::log_info("RiftManager started.", 2);

@@ -82,11 +82,12 @@ void LogManager::log_general(std::string message, int level) {
 
 #else
 
-/** \brief Startup logmanager for non-windows systems
+/** \brief Startup logmanager for non-windows systems. Logs LogManager started at level 2
  * \param void
  * \return true
  */
 bool LogManager::startup() {
+    log_info("LogManager started.", 2);
     return true;
 }
 

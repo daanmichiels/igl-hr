@@ -28,10 +28,10 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } 
-    else if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
+    if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
         LogManager::log_info(std::to_string(LoopManager::fpscounter.fps) + " fps", 0);
     }
-    else if(key == GLFW_KEY_M && action == GLFW_PRESS) {
+    if(key == GLFW_KEY_M && action == GLFW_PRESS) {
         // TODO: ensure charactermanager is started
         //       because it is later in the startup sequence
         //       (cyclic dependency?)
@@ -41,7 +41,7 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
             CharacterManager::bind_mouse();
         }
     }
-    else if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
         CharacterManager::reset_to_origin();
     }
     /*

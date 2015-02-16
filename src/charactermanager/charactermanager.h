@@ -25,6 +25,9 @@ public:
     static frame get_position_eyes();
 
     static void reset_to_origin();
+
+    static void grow(double scale = 1.1);
+    static void shrink(double scale = 1.1);
 private:
     static bool rift_input;
     static bool mouse_bound;

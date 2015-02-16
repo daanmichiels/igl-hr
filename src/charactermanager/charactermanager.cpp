@@ -24,9 +24,10 @@ ovrHmd* CharacterManager::_hmd = NULL;
  */
 void CharacterManager::handle(double dt) {
     handle_keyboard(dt);
-    if(rift_input && _hmd != NULL) {
+    if (rift_input && _hmd != NULL) {
         handle_rift(dt);
-    } else if(mouse_bound) {
+    } 
+    if (mouse_bound) {
         handle_mouse(dt);
     }
 
@@ -128,6 +129,13 @@ void CharacterManager::handle_keyboard(double dt) {
         walking_direction += glm::dvec3(0,-1,0);
     }
 
+    if ( glfwGetKey(win, GLFW_KEY_COMMA)) {
+        shrink();
+    }
+    if ( glfwGetKey(win, GLFW_KEY_PERIOD)) {
+        grow();
+    }
+
     //length is either zero or at least one, mathematically
     //but floating point
     if(glm::length(walking_direction) >= 0.5)
@@ -186,7 +194,7 @@ frame CharacterManager::get_position_left_eye() {
     // TODO: fix this
     frame result = shoulders;
 
-    glm::dvec4 newpos = hypermath::exp(shoulders.pos, -Configuration::ipd * 0.5 * shoulders.right);
+    glm::dvec4 newpos = hypermath::exp(shoulders.pos, -Configuration::ipd * 0.5 * meter * shoulders.right);
     glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
 
     result = transf * result;
@@ -206,7 +214,7 @@ frame CharacterManager::get_position_right_eye() {
     // TODO: fix this
     frame result = shoulders;
     
-    glm::dvec4 newpos = hypermath::exp(shoulders.pos, Configuration::ipd * 0.5 * shoulders.right);
+    glm::dvec4 newpos = hypermath::exp(shoulders.pos, Configuration::ipd * 0.5 * meter * shoulders.right);
     glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
 
     result = transf * result;
@@ -246,6 +254,24 @@ void CharacterManager::reset_to_origin() {
     shoulders.forward = glm::dvec4(0,0,-1,0);
     shoulders.right = glm::dvec4(1,0,0,0);
     shoulders.up = glm::dvec4(0,1,0,0);
+}
+
+/**
+ * \brief "Grows" the character by making a meter larger - defaults to an increase by 1.1
+ * \param scale as a double
+ * \return void
+ */
+void CharacterManager::grow(double scale) {
+    meter *= scale;
+}
+
+/**
+ * \brief "Shrinks" the character by making a meter smaller - defaults to a decrease by 1.1
+ * \param scale as a double
+ * \return void
+ */
+void CharacterManager::shrink(double scale) {
+    meter /= scale;
 }
 
 /** \brief Moves the mouse cursor to the center of the window

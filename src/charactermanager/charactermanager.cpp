@@ -5,12 +5,18 @@
 #include "../configuration/configuration.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/gtc/quaternion.hpp"
+#include "glm/ext.hpp"
+
+using namespace OVR;
 
 frame CharacterManager::shoulders = frame();
-bool CharacterManager::rift_input = false;
+bool CharacterManager::rift_input = true;
 bool CharacterManager::mouse_bound = true;
 double CharacterManager::meter = 0.1;
 double CharacterManager::altitude = 0.0;
+glm::dquat CharacterManager::rift_orientation = glm::dquat(0,0,0,0);
+ovrHmd* CharacterManager::_hmd = NULL;
 
 /** \brief Call to handle keyboard, and the oculus rift or the mouse
  *  \param deltatime as a double
@@ -18,7 +24,7 @@ double CharacterManager::altitude = 0.0;
  */
 void CharacterManager::handle(double dt) {
     handle_keyboard(dt);
-    if(rift_input) {
+    if(rift_input && _hmd != NULL) {
         handle_rift(dt);
     } else if(mouse_bound) {
         handle_mouse(dt);
@@ -59,6 +65,10 @@ void CharacterManager::unbind_mouse() {
  */
 bool CharacterManager::is_mouse_bound() {
     return mouse_bound;
+}
+
+void CharacterManager::set_hmd(ovrHmd* hmd) {
+    _hmd = hmd;
 }
 
 /** \brief Start the character manager. Sets the shoulders up, moves the mouse to center, and logs starting of character
@@ -127,11 +137,7 @@ void CharacterManager::handle_keyboard(double dt) {
         glm::dvec4 newpos = hypermath::exp(shoulders.pos, walking_direction.x*shoulders.right + walking_direction.y*shoulders.up + walking_direction.z*shoulders.forward);
         glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
 
-        // TODO: overload dmat4*frame and use it
-        shoulders.pos = newpos;
-        shoulders.up = transf * shoulders.up;
-        shoulders.right = transf * shoulders.right;
-        shoulders.forward = transf * shoulders.forward;
+        shoulders = transf * shoulders;
     }
 }
 /** \brief Handles the mouse input. 
@@ -160,11 +166,17 @@ void CharacterManager::handle_mouse(double dt) {
 
     return; 
 }
-/** \brief Handles rift input (empty function)
+/** \brief Handles rift input
  *  \param deltatime as a double
  *  \return void
  */
 void CharacterManager::handle_rift(double dt) {
+    // Query the HMD for the current tracking state.
+    ovrTrackingState ts  = ovrHmd_GetTrackingState(*_hmd, ovr_GetTimeInSeconds());
+    if (ts.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked)) {
+        ovrQuatf orientation = ts.HeadPose.ThePose.Orientation;
+        rift_orientation = glm::dquat(orientation.w, orientation.x, orientation.y, orientation.z);
+    }
 }
 /** \brief Get left eye position (needs fixed)
  *  \param void
@@ -172,7 +184,19 @@ void CharacterManager::handle_rift(double dt) {
  */
 frame CharacterManager::get_position_left_eye() {
     // TODO: fix this
-    return shoulders;
+    frame result = shoulders;
+
+    glm::dvec4 newpos = hypermath::exp(shoulders.pos, -Configuration::ipd * 0.5 * shoulders.right);
+    glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
+
+    result = transf * result;
+
+    if (rift_input && _hmd != NULL) {
+        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
+        
+        result = eye_orientation * result;
+    }
+    return result;
 }
 /** \brief Get right eye position (needs fixed)
  *  \param void
@@ -180,7 +204,19 @@ frame CharacterManager::get_position_left_eye() {
  */
 frame CharacterManager::get_position_right_eye() {
     // TODO: fix this
-    return shoulders;
+    frame result = shoulders;
+    
+    glm::dvec4 newpos = hypermath::exp(shoulders.pos, Configuration::ipd * 0.5 * shoulders.right);
+    glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
+
+    result = transf * result;
+
+    if (rift_input && _hmd != NULL) {
+        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
+
+        result = eye_orientation * result;
+    }
+    return result;
 }
 /** \brief Get eye positions
  *  \param void
@@ -190,8 +226,28 @@ frame CharacterManager::get_position_eyes() {
     // TODO: add character height
     frame result = shoulders;
     result.rotate_up(altitude);
+
+    if (rift_input && _hmd != NULL) {
+        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
+
+        result = eye_orientation * result;
+    }
+
     return result;
 }
+
+/**
+ * \brief Moves the character to the origin and faces them forward
+ * \param void
+ * \return void
+ */
+void CharacterManager::reset_to_origin() {
+    shoulders.pos = glm::dvec4(0, 0, 0, 1);
+    shoulders.forward = glm::dvec4(0,0,-1,0);
+    shoulders.right = glm::dvec4(1,0,0,0);
+    shoulders.up = glm::dvec4(0,1,0,0);
+}
+
 /** \brief Moves the mouse cursor to the center of the window
  *  \param void
  *  \return void

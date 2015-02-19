@@ -32,6 +32,11 @@ GLuint RenderManager::right_depth_buffer = 0;
 GLuint RenderManager::left_vao = 0;
 GLuint RenderManager::right_vao = 0;
 
+/** \brief Starts the rendermanager. Gets the rift configuration, checks various configurations, calculates the projection, 
+ * and then creates eye framebuffers. Also sets window size callback, and logs Rendermanager Started at level 2
+ * \param void
+ * \return false if anything goes wrong in the startup, true otherwise
+ */
 bool RenderManager::startup() {
     if(!open_window())
         return false;
@@ -123,6 +128,10 @@ void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
     }
 }
 
+/** \brief Shuts down the rendermanager, destroys the window, terminates glfw, and logs RenderManager stopped at level 2
+ * \param void
+ * \return void
+ */
 void RenderManager::shutdown() {
     if(window) {
         glfwDestroyWindow(window);
@@ -153,7 +162,10 @@ void RenderManager::render_mesh(mesh m)
     glDrawArrays(m.mode, m.first, m.count);
 }
 
-
+/** \brief Renders to the current buffer, then swaps buffers.
+ * \param void
+ * \return void
+ */
 void RenderManager::render() {
     if(!rift_render) {
         glClearColor(0.0, 0.2, 0.7, 1.0);
@@ -170,7 +182,8 @@ void RenderManager::render() {
         }
 
         glUseProgram(0);
-    } else {
+    } 
+    else {
         glClearColor(0.8, 0.6, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -365,10 +378,18 @@ glm::dmat4 RenderManager::view_matrix_from_frame(frame eyes) {
     return view;
 }
 
+/** \brief Get the current window width
+ * \param void
+ * \return integer value of the window width
+ */
 int RenderManager::get_window_width() {
     return window_width;
 }
 
+/** \brief Get the current window height
+ * \param void
+ * \return integer value of the window height
+ */
 int RenderManager::get_window_height() {
     return window_height;
 }

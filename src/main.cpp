@@ -12,6 +12,10 @@
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
 
+/** \brief Shutdown the various managers
+ * \param vector of managers to shutdown
+ * \return void
+ */
 void shutdown_managers(std::vector<void (*) ()> shutdowns) {
     for(int j=shutdowns.size()-1; j>=0; j--) {
         shutdowns[j]();

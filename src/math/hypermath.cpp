@@ -244,16 +244,31 @@ namespace hypermath
     /** \brief Returns vector towards a point at (0,-Infinity,0, Infinity) TODO: fix this code, and indent it correctly
      * 
      */
-    glm::dvec4 gravity(glm::dvec4 basepoint) 
-    {
-    double a = basepoint.x;
-    double b = basepoint.y;
-    double c = basepoint.z;
-    double d = basepoint.w;
-    double bd=b+d;
-    glm::dvec4 dir = glm::dvec4(a*(bd),1+b*(bd),c*(bd),-1+d*(bd));
-    double norm = -1/sqrt(2*d*d*bd*bd+3+a*a+c*c);
-    return norm*dir;
+    glm::dvec4 gravity(glm::dvec4 basepoint){
+        double a = basepoint.x;
+        double b = basepoint.y;
+        double c = basepoint.z;
+        double d = basepoint.w;
+        double bd=b+d;
+        glm::dvec4 dir = glm::dvec4(a*(bd),1+b*(bd),c*(bd),-1+d*(bd));
+        double norm = -1/sqrt(2*d*d*bd*bd+3+a*a+c*c);
+        return norm*dir;
+    }
+    /** \brief Calculates the radius of circle to inscribe an ngon which has angles alpha.
+    * \param The angle in which we want to achieve
+    * \return The radius to inscribe the ngon (as a double) 0 if it is not possible to make an ngon with those angles.
+    */
+    double radius_for_ngon(const double angle, const int sides){
+        double PI = 3.1415926535897932384626;
+        if(sides > 2){
+            double radius = (cos(angle/2)+cos(angle/2)*cos((2*PI)/sides))/(sin(angle/2)*sin((2*PI)/sides));
+            radius = glm::acosh(radius);
+            return radius;
+        }
+        // Error (for whatever reason, currently only when the sides are less than 3)
+        else{
+            return 0.0;
+        }
     }
 }
 

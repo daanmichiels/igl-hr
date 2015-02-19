@@ -1,5 +1,9 @@
 #include "frame.h"
 
+/** \brief Puts the frame back onto the hyperboloid to prevent roundoff buildup.
+ * \param void
+ * \return void
+ */
 void frame::correct_roundoff()
 {
     //correct position
@@ -21,6 +25,10 @@ void frame::correct_roundoff()
     forward = hypermath::normalize(forward);
 }
 
+/** \brief Rotate the frame right by a given angle
+ * \param Angle to rotate as a double
+ * \return void
+ */
 void frame::rotate_right(double angle) {
     glm::dvec4 newright = cos(angle) * right - sin(angle) * forward;
     glm::dvec4 newforward = cos(angle) * forward + sin(angle) * right;
@@ -29,7 +37,10 @@ void frame::rotate_right(double angle) {
     forward = newforward;
 }
 
-
+/** \brief Rotate the frame up by a given angle
+ * \param Angle to rotate as a double
+ * \return void
+ */
 void frame::rotate_up(double angle) {
     glm::dvec4 newup = cos(angle) * up - sin(angle) * forward;
     glm::dvec4 newforward = cos(angle) * forward + sin(angle) * up;
@@ -38,6 +49,10 @@ void frame::rotate_up(double angle) {
     forward = newforward;
 }
 
+/** \brief Set multiplication operator for frames and double 4x4 matrices.
+ * \param double 4x4 glm matrix, and a frame f
+ * \return frame
+ */
 frame operator*(const glm::dmat4 mat, const frame f) {
     frame g = frame();
 

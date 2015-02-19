@@ -11,6 +11,10 @@
 
 object* InputManager::grid = NULL;
 
+/** \brief Starts the input manager. Logs inputmanager started at level 2
+ * \param void
+ * \return boolean true
+ */
 bool InputManager::startup() {
     assert(RenderManager::window);
     glfwSetKeyCallback(RenderManager::window, key_callback);
@@ -19,10 +23,18 @@ bool InputManager::startup() {
     return true;
 }
 
+/** \brief Shutdown the input manager. Logs inputmanager stopped at level 2.
+ * \param void
+ * \return void
+ */
 void InputManager::shutdown() {
     LogManager::log_info("InputManager stopped.", 2);
 }
 
+/** \brief Key callback for glfw
+ * \param GLFWwindow*, key, scan code, action, and mods
+ * \return void
+ */
 void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -70,6 +82,10 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     */
 }
 
+/** \brief Handle input. Empty function
+ * \param deltatime, width and height of window
+ * \return void
+ */
 void InputManager::handle(double delta_time, int width, int height)
 {
     //cameracontrols.handle(delta_time, width, height);

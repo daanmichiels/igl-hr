@@ -28,6 +28,8 @@ namespace hypermath
     glm::dmat4 movement(glm::dvec4 basepoint, glm::dvec4 target, glm::dquat rotate);
     glm::dvec4 midpoint(glm::dvec4 a, glm::dvec4 b, double t);
     glm::dvec4 gravity(glm::dvec4 basepoint);
+    double radius_for_ngon(const double angle, const int sides);
+
 }
 
 #endif

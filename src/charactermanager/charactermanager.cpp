@@ -154,20 +154,34 @@ void CharacterManager::handle_keyboard(double dt) {
  */
 void CharacterManager::handle_mouse(double dt) {
 
-    double mouse_x, mouse_y;
-    double center_x = floor(RenderManager::get_window_width() / 2);
-    double center_y = floor(RenderManager::get_window_height() / 2);
+    double mouse_x, mouse_y, mouse_x1, mouse_y1;
+    double center_x = /*floor(*/RenderManager::get_window_width() / 2/*)*/;
+    double center_y = /*floor(*/RenderManager::get_window_height() / 2/*)*/;
     // TODO: put PI in a sensible place
     const double PI = 3.141592653589793238463;
+	
 
     GLFWwindow* win = RenderManager::window;
     glfwGetCursorPos(win, &mouse_x, &mouse_y);
+
     //this is inefficient, because the center is calculated twice
-    move_cursor_to_center(); 
+    //move_cursor_to_center(); 
+	glfwSetCursorPos(win, center_x, center_y);
+	glfwGetCursorPos(win, &mouse_x1, &mouse_y1);
 
     double angle_ver = Configuration::mouse_speed * (center_y - mouse_y);
     altitude += angle_ver;
     altitude = fmin(PI/2, fmax(-PI/2, altitude)); //clamp
+
+	LogManager::log_info(std::to_string(mouse_x1) ,2);
+	LogManager::log_info(std::to_string(mouse_y1) ,2);
+
+	LogManager::log_info(std::to_string(mouse_x) ,2);
+	LogManager::log_info(std::to_string(mouse_y) ,2);
+	LogManager::log_info(std::to_string(center_x) ,2);
+	LogManager::log_info(std::to_string(center_y) ,2);
+	LogManager::log_info(std::to_string(angle_ver) ,2);
+	LogManager::log_info(std::to_string(altitude) ,2);
 
     double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
     shoulders.rotate_right(angle_hor);
@@ -279,8 +293,8 @@ void CharacterManager::shrink(double scale) {
  *  \return void
  */
 void CharacterManager::move_cursor_to_center() {
-    double center_x = floor(RenderManager::get_window_width() / 2);
-    double center_y = floor(RenderManager::get_window_height() / 2);
+    double center_x = /*floor(*/RenderManager::get_window_width() / 2/*)*/;
+    double center_y = /*floor(*/RenderManager::get_window_height() / 2/*)*/;
     GLFWwindow* win = RenderManager::window;
     glfwSetCursorPos(win, center_x, center_y);
 }

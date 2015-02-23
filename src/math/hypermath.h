@@ -13,8 +13,9 @@ namespace hypermath
     glm::dvec4 normalize(glm::dvec4 v);
     double dist(glm::dvec4 p1, glm::dvec4 p2);
     glm::dvec4 exp(glm::dvec4 basepoint, glm::dvec4 direction);
-    glm::dvec4 exp0(glm::dvec4 direction);
     glm::dvec4 expinv(glm::dvec4 basepoint, glm::dvec4 target);
+    glm::dvec4 exp0(const glm::dvec4 direction);
+    glm::dvec4 exp0inv(const glm::dvec4 direction);
     double angle(glm::dvec4 v, glm::dvec4 w);
     double angle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c);
     glm::dmat4 translation0(glm::dvec4 target);
@@ -29,6 +30,7 @@ namespace hypermath
     glm::dvec4 midpoint(glm::dvec4 a, glm::dvec4 b, double t);
     glm::dvec4 gravity(glm::dvec4 basepoint);
     double radius_for_ngon(const double angle, const int sides);
+    glm::dvec4 reflect_planar_point(glm::dvec4 p, glm::dvec4 line_Q, glm::dvec4 line_R);
 
 }
 

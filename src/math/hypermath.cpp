@@ -60,15 +60,6 @@ namespace hypermath
         return cosh(r) * basepoint + (sinh(r)/r) * direction;
     }
 
-    /** \brief Exponential map with basepoint (0,0,0,1)
-     * \param One glm dvec4 for the direction
-     * \return Exponentiated dvec4
-     */
-    glm::dvec4 exp0(glm::dvec4 direction)
-    {
-        return exp(glm::dvec4(0,0,0,1), direction);
-    }
-
     /** \brief Inverse of the exponential map
      * \param Basepoint and targed glm dvec4's
      * \return One exponentiated glm dvec4
@@ -87,6 +78,24 @@ namespace hypermath
         // same for cosh(r)
         glm::dvec4 u = target - cosh(r) * basepoint;
         return (r/sinh(r)) * u;
+    }
+
+    /** \brief Exponential map with basepoint (0,0,0,1)
+     * \param One glm dvec4 for the direction
+     * \return Exponentiated dvec4
+     */
+    glm::dvec4 exp0(const glm::dvec4 direction)
+    {
+        return exp(glm::dvec4(0,0,0,1), direction);
+    }
+
+    /** \brief Inverse Exponential map with basepoint (0,0,0,1)
+     * \param One glm dvec4 for the direction
+     * \return Exponentiated dvec4
+     */
+    glm::dvec4 exp0inv(const glm::dvec4 direction)
+    {
+        return expinv(glm::dvec4(0,0,0,1), direction);
     }
 
     /** \brief Computes the angle between two tangent vectors
@@ -269,6 +278,45 @@ namespace hypermath
         else{
             return 0.0;
         }
+    }
+
+    /** \brief Reflects a point about a line in the hyperbolic plane
+     * \param point p of the form (x,0,z,w), and line designeted by the endpoints line_Q and line_R all as dvec4s
+     * \return reflected point as a dvec4. If this function returns (0,0,0,0) then an error has occured. Either the 
+     * point p was not on the correct plane, or Q was unable to be translated to origin
+     */
+    glm::dvec4 reflect_planar_point(glm::dvec4 p, glm::dvec4 line_Q, glm::dvec4 line_R){
+        //first generate translations before modifying line_Q
+        glm::dmat4 q_origin = translation(line_Q, glm::dvec4(0.0,0.0,0.0,1.0));
+        glm::dmat4 q_origin_inv = translation(glm::dvec4(0.0,0.0,0.0,1.0), line_Q);
+
+        //if point is not on the hyperbolic plane we simply return our "bad" value
+        if(p[1]!=0){
+            return glm::dvec4(0.0, 0.0, 0.0, 0.0);
+        }
+
+        //First we translate Q, P, and R to the origin.
+        p = q_origin * p;
+        line_Q = q_origin * line_Q;
+        line_R = q_origin * line_R;
+
+        //Next take the inverse exponential map
+        p = exp0inv(p);
+        line_Q = exp0inv(line_Q);
+        line_R = exp0inv(line_R);
+
+        //if we do not end up with line_Q at the origin, throw an error
+        if(line_Q != glm::dvec4(0.0, 0.0, 0.0, 0.0)){
+            return glm::dvec4(0.0, 0.0, 0.0, 0.0);
+        }
+
+        //reflect about the line
+        glm::dvec4 reflected_point = 2*(dot(p,line_R)/dot(line_R, line_R))*line_R - p;
+
+        //put the new point back where it belongs
+        reflected_point = exp0(reflected_point);
+        reflected_point = q_origin_inv * reflected_point;
+        return reflected_point;
     }
 }
 

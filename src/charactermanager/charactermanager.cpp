@@ -31,7 +31,7 @@ void CharacterManager::handle(double dt) {
         handle_mouse(dt);
     }
 
-    shoulders.correct_roundoff();
+    update_shoulder_frame();
 }
 
 /** \brief Binds the mouse to the window
@@ -122,12 +122,15 @@ void CharacterManager::handle_keyboard(double dt) {
     }
     // TODO: do something sensible with these keys (we want to walk on the
     // floor, eye level constant, but for debug this may be useful)
-    if( glfwGetKey(win, GLFW_KEY_PAGE_UP) || glfwGetKey(win, GLFW_KEY_R)) {
-        walking_direction += glm::dvec3(0,1,0);
-    }
-    if( glfwGetKey(win, GLFW_KEY_PAGE_DOWN) || glfwGetKey(win, GLFW_KEY_F)) {
-        walking_direction += glm::dvec3(0,-1,0);
-    }
+
+    // for now this is removed, as we only want to walk on the plane)
+
+    // if( glfwGetKey(win, GLFW_KEY_PAGE_UP) || glfwGetKey(win, GLFW_KEY_R)) {
+    //     walking_direction += glm::dvec3(0,1,0);
+    // }
+    // if( glfwGetKey(win, GLFW_KEY_PAGE_DOWN) || glfwGetKey(win, GLFW_KEY_F)) {
+    //     walking_direction += glm::dvec3(0,-1,0);
+    // }
 
     if ( glfwGetKey(win, GLFW_KEY_COMMA)) {
         shrink();
@@ -204,6 +207,10 @@ frame CharacterManager::get_position_left_eye() {
         
         result = eye_orientation * result;
     }
+    else {
+        result.rotate_up(altitude);
+    }
+
     return result;
 }
 /** \brief Get right eye position (needs fixed)
@@ -224,6 +231,10 @@ frame CharacterManager::get_position_right_eye() {
 
         result = eye_orientation * result;
     }
+    else {
+        result.rotate_up(altitude);
+    }
+
     return result;
 }
 /** \brief Get eye positions
@@ -233,12 +244,14 @@ frame CharacterManager::get_position_right_eye() {
 frame CharacterManager::get_position_eyes() {
     // TODO: add character height
     frame result = shoulders;
-    result.rotate_up(altitude);
 
     if (rift_input && _hmd != NULL) {
         glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
 
         result = eye_orientation * result;
+    }
+    else {
+        result.rotate_up(altitude);
     }
 
     return result;
@@ -254,6 +267,7 @@ void CharacterManager::reset_to_origin() {
     shoulders.forward = glm::dvec4(0,0,-1,0);
     shoulders.right = glm::dvec4(1,0,0,0);
     shoulders.up = glm::dvec4(0,1,0,0);
+    altitude = 0.0;
 }
 
 /**
@@ -274,7 +288,8 @@ void CharacterManager::shrink(double scale) {
     meter /= scale;
 }
 
-/** \brief Moves the mouse cursor to the center of the window
+/** 
+ *  \brief Moves the mouse cursor to the center of the window
  *  \param void
  *  \return void
  */
@@ -283,5 +298,13 @@ void CharacterManager::move_cursor_to_center() {
     double center_y = floor(RenderManager::get_window_height() / 2);
     GLFWwindow* win = RenderManager::window;
     glfwSetCursorPos(win, center_x, center_y);
+}
+
+void CharacterManager::update_shoulder_frame() {
+    //calculate the exact up vector at shoulder position
+    glm::dvec4 exact_up = hypermath::translation(glm::dvec4(0,0,0,1), shoulders.pos) * glm::dvec4(0,1,0,0);
+
+    shoulders.up = exact_up;
+    shoulders.correct_roundoff();
 }
 

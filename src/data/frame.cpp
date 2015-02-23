@@ -18,10 +18,12 @@ void frame::correct_roundoff()
 
     //now we have to make the tangent vectors orthonormal
     //using gram-schmidt
-    right = hypermath::normalize(right);
-    up = up - hypermath::dot(up,right) * right;
+    //we should normalize up first and force other vectors to be orthogonal to it,
+    //as for the shoulders we will calculate up exactly each frame, and for other frames the order doesn't matter
+
     up = hypermath::normalize(up);
-    forward = forward - hypermath::dot(forward,right) * right - hypermath::dot(forward,up) * up;
+    right = right - hypermath::dot(right, up) * up;
+    right = hypermath::normalize(right);forward = forward - hypermath::dot(forward,right) * right - hypermath::dot(forward,up) * up;
     forward = hypermath::normalize(forward);
 }
 

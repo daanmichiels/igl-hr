@@ -33,6 +33,7 @@ private:
     static bool mouse_bound;
     static frame shoulders;
     static double altitude; //in the sense of http://en.wikipedia.org/wiki/Horizontal_coordinate_system
+    static double shoulder_rotation;
     static glm::dquat rift_orientation;
     static ovrHmd* _hmd;
 
@@ -41,6 +42,7 @@ private:
     static void handle_rift(double dt);
     
     static void move_cursor_to_center();
+    static void update_shoulder_frame();
 };
 
 #endif

@@ -18,4 +18,5 @@ Desktop.ini
 $RECYCLE.BIN/
 doxygen/*
 !doxygen/.keep
+!resources/*.obj
 

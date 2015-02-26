@@ -5,6 +5,8 @@
 #example usage>> python obj2hr.py suzy.obj .4
 import sys;
 import math;
+import struct;
+from array import array;
 
 if len(sys.argv) == 1:
 	sys.exit("No file given.");
@@ -26,7 +28,7 @@ filename = sys.argv[1]; #get filename from first cmd argument
 scale = float(sys.argv[2]) if len(sys.argv) > 2 else 1; #get scale from second cmd argument or use 1 if absent
 obj = open("resources/"+filename,"r");
 verts = [];
-floats = [];
+floats = array('f');
 
 for line in obj:
 	k=0;
@@ -36,21 +38,10 @@ for line in obj:
 		y=float(parts[2]);
 		z=float(parts[3]);
 		vec = exp0( [i*scale for i in [x,y,z,0] ] ); #calculates the scaled hyperbolic coordinate
-		if (k%3)==0
-			vec.append(1.0);
-			vec.append(0.0);
-			vec.append(0.0);
-			vec.append(1.0);
-		elif (k%3)==1
-			vec.append(0.0);
-			vec.append(1.0);
-			vec.append(0.0);
-			vec.append(1.0);
-		else (k%3)==2
-			vec.append(0.0);
-			vec.append(0.0);
-			vec.append(1.0);
-			vec.append(1.0);
+		vec.append(1.0 if (k%3)==0 else 0.0);
+		vec.append(1.0 if (k%3)==1 else 0.0);
+		vec.append(1.0 if (k%3)==2 else 0.0);
+		vec.append(1.0);
 		'''
 		x=vec[0];
 		y=vec[1];
@@ -72,8 +63,10 @@ for line in obj:
 			for v in verts[p]:
 				floats.append(v);
 			
+			
+#s = struct.pack('f'*len(floats), *floats)
 hr = open("resources/suzy.hr","wb");
-hr.write(text);
+floats.tofile(hr);
 obj.close();
 hr.close();
 #'''

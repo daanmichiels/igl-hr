@@ -26,31 +26,53 @@ filename = sys.argv[1]; #get filename from first cmd argument
 scale = float(sys.argv[2]) if len(sys.argv) > 2 else 1; #get scale from second cmd argument or use 1 if absent
 obj = open("resources/"+filename,"r");
 verts = [];
-text = "";
+floats = [];
 
 for line in obj:
+	k=0;
 	if line[0] == "v":
 		parts = line.split(" "); #get the coordinates
 		x=float(parts[1]);
 		y=float(parts[2]);
 		z=float(parts[3]);
 		vec = exp0( [i*scale for i in [x,y,z,0] ] ); #calculates the scaled hyperbolic coordinate
+		if (k%3)==0
+			vec.append(1.0);
+			vec.append(0.0);
+			vec.append(0.0);
+			vec.append(1.0);
+		elif (k%3)==1
+			vec.append(0.0);
+			vec.append(1.0);
+			vec.append(0.0);
+			vec.append(1.0);
+		else (k%3)==2
+			vec.append(0.0);
+			vec.append(0.0);
+			vec.append(1.0);
+			vec.append(1.0);
+		'''
 		x=vec[0];
 		y=vec[1];
 		z=vec[2];
 		w=vec[3];
-		verts.append("("+str(x)+","+str(y)+","+str(z)+","+str(w)+")"); #store this vertex
+		'''
+		verts.append(vec); #store this vertex
+		k+=1;
 	elif line[0] == "f":
 		parts = line.split(" "); #get the vertex indices
+		parts.pop(0);
+		parts = [int(p)-1 for p in parts];
+		'''
 		p1 = int(parts[1])-1; #subtract one because obj syntax begins counting at one
 		p2 = int(parts[2])-1;
 		p3 = int(parts[3])-1;
-		if len(text) > 0: #add vertex indices to final output
-			text += ","+verts[p1]+","+verts[p2]+","+verts[p3];
-		else:
-			text += verts[p1]+","+verts[p2]+","+verts[p3];
+		'''
+		for p in parts:
+			for v in verts[p]:
+				floats.append(v);
 			
-hr = open("resources/suzy.hr","w");
+hr = open("resources/suzy.hr","wb");
 hr.write(text);
 obj.close();
 hr.close();

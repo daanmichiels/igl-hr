@@ -40,7 +40,7 @@ void LevelManager::load_initial_level() {
     o->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
     //scene.objects.push_back(o);
 	LogManager::log_info("Level Lucy.", 2);
-	object* lucy = AssetManager::load_object("resources/suzy.obj", false, 0.2);
+	object* lucy = AssetManager::load_object("resources/suzy.obj", false, .2);
 	lucy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
 	scene.objects.push_back(lucy);
 	LogManager::log_info("Level Lucy Done.", 2);

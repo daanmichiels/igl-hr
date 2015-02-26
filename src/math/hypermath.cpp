@@ -319,38 +319,38 @@ namespace hypermath
         return reflected_point;
     }
 
-    /** \brief 
-     * \param Basepoint as a dvec4
-     * \return dmat4
+    /** \brief Differential of exp0
+     * \param The first parameter is a tangent vector at origin (w coordinate should be zero)
+     * \param The second parameter is the tangent vector (at v) to the tangent space at origin 
+     * \return dvec4 of the differential of exp0 multiplied by n
      */
-    glm::dmat4 d_exp0(const glm::dvec4 point){
+    glm::dvec4 d_exp0(const glm::dvec4 v, const glm::dvec4 n){
         glm::dmat4 output;
 
         //set first column according to mathematica notebook
-        output[0][0] = sin(1.0) * (pow(point.w, 2) - pow(point.y,2) - pow(point.z,2)) - pow(point.x,2) * cos(1.0);
-        output[1][0] = point.x * point.y * (sin(1.0) - cos(1.0));
-        output[2][0] = point.x * point.z * (sin(1.0) - cos(1.0));
-        output[3][0] = point.x * (point.w * (sin(1.0)-cos(1.0)) + sin(1.0));
+        output[0][0] = sin(1.0) * (pow(v.w, 2) - pow(v.y,2) - pow(v.z,2)) - pow(v.x,2) * cos(1.0);
+        output[1][0] = v.x * v.y * (sin(1.0) - cos(1.0));
+        output[2][0] = v.x * v.z * (sin(1.0) - cos(1.0));
+        output[3][0] = v.x * (v.w * (sin(1.0)-cos(1.0)) + sin(1.0));
 
         //set second column similarly
-        output[0][1] = point.x * point.y * (sin(1.0) - cos(1.0));
-        output[1][1] = sin(1.0) * (pow(point.w, 2) - pow(point.x, 2) - pow(point.z, 2)) - pow(point.y, 2)*cos(1.0);
-        output[2][1] = point.y * point.z * (sin(1.0) - cos(1.0));
-        output[3][1] = point.y * (point.w * (sin(1.0) - cos(1.0)) + sin(1.0));
+        output[0][1] = v.x * v.y * (sin(1.0) - cos(1.0));
+        output[1][1] = sin(1.0) * (pow(v.w, 2) - pow(v.x, 2) - pow(v.z, 2)) - pow(v.y, 2)*cos(1.0);
+        output[2][1] = v.y * v.z * (sin(1.0) - cos(1.0));
+        output[3][1] = v.y * (v.w * (sin(1.0) - cos(1.0)) + sin(1.0));
 
         //set third column
-        output[0][2] = point.x * point.z * (sin(1.0) - cos(1.0));
-        output[1][2] = point.y * point.z * (sin(1.0) - cos(1.0));
-        output[2][2] = sin(1.0) * (pow(point.w, 2) - pow(point.x, 2) - pow(point.y, 2)) - pow(point.z, 2)*cos(1.0);
-        output[3][2] = point.z * (point.w * (sin(1.0) - cos(1.0)) + sin(1.0));
+        output[0][2] = v.x * v.z * (sin(1.0) - cos(1.0));
+        output[1][2] = v.y * v.z * (sin(1.0) - cos(1.0));
+        output[2][2] = sin(1.0) * (pow(v.w, 2) - pow(v.x, 2) - pow(v.y, 2)) - pow(v.z, 2)*cos(1.0);
+        output[3][2] = v.z * (v.w * (sin(1.0) - cos(1.0)) + sin(1.0));
 
         //set fourth column
-        output[0][3] = point.w * point.x * (cos(1.0)-sin(1.0));
-        output[1][3] = point.w * point.y * (cos(1.0)-sin(1.0));
-        output[2][3] = point.w * point.z * (cos(1.0)-sin(1.0));
-        output[3][3] = sqrt(-1) * (sqrt(-1) * sin(1.0) * (pow(point.w,3) - point.w * (pow(point.x,2) + pow(point.y, 2) + pow(point.z,2)) + pow(point.x, 2) + pow(point.y, 2) + pow(point.z, 2) ) - sqrt(-1) * pow(point.w, 2) * cos(1.0));
-        return output;
+        output[0][3] = v.w * v.x * (cos(1.0)-sin(1.0));
+        output[1][3] = v.w * v.y * (cos(1.0)-sin(1.0));
+        output[2][3] = v.w * v.z * (cos(1.0)-sin(1.0));
+        output[3][3] = -1 * sin(1.0) * (pow(v.w,3) - v.w * (pow(v.x,2) + pow(v.y, 2) + pow(v.z,2)) + pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2) ) + pow(v.w, 2) * cos(1.0);
+        return output * n;
     }
-
 }
 

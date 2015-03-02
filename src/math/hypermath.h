@@ -31,7 +31,7 @@ namespace hypermath
     glm::dvec4 gravity(glm::dvec4 basepoint);
     double radius_for_ngon(const double angle, const int sides);
     glm::dvec4 reflect_planar_point(glm::dvec4 p, glm::dvec4 line_Q, glm::dvec4 line_R);
-    glm::dmat4 d_exp0(const glm::dvec4 v, const glm::dvec4 n);
+    glm::dvec4 d_exp0(const glm::dvec4 v, const glm::dvec4 n);
 }
 
 #endif

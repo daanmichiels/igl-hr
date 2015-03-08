@@ -4,6 +4,7 @@
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
+#include <iostream>
 
 /*! \file Primitives */
 /** Anonymous namespace.
@@ -348,6 +349,12 @@ namespace primitives
         double radians_between_vertices = 2*PI/n;
         std::vector<glm::dvec4> vertices;
         std::vector<glm::dvec4> col;
+
+        //Start in the center...
+        vertices.push_back(hypermath::exp0(glm::dvec4(0.0,0.0,0.0,0.0)));
+        col.push_back(color);
+        
+        //...and work our way around the circle
         for(int i = 0; i <= n; i++)
         {
             double a = sin(i * radians_between_vertices);

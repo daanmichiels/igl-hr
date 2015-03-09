@@ -6,6 +6,7 @@
 #include "../math/hypermath.h"
 #include "../assetmanager/assetmanager.h"
 #include "../data/object.h"
+#include <cmath>
 
 Scene LevelManager::scene = Scene();
 
@@ -32,25 +33,36 @@ void LevelManager::shutdown() {
  * \return void
  */
 void LevelManager::load_initial_level() {
-
-
     //axes to give the user a feeling of where they are in the space.
+    const double PI = 3.141592653589793238463;
+
     mesh axe_mesh = primitives::axes(10.0);
     object* axes = new object(axe_mesh);
-    axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.099, 0.0, 0.0))));
+    axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
     scene.objects.push_back(axes);
 
     //setup the large circle and circumscribed hexagon.
-    const double big_radius = 4.0;
-    mesh circ_gon = primitives::circumscribed_ngon(6, big_radius, glm::dvec4(0.5,0.5,0.5,0.25));
+    const double big_radius = hypermath::radius_for_ngon(PI/3, 12);
+    mesh circ_gon = primitives::circumscribed_ngon(12, big_radius, glm::dvec4(.761, .137, .149, 1.0));
     object* circ_gon_ob = new object(circ_gon);
     circ_gon_ob->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0,-0.1,0.0,0.0))));
     scene.objects.push_back(circ_gon_ob);
 
-    mesh big_circ = primitives::circumscribed_ngon(100, big_radius, glm::dvec4(1.0,0.79,0.4,1.0));
+    mesh big_circ = primitives::circumscribed_ngon(300, big_radius, glm::dvec4(.953, .451, .22, 1.0));
     object* big_circ_ob = new object(big_circ);
-    big_circ_ob->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0,-0.1001,0.0,0.0))));
+    big_circ_ob->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0,-0.101,0.0,0.0))));
     scene.objects.push_back(big_circ_ob);
+
+
+    double smallRad = hypermath::radius_for_ngon(4 * PI / 7, 7);
+    double circleRad = asinh(sin(2*PI/7) * glm::sinh(smallRad));
+    object* insc_gon = new object(primitives::circumscribed_ngon(7, smallRad, glm::dvec4(.992, .714, .196, 1.0)));
+    insc_gon->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0,-.099,0.0,0.0))));
+    scene.objects.push_back(insc_gon);
+
+    object* small_circ = new object(primitives::circumscribed_ngon(300, circleRad, glm::dvec4(.502, .086, .22, 1.0)));
+    small_circ->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -.09799, 0.0, 0.0))));
+    scene.objects.push_back(small_circ);
 
 
 	LogManager::log_info("Enjoy Your Pi", 2);

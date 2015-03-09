@@ -168,7 +168,7 @@ void RenderManager::render_mesh(mesh m)
  */
 void RenderManager::render() {
     if(!rift_render) {
-        glClearColor(0.0, 0.2, 0.7, 1.0);
+        glClearColor(0.5, 0.7, 0.8, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(ShaderManager::default_program);

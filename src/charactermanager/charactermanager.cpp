@@ -10,7 +10,7 @@
 
 using namespace OVR;
 
-frame CharacterManager::shoulders = frame();
+frame CharacterManager::feet = frame();
 bool CharacterManager::rift_input = true;
 bool CharacterManager::mouse_bound = true;
 double CharacterManager::meter = 0.1;
@@ -31,7 +31,7 @@ void CharacterManager::handle(double dt) {
         handle_mouse(dt);
     }
 
-    update_shoulder_frame();
+    feet.correct_roundoff();
 }
 
 /** \brief Binds the mouse to the window
@@ -47,7 +47,7 @@ void CharacterManager::bind_mouse() {
     mouse_bound = true;
 
     // TODO: make cursor invisible. Added kyle 2/7/15 make sure this compiles before leaving it in
-    //glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 /** \brief Unbinds the mouse from the window
@@ -57,7 +57,7 @@ void CharacterManager::bind_mouse() {
 void CharacterManager::unbind_mouse() {
     mouse_bound = false;
     // TODO: make cursor visible
-    // glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(RenderManager::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 /** \brief Check if the mouse is bound
@@ -79,10 +79,10 @@ void CharacterManager::set_hmd(ovrHmd* hmd) {
  */
 bool CharacterManager::startup() {
     // TODO: read the initial position from the level data instead
-    shoulders.pos = glm::dvec4(0,0,0,1);
-    shoulders.right = glm::dvec4(1,0,0,0);
-    shoulders.up = glm::dvec4(0,1,0,0);
-    shoulders.forward = glm::dvec4(0,0,-1,0);
+    feet.pos = glm::dvec4(0,0,0,1);
+    feet.right = glm::dvec4(1,0,0,0);
+    feet.up = glm::dvec4(0,1,0,0);
+    feet.forward = glm::dvec4(0,0,-1,0);
 
     move_cursor_to_center();
 
@@ -120,35 +120,33 @@ void CharacterManager::handle_keyboard(double dt) {
     if( glfwGetKey(win, GLFW_KEY_RIGHT) || glfwGetKey(win, GLFW_KEY_D )) {
         walking_direction += glm::dvec3(1,0,0);
     }
-    // TODO: do something sensible with these keys (we want to walk on the
-    // floor, eye level constant, but for debug this may be useful)
-
-    // for now this is removed, as we only want to walk on the plane)
-
-    // if( glfwGetKey(win, GLFW_KEY_PAGE_UP) || glfwGetKey(win, GLFW_KEY_R)) {
-    //     walking_direction += glm::dvec3(0,1,0);
-    // }
-    // if( glfwGetKey(win, GLFW_KEY_PAGE_DOWN) || glfwGetKey(win, GLFW_KEY_F)) {
-    //     walking_direction += glm::dvec3(0,-1,0);
-    // }
-
-    if ( glfwGetKey(win, GLFW_KEY_COMMA)) {
-        shrink();
-    }
-    if ( glfwGetKey(win, GLFW_KEY_PERIOD)) {
-        grow();
-    }
 
     //length is either zero or at least one, mathematically
     //but floating point
     if(glm::length(walking_direction) >= 0.5)
     {
+        LogManager::log_info(glm::to_string(feet.pos), 0);
+        LogManager::log_info(glm::to_string(feet.right), 0);
+        LogManager::log_info(glm::to_string(feet.up), 0);
+        LogManager::log_info(glm::to_string(feet.forward), 0);
+        LogManager::log_info("", 0);
+
         walking_direction = glm::normalize(walking_direction);
         walking_direction *= Configuration::walking_speed * dt * meter;
-        glm::dvec4 newpos = hypermath::exp(shoulders.pos, walking_direction.x*shoulders.right + walking_direction.y*shoulders.up + walking_direction.z*shoulders.forward);
-        glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
+        glm::dvec4 newpos = hypermath::exp(feet.pos, walking_direction.x*feet.right + walking_direction.y*feet.up + walking_direction.z*feet.forward);
+        glm::dmat4 transf = hypermath::translation(feet.pos,newpos);
 
-        shoulders = transf * shoulders;
+        feet = transf * feet;
+
+        LogManager::log_info(glm::to_string(walking_direction), 0);
+        LogManager::log_info(glm::to_string(newpos), 0);
+        LogManager::log_info("", 0);
+
+        LogManager::log_info(glm::to_string(feet.pos), 0);
+        LogManager::log_info(glm::to_string(feet.right), 0);
+        LogManager::log_info(glm::to_string(feet.up), 0);
+        LogManager::log_info(glm::to_string(feet.forward), 0);
+        LogManager::log_info("---", 0);
     }
 }
 /** \brief Handles the mouse input. 
@@ -176,18 +174,8 @@ void CharacterManager::handle_mouse(double dt) {
     altitude += angle_ver;
     altitude = fmin(PI/2, fmax(-PI/2, altitude)); //clamp
 
-	LogManager::log_info(std::to_string(mouse_x1) ,2);
-	LogManager::log_info(std::to_string(mouse_y1) ,2);
-
-	LogManager::log_info(std::to_string(mouse_x) ,2);
-	LogManager::log_info(std::to_string(mouse_y) ,2);
-	LogManager::log_info(std::to_string(center_x) ,2);
-	LogManager::log_info(std::to_string(center_y) ,2);
-	LogManager::log_info(std::to_string(angle_ver) ,2);
-	LogManager::log_info(std::to_string(altitude) ,2);
-
     double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
-    shoulders.rotate_right(angle_hor);
+    feet.rotate_right(angle_hor);
 
     return; 
 }
@@ -209,10 +197,10 @@ void CharacterManager::handle_rift(double dt) {
  */
 frame CharacterManager::get_position_left_eye() {
     // TODO: fix this
-    frame result = shoulders;
+    frame result = feet;
 
-    glm::dvec4 newpos = hypermath::exp(shoulders.pos, -Configuration::ipd * 0.5 * meter * shoulders.right);
-    glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
+    glm::dvec4 newpos = hypermath::exp(feet.pos, -Configuration::ipd * 0.5 * meter * feet.right);
+    glm::dmat4 transf = hypermath::translation(feet.pos,newpos);
 
     result = transf * result;
 
@@ -233,10 +221,10 @@ frame CharacterManager::get_position_left_eye() {
  */
 frame CharacterManager::get_position_right_eye() {
     // TODO: fix this
-    frame result = shoulders;
+    frame result = feet;
     
-    glm::dvec4 newpos = hypermath::exp(shoulders.pos, Configuration::ipd * 0.5 * meter * shoulders.right);
-    glm::dmat4 transf = hypermath::translation(shoulders.pos,newpos);
+    glm::dvec4 newpos = hypermath::exp(feet.pos, Configuration::ipd * 0.5 * meter * feet.right);
+    glm::dmat4 transf = hypermath::translation(feet.pos,newpos);
 
     result = transf * result;
 
@@ -256,12 +244,13 @@ frame CharacterManager::get_position_right_eye() {
  *  \return frame of the eye position
  */
 frame CharacterManager::get_position_eyes() {
-    // TODO: add character height
-    frame result = shoulders;
+    frame result = feet;
+    glm::dvec4 newpos = hypermath::exp(result.pos, Configuration::eye_height * meter * result.up);
+    result = hypermath::translation(result.pos, newpos) * result;
 
     if (rift_input && _hmd != NULL) {
         glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
-
+        // TODO: I don't think this is right
         result = eye_orientation * result;
     }
     else {
@@ -277,29 +266,20 @@ frame CharacterManager::get_position_eyes() {
  * \return void
  */
 void CharacterManager::reset_to_origin() {
-    shoulders.pos = glm::dvec4(0, 0, 0, 1);
-    shoulders.forward = glm::dvec4(0,0,-1,0);
-    shoulders.right = glm::dvec4(1,0,0,0);
-    shoulders.up = glm::dvec4(0,1,0,0);
+    feet.pos = glm::dvec4(0, 0, 0, 1);
+    feet.forward = glm::dvec4(0,0,-1,0);
+    feet.right = glm::dvec4(1,0,0,0);
+    feet.up = glm::dvec4(0,1,0,0);
     altitude = 0.0;
 }
 
 /**
- * \brief "Grows" the character by making a meter larger - defaults to an increase by 1.1
+ * \brief "Scales" the character by making a meter a different size
  * \param scale as a double
  * \return void
  */
-void CharacterManager::grow(double scale) {
+void CharacterManager::scale(double scale) {
     meter *= scale;
-}
-
-/**
- * \brief "Shrinks" the character by making a meter smaller - defaults to a decrease by 1.1
- * \param scale as a double
- * \return void
- */
-void CharacterManager::shrink(double scale) {
-    meter /= scale;
 }
 
 /** 
@@ -314,6 +294,8 @@ void CharacterManager::move_cursor_to_center() {
     glfwSetCursorPos(win, center_x, center_y);
 }
 
+/*
+   //What does this do?
 void CharacterManager::update_shoulder_frame() {
     //calculate the exact up vector at shoulder position
     glm::dvec4 exact_up = hypermath::translation(glm::dvec4(0,0,0,1), shoulders.pos) * glm::dvec4(0,1,0,0);
@@ -321,4 +303,5 @@ void CharacterManager::update_shoulder_frame() {
     shoulders.up = exact_up;
     shoulders.correct_roundoff();
 }
+*/
 

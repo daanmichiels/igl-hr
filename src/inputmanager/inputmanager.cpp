@@ -3,6 +3,7 @@
 #include "../charactermanager/charactermanager.h"
 #include "../rendermanager/rendermanager.h"
 #include "../loopmanager/loopmanager.h"
+#include "../logicmanager/logicmanager.h"
 #include "../data/object.h"
 #include <vector>
 #include "../data/mesh.h"
@@ -55,6 +56,15 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
         CharacterManager::reset_to_origin();
+    }
+    if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
+        CharacterManager::scale(1.1);
+    }
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
+        CharacterManager::scale(1.0/1.1);
+    }
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        LogicManager::add_flag();
     }
     /*
     if(key == GLFW_KEY_G && action == GLFW_PRESS )

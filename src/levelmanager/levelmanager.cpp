@@ -71,9 +71,9 @@ void LevelManager::load_initial_level() {
 }
 
 void LevelManager::load_level_2(){
-    LogManager::log_info("Level Lucy.", 2);
-    object* lucy = AssetManager::load_object("resources/suzy.obj", false, .2);
-    lucy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
-    scene.objects.push_back(lucy);
+    LogManager::log_info("Level Suzy.", 2);
+    object* suzy = AssetManager::load_object("resources/suzy.obj", false, .2);
+    suzy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
+    scene.objects.push_back(suzy);
 }
 

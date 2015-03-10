@@ -58,10 +58,10 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
         CharacterManager::reset_to_origin();
     }
     if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
-        CharacterManager::scale(1.1);
+        CharacterManager::scale(1.2);
     }
     if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
-        CharacterManager::scale(1.0/1.1);
+        CharacterManager::scale(1.0/1.2);
     }
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         LogicManager::add_flag();

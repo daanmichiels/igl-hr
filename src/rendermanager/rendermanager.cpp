@@ -128,6 +128,10 @@ void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
     }
 }
 
+void RenderManager::handle_scale_change() {
+    calculate_projection();
+}
+
 /** \brief Shuts down the rendermanager, destroys the window, terminates glfw, and logs RenderManager stopped at level 2
  * \param void
  * \return void

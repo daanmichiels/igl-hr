@@ -21,6 +21,8 @@ public:
     static int get_window_width();
     static int get_window_height();
 
+    static void handle_scale_change();
+
 private:
     // rift-related variables
     static ovrHmd hmd;

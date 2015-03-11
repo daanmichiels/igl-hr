@@ -19,6 +19,7 @@ object* InputManager::grid = NULL;
 bool InputManager::startup() {
     assert(RenderManager::window);
     glfwSetKeyCallback(RenderManager::window, key_callback);
+    glfwSetScrollCallback(RenderManager::window, scroll_callback);
 
     LogManager::log_info("InputManager started.", 2);
     return true;
@@ -30,6 +31,11 @@ bool InputManager::startup() {
  */
 void InputManager::shutdown() {
     LogManager::log_info("InputManager stopped.", 2);
+}
+
+void InputManager::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    CharacterManager::scale(pow(1.2, -yoffset));
+    RenderManager::handle_scale_change();
 }
 
 /** \brief Key callback for glfw
@@ -59,9 +65,11 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
         CharacterManager::scale(1.2);
+        RenderManager::handle_scale_change();
     }
     if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
         CharacterManager::scale(1.0/1.2);
+        RenderManager::handle_scale_change();
     }
     if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         LogicManager::add_flag();

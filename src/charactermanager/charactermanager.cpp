@@ -125,28 +125,12 @@ void CharacterManager::handle_keyboard(double dt) {
     //but floating point
     if(glm::length(walking_direction) >= 0.5)
     {
-        LogManager::log_info(glm::to_string(feet.pos), 0);
-        LogManager::log_info(glm::to_string(feet.right), 0);
-        LogManager::log_info(glm::to_string(feet.up), 0);
-        LogManager::log_info(glm::to_string(feet.forward), 0);
-        LogManager::log_info("", 0);
-
         walking_direction = glm::normalize(walking_direction);
         walking_direction *= Configuration::walking_speed * dt * meter;
         glm::dvec4 newpos = hypermath::exp(feet.pos, walking_direction.x*feet.right + walking_direction.y*feet.up + walking_direction.z*feet.forward);
         glm::dmat4 transf = hypermath::translation(feet.pos,newpos);
 
         feet = transf * feet;
-
-        LogManager::log_info(glm::to_string(walking_direction), 0);
-        LogManager::log_info(glm::to_string(newpos), 0);
-        LogManager::log_info("", 0);
-
-        LogManager::log_info(glm::to_string(feet.pos), 0);
-        LogManager::log_info(glm::to_string(feet.right), 0);
-        LogManager::log_info(glm::to_string(feet.up), 0);
-        LogManager::log_info(glm::to_string(feet.forward), 0);
-        LogManager::log_info("---", 0);
     }
 }
 /** \brief Handles the mouse input. 
@@ -279,7 +263,7 @@ void CharacterManager::reset_to_origin() {
  * \return void
  */
 void CharacterManager::scale(double scale) {
-    meter *= scale;
+    meter = fmax(0.00001, fmin(2, meter * scale));
 }
 
 /** 

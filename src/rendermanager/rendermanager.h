@@ -54,7 +54,7 @@ private:
     static void render_mesh(mesh m);
     static void calculate_projection();
     static void handle_resize(GLFWwindow* win, int width, int height);
-    static void RenderManager::render_flags(glm::dmat4 modelview, glm::mat4 projection);
+    static void render_flags(glm::dmat4 modelview, glm::mat4 projection);
 
     // to set up the intermediate framebuffer/texture/depthbuffer for rift rendering
     static bool create_eye_framebuffer(GLuint &framebuffer, GLuint &texture, GLuint &depth_buffer);

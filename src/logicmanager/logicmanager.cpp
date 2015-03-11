@@ -13,10 +13,6 @@ std::vector<glm::dvec4> LogicManager::flag_locations = {};
 std::vector<glm::dvec3> LogicManager::flag_highlights = {};
 
 bool LogicManager::startup() {
-    object flag = object(primitives::sphere(0.1 * CharacterManager::meter, 4, glm::dvec4(0.3, 0.3, 0.3, 1.0)));
-    flags.push_back(flag);
-    flag_locations.push_back(hypermath::exp0(glm::dvec4(0,0,-1,0)));
-    flag_highlights.push_back(glm::dvec3(0.0, 0.0, 0.0));
     LogManager::log_info("LogicManager started.", 2);
     return true;
 }

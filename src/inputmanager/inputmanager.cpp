@@ -8,6 +8,7 @@
 #include <vector>
 #include "../data/mesh.h"
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 #include <iostream>
 
 object* InputManager::grid = NULL;
@@ -48,10 +49,16 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
         glfwSetWindowShouldClose(window, GL_TRUE);
     } 
     if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-        std::string info = std::to_string(LoopManager::fpscounter.fps) + " fps";
+        std::string info = std::to_string((int)LoopManager::fpscounter.fps) + " fps";
         if(LogicManager::flags.size() > 0) {
-            // TODO: fix the distance calculation
-            info += "  |   dist to flag: " + std::to_string(hypermath::dist(CharacterManager::get_position_feet(), LogicManager::flag_locations[LogicManager::flags.size() - 1]));
+            glm::dvec4 feet = CharacterManager::get_position_feet();
+            glm::dvec4 flag = LogicManager::flag_locations[LogicManager::flags.size() - 1];
+            double dist = hypermath::dist(feet, flag);
+            info += " | dist to flag: " + std::to_string(dist) + "m";
+
+            if(LogicManager::flags.size() > 1) {
+                // TODO: add angle
+            }
         }
             
         LogManager::log_info(info, 0);

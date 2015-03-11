@@ -24,7 +24,7 @@ public:
     static frame get_position_left_eye();
     static frame get_position_right_eye();
     static frame get_position_eyes();
-    static frame get_position_feet();
+    static glm::dvec4 get_position_feet();
 
     static void reset_to_origin();
 

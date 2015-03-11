@@ -12,6 +12,7 @@ std::vector<std::string> Configuration::filenames = std::vector<std::string>();
 
 const double Configuration::mouse_speed = 0.002; //in rad/pix
 const double Configuration::walking_speed = 1.8; //in m/s
+const double Configuration::running_speed = 4.8; //in m/s
 const double Configuration::ipd = 0.065; //interpupillary distance in meters
 const double Configuration::eye_height = 1.60; //in m
 

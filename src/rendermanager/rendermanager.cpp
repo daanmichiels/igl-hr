@@ -6,6 +6,9 @@
 #include "../configuration/configuration.h"
 #include "../riftmanager/riftmanager.h"
 #include "../shadermanager/shadermanager.h"
+#include "../logicmanager/logicmanager.h"
+#include "../loopmanager/loopmanager.h"
+#include "../math/primitives.h"
 #include "../strings.h"
 #include <iostream>
 #include <string>
@@ -31,6 +34,8 @@ GLuint RenderManager::left_depth_buffer = 0;
 GLuint RenderManager::right_depth_buffer = 0;
 GLuint RenderManager::left_vao = 0;
 GLuint RenderManager::right_vao = 0;
+
+mesh RenderManager::flag_mesh = mesh();
 
 /** \brief Starts the rendermanager. Gets the rift configuration, checks various configurations, calculates the projection, 
  * and then creates eye framebuffers. Also sets window size callback, and logs Rendermanager Started at level 2
@@ -60,6 +65,8 @@ bool RenderManager::startup() {
     }
 
     glfwSetWindowSizeCallback(window, handle_resize);
+
+    flag_mesh = primitives::sphere(0.1, 4, glm::dvec4(0.5, 0.5, 0.5, 1.0));
 
     LogManager::log_info("RenderManager started.", 2);
     return true;
@@ -145,6 +152,18 @@ void RenderManager::shutdown() {
     LogManager::log_info("RenderManager stopped.", 2);
 }
 
+void RenderManager::render_flags(glm::dmat4 modelview, glm::mat4 projection) {
+    glUseProgram(ShaderManager::flag_program);
+    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::flag_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    for(int i=0; i<LogicManager::flags.size(); i++) {
+        glm::dvec3 highlight = LogicManager::flag_highlights[i];
+        glUniform3f(glGetUniformLocation(ShaderManager::flag_program, "theOffset"), highlight.r, highlight.g, highlight.b);
+        render_object(LogicManager::flags[i], modelview);
+    }
+    glUseProgram(0);
+}
+
 void RenderManager::render_object(object o, glm::dmat4 modelview) {
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "modelview"), 1, GL_FALSE, glm::value_ptr((glm::mat4)modelview));
@@ -186,6 +205,8 @@ void RenderManager::render() {
         }
 
         glUseProgram(0);
+
+        render_flags(view, projection);
     } 
     else {
         glClearColor(0.8, 0.6, 0.0, 1.0);

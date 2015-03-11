@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "glm/glm.hpp"
+#include "../data/object.h"
 
 class LogicManager {
 public:
@@ -11,9 +12,10 @@ public:
     static void add_flag();
     static void remove_flag();
     static void mark_flag();
-
-private:
-    static std::vector<glm::dvec4> flags;
+    static void handle();
+    static std::vector<object> flags;
+    static std::vector<glm::dvec4> flag_locations;
+    static std::vector<glm::dvec3> flag_highlights;
 };
 
 #endif /* LOGICMANAGER_H */

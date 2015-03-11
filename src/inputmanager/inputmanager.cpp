@@ -48,7 +48,13 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
         glfwSetWindowShouldClose(window, GL_TRUE);
     } 
     if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-        LogManager::log_info(std::to_string(LoopManager::fpscounter.fps) + " fps", 0);
+        std::string info = std::to_string(LoopManager::fpscounter.fps) + " fps";
+        if(LogicManager::flags.size() > 0) {
+            // TODO: fix the distance calculation
+            info += "  |   dist to flag: " + std::to_string(hypermath::dist(CharacterManager::get_position_feet(), LogicManager::flag_locations[LogicManager::flags.size() - 1]));
+        }
+            
+        LogManager::log_info(info, 0);
     }
     if(key == GLFW_KEY_M && action == GLFW_PRESS) {
         // TODO: ensure charactermanager is started

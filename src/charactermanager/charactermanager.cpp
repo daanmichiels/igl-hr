@@ -12,8 +12,8 @@ using namespace OVR;
 
 frame CharacterManager::feet = frame();
 bool CharacterManager::rift_input = true;
-bool CharacterManager::mouse_bound = true;
-double CharacterManager::meter = 0.1;
+bool CharacterManager::mouse_bound = false;
+double CharacterManager::meter = 0.0012;
 double CharacterManager::altitude = 0.0;
 glm::dquat CharacterManager::rift_orientation = glm::dquat(0,0,0,0);
 ovrHmd* CharacterManager::_hmd = NULL;
@@ -85,6 +85,7 @@ bool CharacterManager::startup() {
     feet.forward = glm::dvec4(0,0,-1,0);
 
     move_cursor_to_center();
+    bind_mouse();
 
     LogManager::log_info("CharacterManager started.", 2);
     return true;
@@ -126,7 +127,11 @@ void CharacterManager::handle_keyboard(double dt) {
     if(glm::length(walking_direction) >= 0.5)
     {
         walking_direction = glm::normalize(walking_direction);
-        walking_direction *= Configuration::walking_speed * dt * meter;
+        if(glfwGetKey(win, GLFW_KEY_LEFT_SHIFT) || glfwGetKey(win, GLFW_KEY_LEFT_SHIFT)) {
+            walking_direction *= Configuration::running_speed * dt * meter;
+        } else {
+            walking_direction *= Configuration::walking_speed * dt * meter;
+        }
         glm::dvec4 newpos = hypermath::exp(feet.pos, walking_direction.x*feet.right + walking_direction.y*feet.up + walking_direction.z*feet.forward);
         glm::dmat4 transf = hypermath::translation(feet.pos,newpos);
 
@@ -175,6 +180,12 @@ void CharacterManager::handle_rift(double dt) {
         rift_orientation = glm::dquat(orientation.w, orientation.x, orientation.y, orientation.z);
     }
 }
+
+
+glm::dvec4 CharacterManager::get_position_feet() {
+    return feet.pos;
+}
+
 /** \brief Get left eye position (needs fixed)
  *  \param void
  *  \return frame of the eye position
@@ -255,6 +266,8 @@ void CharacterManager::reset_to_origin() {
     feet.right = glm::dvec4(1,0,0,0);
     feet.up = glm::dvec4(0,1,0,0);
     altitude = 0.0;
+    meter = 0.0012;
+    RenderManager::handle_scale_change();
 }
 
 /**

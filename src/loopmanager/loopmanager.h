@@ -7,5 +7,7 @@ public:
     static void run();
 
     static FpsCounter fpscounter;
+
+    static double t;
 };
 

@@ -45,6 +45,8 @@ void InputManager::scroll_callback(GLFWwindow* window, double xoffset, double yo
  */
 void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    // TODO: put this in a sensible place
+    const double PI = 3.1415926535897932384626433;
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } 
@@ -57,7 +59,9 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
             info += " | dist to flag: " + std::to_string(dist) + "m";
 
             if(LogicManager::flags.size() > 1) {
-                // TODO: add angle
+                glm::dvec4 previous_flag = LogicManager::flag_locations[LogicManager::flags.size() - 2];
+                double angle = hypermath::angle(feet, flag, previous_flag);
+                info += " | angle: " + std::to_string(angle*180/PI) + " deg";
             }
         }
             

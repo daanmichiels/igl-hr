@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import numpy
+from array import array
 from plyfile import PlyData, PlyElement
 
 # ----------- HYPERMATH ------------
@@ -84,7 +85,7 @@ def process_vertex(j):
     return processed_vertex
 
 # Now fill up a buffer with all the data we want in the output file
-data = []
+data = array('f', [])
 for i in range(nrfaces):
     thisface = plydata['face'].data[i]
     vertexindices = thisface[0]
@@ -94,4 +95,7 @@ for i in range(nrfaces):
     for j in range(3):
         data.extend(process_vertex(vertexindices[j]))
 
-print(len(data))
+hr = open(savefile, "wb")
+data.tofile(hr)
+
+

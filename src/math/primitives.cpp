@@ -4,6 +4,7 @@
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
+#include <iostream>
 
 /*! \file Primitives */
 /** Anonymous namespace.
@@ -348,6 +349,12 @@ namespace primitives
         double radians_between_vertices = 2*PI/n;
         std::vector<glm::dvec4> vertices;
         std::vector<glm::dvec4> col;
+
+        //Start in the center...
+        vertices.push_back(hypermath::exp0(glm::dvec4(0.0,0.0,0.0,0.0)));
+        col.push_back(color);
+        
+        //...and work our way around the circle
         for(int i = 0; i <= n; i++)
         {
             double a = sin(i * radians_between_vertices);
@@ -363,6 +370,44 @@ namespace primitives
         return result;
     }
 
+    /** \brief Create an ngon (same as circumscribed) out of triangles, instead of triangle fan
+     * The colors are randomized.
+     * \param number of sides as an int, and the radius to fit the ngon into.
+     * \return The ngon as a mesh
+     */
+    mesh ngon(int n, double radius){
+        const double PI = 3.141592653589793238463;
+        double radians_between_vertices = 2*PI/n;
+        std::vector<glm::dvec4> vertices;
+        std::vector<glm::dvec4> col;
+
+        //Start in the center...
+        vertices.push_back(hypermath::exp0(glm::dvec4(0.0,0.0,0.0,0.0)));
+        
+        //...and work our way around the circle
+        for(int i = 0; i <= n; i++){
+            double a = sin(i * radians_between_vertices);
+            double b = cos(i * radians_between_vertices);
+            vertices.push_back(hypermath::exp0(radius * glm::dvec4(a, 0, b, 0)));
+        }
+        //this is the slow way...
+        std::vector<glm::dvec4> converted_vertices;
+        for(int i=1; i < vertices.size() - 1; i++){
+            converted_vertices.push_back(vertices[0]);
+            converted_vertices.push_back(vertices[i]);
+            converted_vertices.push_back(vertices[i+1]);
+            //Random colors
+            col.push_back(glm::dvec4(((double) rand() / (RAND_MAX)), 0.0, ((double) (rand() % 25)) / (RAND_MAX), 1.0));
+            col.push_back(glm::dvec4(0.0, ((double) rand() / (RAND_MAX)), 0.0, 1.0));
+            col.push_back(glm::dvec4(0.0, ((double) (rand() % 50))/ (RAND_MAX), ((double) rand() / (RAND_MAX)), 1.0));
+        }
+        mesh result;
+        result.vao = vao_from_pos_col(converted_vertices, col);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = converted_vertices.size();
+        return result;
+    }
     /** \brief Create a tetrahedron.
      * 
      *It will be inscribed in a sphere of the given radius.

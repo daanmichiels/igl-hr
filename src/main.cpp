@@ -11,6 +11,7 @@
 #include "charactermanager/charactermanager.h"
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
+#include "logicmanager/logicmanager.h"
 #include <string.h>
 
 /** \brief Shutdown the various managers
@@ -87,6 +88,14 @@ int main(int argc, const char* argv[]) {
     // start handling characters
     if(CharacterManager::startup()) {
         shutdowns.push_back(&(CharacterManager::shutdown));
+    } else {
+        shutdown_managers(shutdowns);
+        return 0;
+    }
+
+    // make the game playable
+    if(LogicManager::startup()) {
+        shutdowns.push_back(&(LogicManager::shutdown));
     } else {
         shutdown_managers(shutdowns);
         return 0;

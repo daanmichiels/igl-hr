@@ -14,7 +14,7 @@ namespace primitives
     mesh triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c);
     mesh rectangle(double width, double depth, glm::dvec4 color);
     mesh circumscribed_ngon(int n, double radius, glm::dvec4 color);
-
+    mesh ngon(int n, double radius);
     mesh tetrahedron(double radius);
     mesh octahedron(double radius);
     mesh object(std::vector<glm::dvec4> v);

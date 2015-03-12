@@ -23,6 +23,7 @@ public:
 
     static const double mouse_speed;
     static const double walking_speed; //in m/s
+    static const double running_speed; //in m/s
     // TODO: move these to RiftManager, and detect them
     // from rift settings
     static const double ipd; //interpupillary distance in meters

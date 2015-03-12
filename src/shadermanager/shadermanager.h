@@ -12,6 +12,7 @@ public:
 
     static GLuint default_program;
     static GLuint quad_program;
+    static GLuint flag_program;
 
 private:
     static bool compile_shader(std::string source, GLenum shaderType, GLuint &shader);

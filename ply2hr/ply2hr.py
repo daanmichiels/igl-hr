@@ -98,4 +98,7 @@ for i in range(nrfaces):
 hr = open(savefile, "wb")
 data.tofile(hr)
 
+print("")
+print(str(data.itemsize * len(data)) + " bytes written.")
+
 

@@ -4,9 +4,10 @@
 #include "../configuration/configuration.h"
 #include "OVR.h"
 #include "../charactermanager/charactermanager.h"
+#include "../rendermanager/rendermanager.h"
 
 bool RiftManager::rift_connected = false;
-ovrHmd RiftManager::rift = NULL;
+ovrHmd RiftManager::hmd = NULL;
 
 /** \brief Startup the rift manager. Logs whether or not rift is detected at level 1, then logs RiftManager Started at level 2
  * \param void
@@ -17,12 +18,12 @@ bool RiftManager::startup() {
 		rift_connected = false;
 	} else {
 		ovr_Initialize();
-		rift = ovrHmd_Create(0);
-		if(!rift) {
+		hmd = ovrHmd_Create(0);
+		if(!hmd) {
             rift_connected = false;
-			if(Configuration::rift_input == OnOffAuto::on) {
+			if(Configuration::rift_input == OnOffAuto::on || Configuration::rift_output == OnOffAuto::on) {
 				LogManager::log_warning("No Rift detected. Using debug.", 1);
-				rift = ovrHmd_CreateDebug(ovrHmd_DK1);
+				hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
 			} else {
 				LogManager::log_info("No Rift detected.", 1);
 			}
@@ -33,8 +34,19 @@ bool RiftManager::startup() {
 	}
 
 	if(rift_connected) {
-		ovrHmd_ConfigureTracking(rift, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
-//		CharacterManager::set_hmd(&rift);
+		ovrHmd_ConfigureTracking(hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection, 0);
+	}
+
+	if (hmd != NULL) {
+		CharacterManager::set_hmd(hmd);
+		RenderManager::set_hmd(hmd);
+
+		// save window size requested by the rift if doing rift output
+		if (Configuration::rift_output != OnOffAuto::off) {
+			Configuration::width = hmd->Resolution.w;
+			Configuration::height = hmd->Resolution.h;
+		}
+
 	}
 
     LogManager::log_info("RiftManager started.", 2);

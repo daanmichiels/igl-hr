@@ -11,6 +11,7 @@
 #include "charactermanager/charactermanager.h"
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
+#include <string.h>
 
 /** \brief Shutdown the various managers
  * \param vector of managers to shutdown
@@ -23,7 +24,6 @@ void shutdown_managers(std::vector<void (*) ()> shutdowns) {
 }
 
 int main(int argc, const char* argv[]) {
-
     // list of calls that are needed to shut down everything we started
     // vector of function pointers (for some reason, the compiler requires
     // a cast)

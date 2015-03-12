@@ -9,7 +9,7 @@ public:
     static void shutdown();
 
 	static bool rift_connected;
-	static ovrHmd rift;
+	static ovrHmd hmd;
 };
 
 #endif

@@ -16,7 +16,7 @@ public:
     static void unbind_mouse();
     static bool is_mouse_bound();
 
-    static void set_hmd(ovrHmd* hmd);
+    static void set_hmd(ovrHmd hmd);
 
     static double meter;
 
@@ -35,7 +35,7 @@ private:
     static double altitude; //in the sense of http://en.wikipedia.org/wiki/Horizontal_coordinate_system
     static double shoulder_rotation;
     static glm::dquat rift_orientation;
-    static ovrHmd* _hmd;
+    static ovrHmd _hmd;
 
     static void handle_keyboard(double dt);
     static void handle_mouse(double dt);

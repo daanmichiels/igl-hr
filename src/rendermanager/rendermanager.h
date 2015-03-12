@@ -6,6 +6,9 @@
 #include "../data/object.h"
 #include "../data/mesh.h"
 #include "OVR.h"
+#include "OVR_CAPI.h"
+#include "OVR_CAPI_GL.h"
+#include "CAPI/CAPI_HSWDisplay.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -21,17 +24,26 @@ public:
     static int get_window_width();
     static int get_window_height();
 
+    static void set_hmd(ovrHmd newHmd);
+
 private:
     // rift-related variables
     static ovrHmd hmd;
-    static GLuint left_framebuffer;
-    static GLuint right_framebuffer;
-    static GLuint left_texture;
-    static GLuint right_texture;
-    static GLuint left_depth_buffer;
-    static GLuint right_depth_buffer;
-    static GLuint left_vao;
-    static GLuint right_vao;
+    static ovrSizei eyeres[2];
+    static ovrEyeRenderDesc eye_rdesc[2];
+    static ovrGLTexture fb_ovr_tex[2];
+    static union ovrGLConfig glcfg;
+    static unsigned int distort_caps;
+    static unsigned int hmd_caps;
+
+    static GLuint framebuffer;
+    static GLuint texture;
+    static GLuint depth_buffer;
+    static GLuint vao;
+
+    static int fb_width, fb_height;
+    static int tex_width, tex_height;
+
     // are we rendering for the rift?
     static bool rift_render;
 
@@ -45,6 +57,10 @@ private:
     static glm::dmat4 view_matrix_from_frame(frame eyes);
     static void calculate_projection();
     static void handle_resize(GLFWwindow* win, int width, int height);
+
+    static void setup_rift_rendering();
+    static void update_target(int width, int height);
+    static unsigned int next_pow2(unsigned int x);
 
     // to set up the intermediate framebuffer/texture/depthbuffer for rift rendering
     static bool create_eye_framebuffer(GLuint &framebuffer, GLuint &texture, GLuint &depth_buffer);

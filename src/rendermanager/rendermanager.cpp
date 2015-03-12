@@ -329,6 +329,7 @@ bool RenderManager::open_window() {
     //glfwWindowHint(GLFW_DEPTH_BITS, 24);
 #endif
 #ifdef WIN32
+    glfwWindowHint(GLFW_SAMPLES, 4); //multisample
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 #endif
 

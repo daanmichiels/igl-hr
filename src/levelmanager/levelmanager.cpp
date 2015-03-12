@@ -73,7 +73,7 @@ void LevelManager::load_initial_level() {
     eucl_circ_2->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, 0.000002, 0.0, 0.0))));
     scene.objects.push_back(eucl_circ_2);
 
-    object* eucl_circ_3 = new object(primitives::circumscribed_ngon(6, atanh(tanh(0.003)/cos(PI/6)), glm::dvec4(.992, .2, .196, 1.0)));
+    object* eucl_circ_3 = new object(primitives::ngon(6, atanh(tanh(0.003)/cos(PI/6))));
     eucl_circ_3->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, 0.0000005, 0.0, 0.0))));
     scene.objects.push_back(eucl_circ_3);
 

@@ -1,0 +1,97 @@
+import sys
+import os
+import math
+import numpy
+from plyfile import PlyData, PlyElement
+
+# ----------- HYPERMATH ------------
+
+ORIGIN = numpy.array([0,0,0,1])
+
+def dot(v, w):
+    return v[0]*w[0] + v[1]*w[1] + v[2]*w[2] - v[3]*w[3]
+
+def length(v):
+    return math.sqrt(dot(v,v))
+
+def exp0(v):
+    r = length(v)
+    if r==0:
+        return ORIGIN
+    return math.cosh(r) * ORIGIN + (math.sinh(r)/r) * v
+
+# ----------------------------------
+
+if len(sys.argv) < 2:
+    print("No filename given.")
+    print("Usage: python ply2hr.py <filename> [scale]")
+    sys.exit(0)
+
+filename = os.path.abspath(sys.argv[1])
+scale = 1.0
+if len(sys.argv) > 2:
+    scale = float(sys.argv[2])
+savefile = os.path.splitext(filename)[0] + ".hr"
+
+print("Source file: " + filename)
+print("Output file: " + savefile)
+print("Scale: " + str(scale))
+
+# Parse the file
+print("")
+plydata = PlyData.read(filename)
+
+# Print some information
+nrfaces = len(plydata['face'].data)
+print("Face count: " + str(nrfaces))
+
+nrverts = len(plydata['vertex'].data)
+print("Vert count: " + str(nrverts))
+
+# Detect which vertex properties are present in the .ply-file
+has_pos = False
+has_col = False
+has_nor = False
+for prop in plydata.elements[0].properties:
+    if prop.name == "x":
+        has_pos = True
+        print("Vertex positions in file.")
+    if prop.name == "red":
+        has_col = True
+        print("Vertex colors in file.")
+    if prop.name == "nx":
+        has_nor = True
+        print("Vertex normals in file.")
+
+# This function will return an array of floats
+# containing all the vertex data
+# given the vertex' index
+def process_vertex(j):
+    processed_vertex = []
+    vdata = plydata['vertex'].data[j]
+    if has_pos:
+        pos = numpy.array([vdata['x'], vdata['y'], vdata['z'], 1.0])
+        pos = scale * pos
+        pos = exp0(pos)
+        processed_vertex.extend(pos)
+    if has_col:
+        col = numpy.array([vdata['red']/255.0, vdata['green']/255.0, vdata['blue']/255.0, 1.0])
+        processed_vertex.extend(col)
+    if has_nor:
+        nor = numpy.array([vdata['nx'], vdata['ny'], vdata['nz'], 0.0])
+        #TODO: apply dexp0
+        processed_vertex.extend(nor)
+    return processed_vertex
+
+# Now fill up a buffer with all the data we want in the output file
+data = []
+for i in range(nrfaces):
+    thisface = plydata['face'].data[i]
+    vertexindices = thisface[0]
+    if len(vertexindices) != 3:
+        print("The model has to be triangulated.")
+        sys.exit(0)
+    for j in range(3):
+        data.extend(process_vertex(vertexindices[j]))
+
+print(len(data))

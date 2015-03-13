@@ -33,18 +33,10 @@ void LevelManager::shutdown() {
  * \return void
  */
 void LevelManager::load_initial_level() {
-    /*
-    mesh m = primitives::tetrahedron(0.04);
-    //TODO: get rid of this heap allocation
-    //(but we can't make it a stack variable)
-    //We need a MemoryManager
-    object* o = new object(m);
-    o->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
-    //scene.objects.push_back(o);
+
 	object* lucy = AssetManager::load_object("thing");
 	lucy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
 	scene.objects.push_back(lucy);
-    */
 
     //axes to give the user a feeling of where they are in the space.
     const double PI = 3.141592653589793238463;

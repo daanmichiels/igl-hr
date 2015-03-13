@@ -20,20 +20,20 @@ public:
 
     static double meter;
 
+    //TODO: rename the first three to get_frame_xxx
     static frame get_position_left_eye();
     static frame get_position_right_eye();
     static frame get_position_eyes();
+    static glm::dvec4 get_position_feet();
 
     static void reset_to_origin();
 
-    static void grow(double scale = 1.1);
-    static void shrink(double scale = 1.1);
+    static void scale(double scale);
 private:
     static bool rift_input;
     static bool mouse_bound;
-    static frame shoulders;
+    static frame feet;
     static double altitude; //in the sense of http://en.wikipedia.org/wiki/Horizontal_coordinate_system
-    static double shoulder_rotation;
     static glm::dquat rift_orientation;
     static ovrHmd* _hmd;
 
@@ -42,7 +42,6 @@ private:
     static void handle_rift(double dt);
     
     static void move_cursor_to_center();
-    static void update_shoulder_frame();
 };
 
 #endif

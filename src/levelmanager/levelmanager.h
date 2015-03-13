@@ -12,6 +12,7 @@ public:
 
 private:
     static void load_initial_level();
+    static void load_level_2();
 };
 
 #endif

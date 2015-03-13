@@ -21,6 +21,16 @@ public:
     static int get_window_width();
     static int get_window_height();
 
+    static void handle_scale_change();
+
+    // doesn't change often, so we store it
+    // (the view matrix is recalculated every frame)
+    // no need for double precision, as this is only
+    // passed to the GPU
+    static glm::mat4 projection;
+    static glm::mat4 projection_one_eye;
+    static glm::dmat4 view_matrix_from_frame(frame eyes);
+    
 private:
     // rift-related variables
     static ovrHmd hmd;
@@ -42,9 +52,9 @@ private:
     // TODO: reduce precision of this matrix?
     static void render_object(object o, glm::dmat4 modelview);
     static void render_mesh(mesh m);
-    static glm::dmat4 view_matrix_from_frame(frame eyes);
     static void calculate_projection();
     static void handle_resize(GLFWwindow* win, int width, int height);
+    static void render_flags(glm::dmat4 modelview, glm::mat4 projection);
 
     // to set up the intermediate framebuffer/texture/depthbuffer for rift rendering
     static bool create_eye_framebuffer(GLuint &framebuffer, GLuint &texture, GLuint &depth_buffer);
@@ -56,12 +66,7 @@ private:
     static int window_width;
     static int window_height;
 
-    // doesn't change often, so we store it
-    // (the view matrix is recalculated every frame)
-    // no need for double precision, as this is only
-    // passed to the GPU
-    static glm::mat4 projection;
-    static glm::mat4 projection_one_eye;
+    static mesh flag_mesh;
 };
 
 

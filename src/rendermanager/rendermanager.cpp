@@ -6,6 +6,9 @@
 #include "../configuration/configuration.h"
 #include "../riftmanager/riftmanager.h"
 #include "../shadermanager/shadermanager.h"
+#include "../logicmanager/logicmanager.h"
+#include "../loopmanager/loopmanager.h"
+#include "../math/primitives.h"
 #include "../strings.h"
 #include <iostream>
 #include <string>
@@ -31,6 +34,8 @@ GLuint RenderManager::left_depth_buffer = 0;
 GLuint RenderManager::right_depth_buffer = 0;
 GLuint RenderManager::left_vao = 0;
 GLuint RenderManager::right_vao = 0;
+
+mesh RenderManager::flag_mesh = mesh();
 
 /** \brief Starts the rendermanager. Gets the rift configuration, checks various configurations, calculates the projection, 
  * and then creates eye framebuffers. Also sets window size callback, and logs Rendermanager Started at level 2
@@ -61,6 +66,8 @@ bool RenderManager::startup() {
 
     glfwSetWindowSizeCallback(window, handle_resize);
 
+    flag_mesh = primitives::sphere(0.1, 4, glm::dvec4(0.5, 0.5, 0.5, 1.0));
+
     LogManager::log_info("RenderManager started.", 2);
     return true;
 }
@@ -70,8 +77,8 @@ bool RenderManager::startup() {
 void RenderManager::calculate_projection() {
     float fov = 1.2f; // TODO: set a sensible value
     float ratio = ((float) window_width) / window_height;
-    float near = 0.03 * CharacterManager::meter; // TODO: find sensible near and far planes
-    float far = 20 * CharacterManager::meter;
+    float near = 0.08 * CharacterManager::meter; // TODO: find sensible near and far planes
+    float far = 1000 * CharacterManager::meter;
 
     if(rift_render) {
         ratio = ratio / 2.0;
@@ -128,6 +135,10 @@ void RenderManager::handle_resize(GLFWwindow* win, int width, int height) {
     }
 }
 
+void RenderManager::handle_scale_change() {
+    calculate_projection();
+}
+
 /** \brief Shuts down the rendermanager, destroys the window, terminates glfw, and logs RenderManager stopped at level 2
  * \param void
  * \return void
@@ -139,6 +150,18 @@ void RenderManager::shutdown() {
     glfwTerminate();
 
     LogManager::log_info("RenderManager stopped.", 2);
+}
+
+void RenderManager::render_flags(glm::dmat4 modelview, glm::mat4 projection) {
+    glUseProgram(ShaderManager::flag_program);
+    glUniformMatrix4fv(glGetUniformLocation(ShaderManager::flag_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    for(int i=0; i<LogicManager::flags.size(); i++) {
+        glm::dvec3 highlight = LogicManager::flag_highlights[i];
+        glUniform3f(glGetUniformLocation(ShaderManager::flag_program, "theOffset"), highlight.r, highlight.g, highlight.b);
+        render_object(LogicManager::flags[i], modelview);
+    }
+    glUseProgram(0);
 }
 
 void RenderManager::render_object(object o, glm::dmat4 modelview) {
@@ -168,7 +191,7 @@ void RenderManager::render_mesh(mesh m)
  */
 void RenderManager::render() {
     if(!rift_render) {
-        glClearColor(0.0, 0.2, 0.7, 1.0);
+        glClearColor(0.5, 0.7, 0.8, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(ShaderManager::default_program);
@@ -182,6 +205,8 @@ void RenderManager::render() {
         }
 
         glUseProgram(0);
+
+        render_flags(view, projection);
     } 
     else {
         glClearColor(0.8, 0.6, 0.0, 1.0);
@@ -304,6 +329,7 @@ bool RenderManager::open_window() {
     //glfwWindowHint(GLFW_DEPTH_BITS, 24);
 #endif
 #ifdef WIN32
+    glfwWindowHint(GLFW_SAMPLES, 4); //multisample
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 #endif
 

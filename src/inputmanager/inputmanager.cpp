@@ -3,10 +3,12 @@
 #include "../charactermanager/charactermanager.h"
 #include "../rendermanager/rendermanager.h"
 #include "../loopmanager/loopmanager.h"
+#include "../logicmanager/logicmanager.h"
 #include "../data/object.h"
 #include <vector>
 #include "../data/mesh.h"
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 #include <iostream>
 
 object* InputManager::grid = NULL;
@@ -18,6 +20,7 @@ object* InputManager::grid = NULL;
 bool InputManager::startup() {
     assert(RenderManager::window);
     glfwSetKeyCallback(RenderManager::window, key_callback);
+    glfwSetScrollCallback(RenderManager::window, scroll_callback);
 
     LogManager::log_info("InputManager started.", 2);
     return true;
@@ -31,17 +34,38 @@ void InputManager::shutdown() {
     LogManager::log_info("InputManager stopped.", 2);
 }
 
+void InputManager::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    CharacterManager::scale(pow(1.2, -yoffset));
+    RenderManager::handle_scale_change();
+}
+
 /** \brief Key callback for glfw
  * \param GLFWwindow*, key, scan code, action, and mods
  * \return void
  */
 void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    // TODO: put this in a sensible place
+    const double PI = 3.1415926535897932384626433;
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GL_TRUE);
     } 
     if(key == GLFW_KEY_GRAVE_ACCENT && action == GLFW_PRESS) {
-        LogManager::log_info(std::to_string(LoopManager::fpscounter.fps) + " fps", 0);
+        std::string info = std::to_string((int)LoopManager::fpscounter.fps) + " fps";
+        if(LogicManager::flags.size() > 0) {
+            glm::dvec4 feet = CharacterManager::get_position_feet();
+            glm::dvec4 flag = LogicManager::flag_locations[LogicManager::flags.size() - 1];
+            double dist = hypermath::dist(feet, flag);
+            info += " | dist to flag: " + std::to_string(dist) + "m";
+
+            if(LogicManager::flags.size() > 1) {
+                glm::dvec4 previous_flag = LogicManager::flag_locations[LogicManager::flags.size() - 2];
+                double angle = hypermath::angle(feet, flag, previous_flag);
+                info += " | angle: " + std::to_string(angle*180/PI) + " deg";
+            }
+        }
+            
+        LogManager::log_info(info, 0);
     }
     if(key == GLFW_KEY_M && action == GLFW_PRESS) {
         // TODO: ensure charactermanager is started
@@ -55,6 +79,17 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
         CharacterManager::reset_to_origin();
+    }
+    if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
+        CharacterManager::scale(1.2);
+        RenderManager::handle_scale_change();
+    }
+    if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
+        CharacterManager::scale(1.0/1.2);
+        RenderManager::handle_scale_change();
+    }
+    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        LogicManager::add_flag();
     }
     /*
     if(key == GLFW_KEY_G && action == GLFW_PRESS )

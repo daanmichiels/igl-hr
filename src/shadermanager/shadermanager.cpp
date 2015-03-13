@@ -7,6 +7,7 @@
 
 GLuint ShaderManager::default_program = 0;
 GLuint ShaderManager::quad_program = 0;
+GLuint ShaderManager::flag_program = 0;
 
 /** \brief Startup the shader manage. Makes sure the shaders are compiled and linked correctly logs ShaderManager started at level 2
  * \param void
@@ -17,6 +18,7 @@ bool ShaderManager::startup() {
     GLuint fragment;
     GLuint rift_vertex;
     GLuint rift_fragment;
+    GLuint fragment_offset;
 
     if(!compile_shader(shader_sources["vertex"], GL_VERTEX_SHADER, vertex)) {
         return false;
@@ -30,11 +32,17 @@ bool ShaderManager::startup() {
     if(!compile_shader(shader_sources["rift_fragment"], GL_FRAGMENT_SHADER, rift_fragment)) {
         return false;
     }
+    if(!compile_shader(shader_sources["fragment_offset"], GL_FRAGMENT_SHADER, fragment_offset)) {
+        return false;
+    }
 
     if(!link_program(vertex, fragment, default_program)) {
         return false;
     }
     if(!link_program(rift_vertex, rift_fragment, quad_program)) {
+        return false;
+    }
+    if(!link_program(vertex, fragment_offset, flag_program)) {
         return false;
     }
 

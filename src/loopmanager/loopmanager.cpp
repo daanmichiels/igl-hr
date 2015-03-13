@@ -1,5 +1,6 @@
 
 #include "../logmanager/logmanager.h"
+#include "../logicmanager/logicmanager.h"
 #include "../charactermanager/charactermanager.h"
 #include "loopmanager.h"
 #include "../rendermanager/rendermanager.h"
@@ -7,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 FpsCounter LoopManager::fpscounter = FpsCounter();
+double LoopManager::t = 0.0;
 
 /** \brief Startup LoopManage. Logs LoopManager started at level 2
  * \param void
@@ -31,7 +33,7 @@ void LoopManager::shutdown() {
  */
 void LoopManager::run() {
 
-    double t = glfwGetTime();
+    t = glfwGetTime();
     double t_prev = t;
     double dt = 0.0;
 
@@ -45,6 +47,7 @@ void LoopManager::run() {
         //TODO: make sure rift orientation is polled late
 
         CharacterManager::handle(dt);
+        LogicManager::handle();
         RenderManager::render();
         fpscounter.update(dt);
         glfwPollEvents();

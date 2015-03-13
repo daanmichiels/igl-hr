@@ -71,7 +71,7 @@ def process_vertex(j):
     processed_vertex = []
     vdata = plydata['vertex'].data[j]
     if has_pos:
-        pos = numpy.array([vdata['x'], vdata['y'], vdata['z'], 1.0])
+        pos = numpy.array([vdata['x'], vdata['y'], vdata['z'], 0.0])
         pos = scale * pos
         pos = exp0(pos)
         processed_vertex.extend(pos)
@@ -95,10 +95,20 @@ for i in range(nrfaces):
     for j in range(3):
         data.extend(process_vertex(vertexindices[j]))
 
+# Write to the file
+# We start with a short header
 hr = open(savefile, "wb")
+hr.write("hr00")
+hr.write("p" if has_pos else "_")
+hr.write("c" if has_col else "_")
+hr.write("n" if has_nor else "_")
+hr.write("_") #could be used for an extra attribute, like texture coordinates
+
+# Now the data
 data.tofile(hr)
 
+# Done
 print("")
-print(str(data.itemsize * len(data)) + " bytes written.")
+print(str(8 + data.itemsize * len(data)) + " bytes written.")
 
 

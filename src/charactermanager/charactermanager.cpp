@@ -176,16 +176,6 @@ void CharacterManager::handle_mouse(double dt) {
     altitude += angle_ver;
     altitude = fmin(PI/2, fmax(-PI/2, altitude)); //clamp
 
-	LogManager::log_info(std::to_string(mouse_x1) ,2);
-	LogManager::log_info(std::to_string(mouse_y1) ,2);
-
-	LogManager::log_info(std::to_string(mouse_x) ,2);
-	LogManager::log_info(std::to_string(mouse_y) ,2);
-	LogManager::log_info(std::to_string(center_x) ,2);
-	LogManager::log_info(std::to_string(center_y) ,2);
-	LogManager::log_info(std::to_string(angle_ver) ,2);
-	LogManager::log_info(std::to_string(altitude) ,2);
-
     double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
     shoulders.rotate_right(angle_hor);
 

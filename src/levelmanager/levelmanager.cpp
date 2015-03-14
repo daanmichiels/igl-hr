@@ -34,10 +34,10 @@ void LevelManager::shutdown() {
  */
 void LevelManager::load_initial_level() {
 
-	object* lucy = AssetManager::load_object("thing");
-	lucy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
+	object* lucy = AssetManager::load_object("colorful");
 	scene.objects.push_back(lucy);
 
+    /*
     //axes to give the user a feeling of where they are in the space.
     const double PI = 3.141592653589793238463;
 
@@ -83,6 +83,7 @@ void LevelManager::load_initial_level() {
     scene.objects.push_back(eucl_circ_3);
 
 	LogManager::log_info("Enjoy Your Pi", 2);
+    */
 
     return;
 }

@@ -19,17 +19,18 @@ namespace{
         return gon;
     }
 
-    //make the first round of neighbors
-
-    /****************TODO: ALL AFTER THIS ***************/
-    
+    //make the first round of neighbors    
     std::vector<glm::dvec4> generate_first_neighbors(std::vector<glm::dvec4> gen0){
         std::vector<glm::dvec4> neighbors;
-        for(int i=0; i < gen0.size()-1; i++){
-            neighbors.push_back(hypermath::reflect_planar_point(gen0[0], gen0[1], gen0[2]));
+        for(int j=1; j < gen0.size()-1; j++){
+            for(int i=0; i < gen0.size(); i++){
+                neighbors.push_back(hypermath::reflect_planar_point(gen0[i], gen0[j], gen0[j+1]));
+            }
         }
         return neighbors;
     }
+
+    /****************TODO: ALL AFTER THIS ***************/
 
     //make the next round of neighbors, given we pass the previous two
     std::vector<glm::dvec4> generate_neighbors(std::vector<glm::dvec4> one_back, std::vector<glm::dvec4> two_back){

@@ -27,6 +27,10 @@ public:
     static void set_hmd(ovrHmd newHmd);
     static void handle_scale_change();
 
+	// are we rendering for the rift?
+    static bool rift_render;
+	static int samples;
+
     // doesn't change often, so we store it
     // (the view matrix is recalculated every frame)
     // no need for double precision, as this is only
@@ -53,8 +57,7 @@ private:
     static int fb_width, fb_height;
     static int tex_width, tex_height;
 
-    // are we rendering for the rift?
-    static bool rift_render;
+    
 
     static bool init_glew();
     static bool open_window();

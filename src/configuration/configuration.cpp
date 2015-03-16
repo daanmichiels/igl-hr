@@ -1,5 +1,6 @@
 
 #include "configuration.h"
+#include "../rendermanager/rendermanager.h"
 #include <string.h>
 #include <algorithm>
 
@@ -40,6 +41,16 @@ void Configuration::configure(int argc, const char* argv[]) {
         } else if(strcmp(argv[i],"--no-rift") == 0) {
             Configuration::rift_input = OnOffAuto::off;
             Configuration::rift_output = OnOffAuto::off;
+		} else if(strstr(argv[i],"--multisample ")) {
+			if(!RenderManager::rift_render) {
+				char[] keys = "0123456789";
+				int n = strcspn(argv[i], keys);
+				char[] nums = "";
+				for(int i=0; i<strlen(argv[i])-n; i++)
+					nums[i]=argv[i][n+i];
+				int samples = std::atoi(nums);
+				RenderManager::samples = samples;
+			}
         } else {
             Configuration::filenames.push_back(std::string(argv[i]));
         }

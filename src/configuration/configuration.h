@@ -36,6 +36,8 @@ public:
     static OnOffAuto rift_output;
     static std::vector<std::string> filenames;
 
+	static int samples;
+
     static void configure(int argc, const char* argv[]);
 };
 

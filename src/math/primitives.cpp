@@ -4,6 +4,7 @@
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
+#include "tilings.h"
 #include <iostream>
 
 /*! \file Primitives */

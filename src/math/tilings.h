@@ -8,7 +8,7 @@
 #include "../data/mesh.h"
 
 namespace tilings{
-    mesh generate_tiling(const int sides, const double radius,  const int around_vertex, const int iterations);
+    mesh generate_tiling(const int sides, const double radius, const int iterations);
 }
 
 #endif

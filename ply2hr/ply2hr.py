@@ -21,31 +21,17 @@ def exp0(v):
     return math.cosh(r) * ORIGIN + (math.sinh(r)/r) * v
 	
 def dexp0(v, n):
-	#set first column according to mathematica notebook
-	output[0][0] = math.sin(1.0) * (math.pow(v[3],2) - math.pow(v[1],2) - math.pow(v[3],2)) - math.pow(v[0],2) * math.cos(1.0);
-	output[1][0] = v[0] * v[1] * (math.sin(1.0) - math.cos(1.0));
-	output[2][0] = v[0] * v[2] * (math.sin(1.0) - math.cos(1.0));
-	output[3][0] = v[0] * (v[3] * (math.sin(1.0)-math.cos(1.0)) + math.sin(1.0));
+	output = numpy.matrix(
+			[[   math.sin(1.0) * (math.pow(v[3],2) - math.pow(v[1],2) - math.pow(v[3],2)) - math.pow(v[0],2) * math.cos(1.0)   ,   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                              v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[0] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[2], 2)) - math.pow(v[1], 2)*math.cos(1.0)   ,   v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[1] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                              math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[1], 2)) - math.pow(v[2], 2)*math.cos(1.0)   ,   v[3] * v[2] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * (v[3] * (math.sin(1.0)-math.cos(1.0)) + math.sin(1.0))   ,                                                 v[1] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))   ,                                            v[2] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))    ,                                                -1 * math.sin(1.0) * (math.pow(v[3],3) - v[3] * (math.pow(v[0],2) + math.pow(v[1], 2) + math.pow(v[2],2)) + math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2) ) + math.pow(v[3], 2) * math.cos(1.0)   ]]
+	)
+	a = numpy.matrix(n).reshape((4,1))
+	result = output * a
+	result = result.reshape((1,4))
+	return result
 	
-	#set second column similarly
-	output[0][1] = v[0] * v[1] * (math.sin(1.0) - math.cos(1.0));
-	output[1][1] = sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[2], 2)) - math.pow(v[1], 2)*math.cos(1.0);
-	output[2][1] = v[1] * v[2] * (math.sin(1.0) - math.cos(1.0));
-	output[3][1] = v[1] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0));
-	
-	#set third column
-	output[0][2] = v[0] * v[2] * (math.sin(1.0) - math.cos(1.0));
-	output[1][2] = v[1] * v[2] * (math.sin(1.0) - math.cos(1.0));
-	output[2][2] = math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[1], 2)) - math.pow(v[2], 2)*math.cos(1.0);
-	output[3][2] = v[2] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0));
-	
-	#set fourth column
-	output[0][3] = v[3] * v[0] * (math.cos(1.0)-math.sin(1.0));
-	output[1][3] = v[3] * v[1] * (math.cos(1.0)-math.sin(1.0));
-	output[2][3] = v[3] * v[2] * (math.cos(1.0)-math.sin(1.0));
-	output[3][3] = -1 * math.sin(1.0) * (math.pow(v[3],3) - v[3] * (math.pow(v[0],2) + math.pow(v[1], 2) + math.pow(v[2],2)) + math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2) ) + math.pow(v[3], 2) * math.cos(1.0);
-	
-	#
 
 # ----------------------------------
 

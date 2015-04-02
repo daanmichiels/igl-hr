@@ -363,10 +363,10 @@ void RenderManager::render() {
             glViewport(eye == ovrEye_Left ? 0 : fb_width / 2, 0, fb_width / 2, fb_height);
 
             //get the correct view from CharacterManager
-            // glm::dmat4 view = (eye == ovrEye_Left ? view_matrix_from_frame(CharacterManager::get_position_left_eye()) :
-            //     view_matrix_from_frame(CharacterManager::get_position_right_eye()));
+            glm::dmat4 view = (eye == ovrEye_Left ? view_matrix_from_frame(CharacterManager::get_position_left_eye()) :
+                view_matrix_from_frame(CharacterManager::get_position_right_eye()));
 
-            glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
+            // glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
             glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, 
                 glm::value_ptr(projection_one_eye));
 

@@ -26,7 +26,7 @@ public:
     static const double running_speed; //in m/s
     // TODO: move these to RiftManager, and detect them
     // from rift settings
-    static const double ipd; //interpupillary distance in meters
+    static double ipd; //interpupillary distance in meters
     static const double eye_height; //in m
 
     static int width;

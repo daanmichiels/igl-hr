@@ -11,7 +11,7 @@
 using namespace OVR;
 
 frame CharacterManager::feet = frame();
-bool CharacterManager::rift_input = true;
+bool CharacterManager::rift_input = Configuration::rift_input == OnOffAuto::on;
 bool CharacterManager::mouse_bound = false;
 double CharacterManager::meter = 0.0012;
 double CharacterManager::altitude = 0.0;
@@ -70,6 +70,7 @@ bool CharacterManager::is_mouse_bound() {
 
 void CharacterManager::set_hmd(ovrHmd hmd) {
     _hmd = hmd;
+    rift_input = hmd != NULL;
 }
 
 /** \brief Start the character manager. Sets the shoulders up, moves the mouse to center, and logs starting of character
@@ -110,10 +111,10 @@ void CharacterManager::handle_keyboard(double dt) {
     glm::dvec3 walking_direction = glm::dvec3();
 
     if( glfwGetKey(win, GLFW_KEY_UP) || glfwGetKey(win, GLFW_KEY_W )) {
-        walking_direction += glm::dvec3(0,0,1);
+        walking_direction += glm::dvec3(0,0,-1);
     }
     if( glfwGetKey(win, GLFW_KEY_DOWN) || glfwGetKey(win, GLFW_KEY_S )) {
-        walking_direction += glm::dvec3(0,0,-1);
+        walking_direction += glm::dvec3(0,0,1);
     }    
     if( glfwGetKey(win, GLFW_KEY_LEFT) || glfwGetKey(win, GLFW_KEY_A )) {
         walking_direction += glm::dvec3(-1,0,0);
@@ -163,7 +164,7 @@ void CharacterManager::handle_mouse(double dt) {
     altitude += angle_ver;
     altitude = fmin(PI/2, fmax(-PI/2, altitude)); //clamp
 
-    double angle_hor = Configuration::mouse_speed * (mouse_x - center_x);
+    double angle_hor = Configuration::mouse_speed * (center_x - mouse_x);
     feet.rotate_right(angle_hor);
 
     return; 
@@ -199,19 +200,24 @@ frame CharacterManager::get_position_left_eye() {
 
     result = transf_up * result;
 
-    glm::dvec4 newpos_right = hypermath::exp(result.pos, -Configuration::ipd * 0.5 * meter * result.right);
-    glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
-
-    result = transf_right * result;
-
-    if (rift_input && _hmd != NULL) {
-        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
+    if (rift_input) {
+        glm::dmat3 eye_orientation = glm::mat3_cast(rift_orientation);
         
-        result.up = eye_orientation * result.up;
-        result.right = eye_orientation * result.right;
-        result.forward = eye_orientation * result.forward;
+        result = eye_orientation * result;
+
+        //if getting input from the rift, rotate first, then move left
+        glm::dvec4 newpos_right = hypermath::exp(result.pos, -Configuration::ipd * 0.5 * meter * result.right);
+        glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
+
+        result = transf_right * result;
     }
-    else {
+    else {        
+        //if not getting rift input move right then rotate (does this order make sense?)
+        glm::dvec4 newpos_right = hypermath::exp(result.pos, -Configuration::ipd * 0.5 * meter * result.right);
+        glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
+
+        result = transf_right * result;
+
         result.rotate_up(altitude);
     }
 
@@ -230,19 +236,24 @@ frame CharacterManager::get_position_right_eye() {
 
     result = transf_up * result;
 
-    glm::dvec4 newpos_right = hypermath::exp(result.pos, Configuration::ipd * 0.5 * meter * result.right);
-    glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
+    if (rift_input) {
+        glm::dmat3 eye_orientation = glm::mat3_cast(rift_orientation);
+        
+        result = eye_orientation * result;
 
-    result = transf_right * result;
+        //if getting input from the rift, rotate first, then move right
+        glm::dvec4 newpos_right = hypermath::exp(result.pos, Configuration::ipd * 0.5 * meter * result.right);
+        glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
 
-    if (rift_input && _hmd != NULL) {
-        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
-
-        result.up = eye_orientation * result.up;
-        result.right = eye_orientation * result.right;
-        result.forward = eye_orientation * result.forward;
+        result = transf_right * result;
     }
     else {
+        //if not getting rift input move right then rotate (does this order make sense?)
+        glm::dvec4 newpos_right = hypermath::exp(result.pos, Configuration::ipd * 0.5 * meter * result.right);
+        glm::dmat4 transf_right = hypermath::translation(result.pos,newpos_right);
+
+        result = transf_right * result;
+
         result.rotate_up(altitude);
     }
 
@@ -257,12 +268,10 @@ frame CharacterManager::get_position_eyes() {
     glm::dvec4 newpos = hypermath::exp(result.pos, Configuration::eye_height * meter * result.up);
     result = hypermath::translation(result.pos, newpos) * result;
 
-    if (rift_input && _hmd != NULL) {
-        glm::dmat4 eye_orientation = hypermath::rotation0(rift_orientation);
-        // TODO: I don't think this is right
-        result.up = eye_orientation * result.up;
-        result.right = eye_orientation * result.right;
-        result.forward = eye_orientation * result.forward;
+    if (rift_input) {
+        glm::dmat3 eye_orientation = glm::mat3_cast(rift_orientation);
+        
+        result = eye_orientation * result;
     }
     else {
         result.rotate_up(altitude);
@@ -293,8 +302,6 @@ void CharacterManager::reset_to_origin() {
  */
 void CharacterManager::scale(double scale) {
     meter = fmax(0.00001, fmin(2, meter * scale));
-
-    LogManager::log_info(std::to_string(meter), 1);
 }
 
 /** 

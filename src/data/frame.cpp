@@ -66,3 +66,13 @@ frame operator*(const glm::dmat4 mat, const frame f) {
     return g;
 }
 
+frame operator*(const glm::dmat3 mat, const frame f) {
+    frame g = frame();
+    g.pos = f.pos;
+    g.right = (mat[0][0] * f.right) + (mat[0][1] * f.up) + (mat[0][2] * f.forward);
+    g.up = (mat[1][0] * f.right) + (mat[1][1] * f.up) + (mat[1][2] * f.forward);
+    g.forward = -(mat[2][0] * f.right) + -(mat[2][1] * f.up) + -(mat[2][2] * f.forward);
+
+    return g;
+}
+

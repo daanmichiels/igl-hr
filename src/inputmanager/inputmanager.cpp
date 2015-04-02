@@ -4,6 +4,7 @@
 #include "../rendermanager/rendermanager.h"
 #include "../loopmanager/loopmanager.h"
 #include "../logicmanager/logicmanager.h"
+#include "../configuration/configuration.h"
 #include "../data/object.h"
 #include <vector>
 #include "../data/mesh.h"
@@ -79,16 +80,21 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     }
     if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
         CharacterManager::reset_to_origin();
+        Configuration::ipd = 0.065;
     }
     if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
-        CharacterManager::scale(1.2);
-        RenderManager::handle_scale_change();
+        // CharacterManager::scale(1.2);
+        // RenderManager::handle_scale_change();
+        Configuration::ipd *= 1.2;
+        LogManager::log_info(std::to_string(Configuration::ipd), 2);
     }
     if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
-        CharacterManager::scale(1.0/1.2);
-        RenderManager::handle_scale_change();
+        // CharacterManager::scale(1.0/1.2);
+        // RenderManager::handle_scale_change();
+        Configuration::ipd /= 1.2;
+        LogManager::log_info(std::to_string(Configuration::ipd), 2);
     }
-    if(key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         LogicManager::add_flag();
     }
     /*

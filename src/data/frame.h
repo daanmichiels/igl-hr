@@ -24,7 +24,12 @@ struct frame
 };
 
 // allow application of a matrix to a frame
+// note that multiplication by a 4x4 matrix is very 
+// different than mulitplication by a 3x3 matrix.
+// 4x4 matrices will change position and orientation,
+// 3x3 matrices only rotate without changing position
 frame operator*(glm::dmat4 mat, frame f);
+frame operator*(glm::dmat3 mat, frame f);
 
 #endif /* FRAME_H */
 

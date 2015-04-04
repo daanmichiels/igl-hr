@@ -12,6 +12,9 @@
 #include "riftmanager/riftmanager.h"
 #include "inputmanager/inputmanager.h"
 #include "logicmanager/logicmanager.h"
+//#include "math/hypermath.h"
+//#include "glm/glm.hpp"
+#include <string.h>
 
 /** \brief Shutdown the various managers
  * \param vector of managers to shutdown
@@ -24,7 +27,6 @@ void shutdown_managers(std::vector<void (*) ()> shutdowns) {
 }
 
 int main(int argc, const char* argv[]) {
-
     // list of calls that are needed to shut down everything we started
     // vector of function pointers (for some reason, the compiler requires
     // a cast)
@@ -109,6 +111,13 @@ int main(int argc, const char* argv[]) {
         return 0;
     }
 
+	/*
+	glm::dvec4 pos = glm::dvec4(1,2,3,0);
+	glm::dvec4 dir = glm::dvec4(2,5,3,0);
+	glm::dvec4 result = hypermath::exp(pos, dir);
+	LogManager::log_info(std::string(result), 2);
+	*/
+	
     // Run! (forrest?)
     LoopManager::run();
 

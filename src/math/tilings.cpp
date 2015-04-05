@@ -52,20 +52,17 @@ namespace{
         return false;
     }
 
-    /************************* BROKEN FUNCTION ************************************/
+    // This function generates each subsequent round of neighbors. NOTE: this really needs to use the broken "has" function.
     std::vector<glm::dvec4> generate_neighbors(std::vector<glm::dvec4> one_back, std::vector<glm::dvec4> two_back, int sides){
         std::vector<glm::dvec4> neighbors;
-
-        //Step through the start of each ngon
+        //Step through the start of each ngon (Correct)
         for(int i=0; i < one_back.size(); i+=3*sides){
-            //step through each of the sides
-            for(int k = i; k < i+3*sides-1; k++){
-                //Step through each vertex in the 'gon'
+            //step through each of the sides (Correct)
+            for(int k = i; k < i + 3*sides; k++){
+                //Step through each vertex in the 'gon' THIS IS PROBABLY THE LINE WITH THE PROB!!
                 for(int j = i; j < i + 3*sides; j++){
-                    glm::dvec4 next = hypermath::reflect_planar_point(one_back[i], one_back[k], one_back[k+1]);
-                    //if we aren't dealing with a line between central vertex and another, and we don't have the vertex we add it
-                    if(k % 3 !=0 && k+1 % 3 != 0 && !has(next, two_back, 0.00000001)){
-                        neighbors.push_back(next);
+                    if(k % 3 !=0 && (k+1) % 3 != 0){
+                        neighbors.push_back(hypermath::reflect_planar_point(one_back[j], one_back[k], one_back[k+1]));
                     }
                 }
             }
@@ -92,14 +89,13 @@ namespace tilings{
         generations.push_back(fan_to_triangle(gen0));
         //generate first round of neighbors to ensure that we can reach back two steps
         //in order to ensure against duplicates
-        if(iterations > 1){
+        if(iterations > 0){
             generations.push_back(generate_first_neighbors(generations[0]));
         }
         for(int i=2; i <= iterations; i++){
-            generations.push_back(generate_neighbors(generations[i-1], generations[i-2], sides));
+            generations.push_back(generate_neighbors(generations.at(i-1), generations.at(i-2), sides));
         }
         std::vector<glm::dvec4> processed = post_process(generations, sides);
-
         //generate mesh from vector of triangles.
         return primitives::object(processed);
     }

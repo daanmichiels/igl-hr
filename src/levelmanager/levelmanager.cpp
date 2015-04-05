@@ -46,7 +46,7 @@ void LevelManager::load_initial_level() {
 
     //-------------
 
-    mesh tile = tilings::generate_tiling(5, hypermath::radius_for_ngon(PI/2, 5), 5);
+    mesh tile = tilings::generate_tiling(5, 4, 4);
     object* tiling = new object(tile);
     scene.objects.push_back(tiling);
 

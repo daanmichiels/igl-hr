@@ -1,0 +1,96 @@
+#EXP TEST --------------------------------------------------
+
+pos = numpy.array([1,2,3,0])
+dir = numpy.array([2,5,3,0])
+print(exp(pos, dir))
+#python result:    [ 314.90183418 668.37345807 828.9961334 0. ]
+#hypermath result: [ 314.901834   668.373458   828.996133  0. ]
+
+pos = numpy.array([5,12,4,0])
+dir = numpy.array([2,2,8,0])
+print(exp(pos, dir))
+#python result:    [ 12678.14868998 29628.50926373 11968.91344847 0. ]
+#hypermath result: [ 12678.148690   29628.509264   11968.913448   0. ]
+
+pos = numpy.array([4,0,7,0])
+dir = numpy.array([10,1,1,0])
+print(exp(pos, dir))
+#python result:    [ 60707.54297964 1204.56206637 86362.92611925 0. ]
+#hypermath result: [ 60707.542980   1204.562066   86362.926119   0. ]
+
+#EXP CONFIRMED ---------------------------------------------
+
+print("\n")
+
+#DEXP0 TEST ------------------------------------------------
+
+##when epsilon is 0
+v = numpy.array([1,2,3,0])
+n = numpy.array([2,3,4,0])
+print( exp(  exp0(v),dexp0(v,numpy.array([0]*4))  ))
+print(exp0(v))
+##results -
+#exp:  [5.63174304 11.26348608 16.89522912 21.09576772]
+#exp0: [5.63174304 11.26348608 16.89522912 21.09576772]
+
+print("--")
+
+##when epsilon is .001
+v = numpy.array([1,2,3,0])
+n = numpy.array([2,3,4,0])
+e = .001
+print( exp(  exp0(v),dexp0(v,e*n)  ))
+print(exp0(v + e*n))
+##results -
+#exp:  [5.63247486 11.24643394 16.8755423  21.12430084]
+#exp0: [5.66519148 11.32472907 16.98426667 21.2087057 ]
+
+print("--")
+
+##when epsilon is .0001
+v = numpy.array([1,2,3,0])
+n = numpy.array([2,3,4,0])
+e = .0001
+print( exp(  exp0(v),dexp0(v,e*n)  ))
+print(exp0(v + e*n))
+##results -
+#exp:  [5.63153514 11.26121904 16.89241759  21.09756766]
+#exp0: [5.63507947 11.26959554 16.90411162  21.10703423]
+
+print("--")
+print("--")
+
+##when epsilon is 0
+v = numpy.array([4,4,12,0])
+n = numpy.array([6,6,6,0])
+print( exp(  exp0(v),dexp0(v,numpy.array([0]*4))  ))
+print(exp0(v))
+##results -
+#exp:  [87064.48626107 87064.48626107 261193.45878322 288760.23349477]
+#exp0: [87064.48626107 87064.48626107 261193.45878322 288760.23349477]
+
+print("--")
+
+##when epsilon is .001
+v = numpy.array([4,4,12,0])
+n = numpy.array([6,6,6,0])
+e = .001
+print( exp(  exp0(v),dexp0(v,e*n)  ))
+print(exp0(v + e*n))
+##results -
+#exp:  [121836.44644265 121835.62498241 365508.88296114 404085.95644589]
+#exp0: [87927.49970303  87927.49970303  263591.11169111 291384.30403082]
+
+print("--")
+
+##when epsilon is .0001
+v = numpy.array([4,4,12,0])
+n = numpy.array([6,6,6,0])
+e = .0001
+print( exp(  exp0(v),dexp0(v,e*n)  ))
+print(exp0(v + e*n))
+##results -
+#exp:  [87391.45095691 87391.37816283 261193.31242958 289844.66846666]
+#exp0: [87150.40489335 87150.40489335 261425.07347976 289021.54797013]
+
+#DEXP0 CONFIRMED, MAYBE? -----------------------------------

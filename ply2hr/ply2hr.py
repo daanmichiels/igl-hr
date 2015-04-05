@@ -9,30 +9,30 @@ from plyfile import PlyData, PlyElement
 ORIGIN = numpy.array([0,0,0,1])
 
 def dot(v, w):
-    return v[0]*w[0] + v[1]*w[1] + v[2]*w[2] - v[3]*w[3]
+	return v[0]*w[0] + v[1]*w[1] + v[2]*w[2] - v[3]*w[3]
 
 def length(v):
-    return math.sqrt(dot(v,v))
+	return math.sqrt(dot(v,v))
 
-def exp(pnt, dir):
+def exp(pos, dir):
 	r = length(dir)
-    if r==0:
-        return pnt
-    return math.cosh(r) * pnt + (math.sinh(r)/r) * dir
+	if r==0:
+		return pos
+	return math.cosh(r) * pos + (math.sinh(r)/r) * dir
 	
 def exp0(dir):
-    return exp(ORIGIN, dir)
+	return exp(ORIGIN, dir)
 	
 def dexp0(v, n):
 	output = numpy.matrix(
-			[[   math.sin(1.0) * (math.pow(v[3],2) - math.pow(v[1],2) - math.pow(v[3],2)) - math.pow(v[0],2) * math.cos(1.0)   ,   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                              v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[0] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[2], 2)) - math.pow(v[1], 2)*math.cos(1.0)   ,   v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[1] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                              math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[1], 2)) - math.pow(v[2], 2)*math.cos(1.0)   ,   v[3] * v[2] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * (v[3] * (math.sin(1.0)-math.cos(1.0)) + math.sin(1.0))   ,                                                 v[1] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))   ,                                            v[2] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))    ,                                                -1 * math.sin(1.0) * (math.pow(v[3],3) - v[3] * (math.pow(v[0],2) + math.pow(v[1], 2) + math.pow(v[2],2)) + math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2) ) + math.pow(v[3], 2) * math.cos(1.0)   ]]
+			[[   math.sin(1.0) * (math.pow(v[3],2) - math.pow(v[1],2) - math.pow(v[3],2)) - math.pow(v[0],2) * math.cos(1.0)   ,   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[0] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[2], 2)) - math.pow(v[1], 2)*math.cos(1.0)   ,   v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[1] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[1], 2)) - math.pow(v[2], 2)*math.cos(1.0)   ,   v[3] * v[2] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
+			 [   v[0] * (v[3] * (math.sin(1.0)-math.cos(1.0)) + math.sin(1.0))   ,                                                 v[1] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))   ,                                                 v[2] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))    ,                                                -1 * math.sin(1.0) * (math.pow(v[3],3) - v[3] * (math.pow(v[0],2) + math.pow(v[1], 2) + math.pow(v[2],2)) + math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2) ) + math.pow(v[3], 2) * math.cos(1.0)   ]]
 	)
 	a = numpy.matrix(n).reshape((4,1))
 	result = output * a
-	result = result.reshape((1,4))
+	result = numpy.array(result).ravel()
 	return result
 	
 # ----------------------------------

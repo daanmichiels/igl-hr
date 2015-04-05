@@ -112,10 +112,15 @@ int main(int argc, const char* argv[]) {
     }
 
 	/*
-	glm::dvec4 pos = glm::dvec4(1,2,3,0);
-	glm::dvec4 dir = glm::dvec4(2,5,3,0);
+	glm::dvec4 pos = glm::dvec4(4,0,7,0);
+	glm::dvec4 dir = glm::dvec4(10,1,1,0);
 	glm::dvec4 result = hypermath::exp(pos, dir);
-	LogManager::log_info(std::string(result), 2);
+	long double x = result.x;
+	long double y = result.y;
+	long double z = result.z;
+	long double w = result.w;
+	std::string txt = std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ", " + std::to_string(w);
+	LogManager::log_info(txt, 2);
 	*/
 	
     // Run! (forrest?)

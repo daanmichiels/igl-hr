@@ -5,7 +5,6 @@
 #include "primitives.h"
 #include "hypermath.h"
 #include "tilings.h"
-#include <iostream>
 
 /*! \file Primitives */
 /** Anonymous namespace.
@@ -475,7 +474,10 @@ namespace primitives
         result.count = 24;
         return result;
     }
-
+    /** \brief Creates an object made out of triangles, alternating each vertex between red, green, and blue
+     * \param One std::vector<glm::dvec4> of triangle vertices
+     * \return mesh of the object
+     */
     mesh object(std::vector<glm::dvec4> v)
     {
         std::vector<glm::dvec4> colors;
@@ -503,10 +505,23 @@ namespace primitives
         result.count = v.size();
         return result;
     }
-    
+
+    /** \brief Creates a generic object made out of triangles
+     * \param std::vector<glm::dvec4> of the triangle vertices, a std::vector<glm::dvec4> of the colors
+     * \return mesh of the object
+     */
+    mesh object(const std::vector<glm::dvec4> vertices, const std::vector<glm::dvec4> colors){
+        mesh result;
+        result.vao = vao_from_pos_col(vertices, colors);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = vertices.size();
+        return result;
+    }
+
     /** \brief Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
      * See the comment for the subdivision algorithm for more information 
-     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)
+     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)***
      * 
      * \param Three vertices for the triangle
      * \param The number of divisions to make

@@ -18,6 +18,7 @@ namespace primitives
     mesh tetrahedron(double radius);
     mesh octahedron(double radius);
     mesh object(std::vector<glm::dvec4> v);
+    mesh object(const std::vector<glm::dvec4> vertices, const std::vector<glm::dvec4> colors);
     mesh subdivided_triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski = false);
     mesh subdivided_octahedron(double radius, int divisions, bool sierpinski = false);
     mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski = false);

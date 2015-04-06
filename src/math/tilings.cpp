@@ -6,7 +6,7 @@
 
 namespace{
     //convert the first ngon from using GL_TRIANGLE_FAN to GL_TRIANGLES
-    std::vector<glm::dvec4> fan_to_triangle(std::vector<glm::dvec4> input){
+    std::vector<glm::dvec4> fan_to_triangle(const std::vector<glm::dvec4> input){
         std::vector<glm::dvec4> out;
         for(int i=1; i < input.size()-1; i++){
             out.push_back(input[0]);
@@ -17,7 +17,7 @@ namespace{
     }
 
     //broken function, will drastically decrease the geometry on the screen when implemented.
-    bool has(glm::dvec4 center, std::vector<glm::dvec4> two_back, const double closeness, const int sides){
+    bool has(const glm::dvec4 center, const std::vector<glm::dvec4> two_back, const double closeness, const int sides){
         for(int i=0; i<two_back.size(); i+=3*sides){
             if(hypermath::dist(center, two_back[i]) < closeness){
                 return true;
@@ -28,7 +28,7 @@ namespace{
     //make the first round of neighbors
     //(Reflect the ngon about each of it's sides)
     //Assumes gen0 is passed and is setup to use GL_TRIANGLES
-    std::vector<glm::dvec4> generate_first_neighbors(std::vector<glm::dvec4> gen0){
+    std::vector<glm::dvec4> generate_first_neighbors(const std::vector<glm::dvec4> gen0){
         std::vector<glm::dvec4> neighbors;
         for(int j=1; j < gen0.size(); j++){
             for(int i=0; i < gen0.size(); i++){
@@ -40,8 +40,8 @@ namespace{
         }
         return neighbors;
     }
-    // This function generates each subsequent round of neighbors. NOTE: this really needs to use the broken "has" function.
-    std::vector<glm::dvec4> generate_neighbors(std::vector<glm::dvec4> one_back, std::vector<glm::dvec4> two_back, int sides){
+    // This function generates each subsequent round of neighbors. NOTE: this really needs to use "has" function.
+    std::vector<glm::dvec4> generate_neighbors(const std::vector<glm::dvec4> one_back, const std::vector<glm::dvec4> two_back, int sides){
         std::vector<glm::dvec4> neighbors;
         //Step through the start of each ngon
         for(int i=0; i < one_back.size(); i+=3*sides){
@@ -50,10 +50,17 @@ namespace{
                 //Step through each vertex in the 'gon'
                 for(int j = i; j < i + 3*sides; j++){
                     if(k % 3 !=0 && (k+1) % 3 != 0){
-                        neighbors.push_back(hypermath::reflect_planar_point(one_back[j], one_back[k], one_back[k+1]));
+                        glm::dvec4 newpoint = hypermath::reflect_planar_point(one_back[j], one_back[k], one_back[k+1]);
+                        //if(j==i && has(newpoint, two_back, 0.0005, sides)){
+                        //    goto already_has;
+                        //}
+                        //else {
+                            neighbors.push_back(newpoint);
+                        //}
                     }
                 }
             }
+        already_has: { /*break out of the inner two loops...*/ }
         }
         return neighbors;
     }
@@ -65,6 +72,17 @@ namespace{
             clean.insert(clean.end(), gens[i].begin(), gens[i].end());
         }
         return clean;
+    }
+    //generates the color vector of the 'gons' they will be uniformly colored randomly
+    std::vector<glm::dvec4> generate_colors(const std::vector<glm::dvec4> triangles, const int sides){
+        std::vector<glm::dvec4> colors;
+        for(int i=0; i < triangles.size(); i+=3*sides){
+            glm::dvec4 new_col = glm::dvec4(((double) rand() / (RAND_MAX)), ((double) (rand())) / (RAND_MAX), ((double) (rand())) / (RAND_MAX), 1.0);
+            for(int j=i; j < i+3*sides; j++){
+                colors.push_back(new_col);
+            }
+        }
+        return colors;
     }
 }
 namespace tilings{
@@ -100,6 +118,6 @@ namespace tilings{
         }
         std::vector<glm::dvec4> processed = post_process(generations);
         //generate mesh from vector of triangles and return.
-        return primitives::object(processed);
+        return primitives::object(processed, generate_colors(processed, sides));
     }
 }

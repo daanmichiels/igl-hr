@@ -3,6 +3,7 @@
 #include "../data/mesh.h"
 #include <vector>
 #include "primitives.h"
+#include <iostream>
 
 namespace{
     //convert the first ngon from using GL_TRIANGLE_FAN to GL_TRIANGLES

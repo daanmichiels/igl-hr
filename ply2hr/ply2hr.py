@@ -24,11 +24,15 @@ def exp0(dir):
 	return exp(ORIGIN, dir)
 	
 def dexp0(v, n):
+	x = v[0]
+	y = v[1]
+	z = v[2]
+	r = math.sqrt(x**2 + y**2 + z**2)
 	output = numpy.matrix(
-			[[   math.sin(1.0) * (math.pow(v[3],2) - math.pow(v[1],2) - math.pow(v[3],2)) - math.pow(v[0],2) * math.cos(1.0)   ,   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[0] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * v[1] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[2], 2)) - math.pow(v[1], 2)*math.cos(1.0)   ,   v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   v[3] * v[1] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                 v[1] * v[2] * (math.sin(1.0) - math.cos(1.0))   ,                                                                   math.sin(1.0) * (math.pow(v[3], 2) - math.pow(v[0], 2) - math.pow(v[1], 2)) - math.pow(v[2], 2)*math.cos(1.0)   ,   v[3] * v[2] * (math.cos(1.0)-math.sin(1.0))                                                                                                                                                                   ], 
-			 [   v[0] * (v[3] * (math.sin(1.0)-math.cos(1.0)) + math.sin(1.0))   ,                                                 v[1] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))   ,                                                 v[2] * (v[3] * (math.sin(1.0) - math.cos(1.0)) + math.sin(1.0))    ,                                                -1 * math.sin(1.0) * (math.pow(v[3],3) - v[3] * (math.pow(v[0],2) + math.pow(v[1], 2) + math.pow(v[2],2)) + math.pow(v[0], 2) + math.pow(v[1], 2) + math.pow(v[2], 2) ) + math.pow(v[3], 2) * math.cos(1.0)   ]]
+			[[   (r*(x**2)*math.cosh(r)+(y**2+z**2)*math.sinh(r))/(r**3)    ,   x*y*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   x*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   0   ], 
+			 [   x*y*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))      ,   (r*(y**2)*math.cosh(r)+(x**2+z**2)*math.sinh(r))/(r**3)   ,   y*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   0   ], 
+			 [   x*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))      ,   y*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   (r*(z**2)*math.cosh(r)+(x**2+y**2)*math.sinh(r))/(r**3)   ,   0   ], 
+			 [   (x*math.sinh(r))/(r)                                       ,   (y*math.sinh(r))/(r)                                      ,   (z*math.sinh(r))/(r)                                      ,   0   ]]
 	)
 	a = numpy.matrix(n).reshape((4,1))
 	result = output * a

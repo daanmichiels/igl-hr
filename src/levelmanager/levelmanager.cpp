@@ -46,7 +46,7 @@ void LevelManager::load_initial_level() {
 
     //-------------
 
-    mesh tile = tilings::generate_tiling(5, 4, 5);
+    mesh tile = tilings::generate_tiling(3, 12, 6, 1.5);
     object* tiling = new object(tile);
     scene.objects.push_back(tiling);
 

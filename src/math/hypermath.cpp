@@ -12,7 +12,7 @@ namespace hypermath
      * \param Two glm dvec4's
      * \return Inner product as a double
      */
-    double dot(glm::dvec4 v, glm::dvec4 w)
+    double dot(const glm::dvec4 v, const glm::dvec4 w)
     {
         return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
     }

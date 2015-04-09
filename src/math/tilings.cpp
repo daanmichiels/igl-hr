@@ -42,7 +42,7 @@ namespace{
         return neighbors;
     }
     // This function generates each subsequent round of neighbors. NOTE: this really needs to use "has" function.
-    std::vector<glm::dvec4> generate_neighbors(const std::vector<glm::dvec4> one_back, const std::vector<glm::dvec4> two_back, int sides){
+    std::vector<glm::dvec4> generate_neighbors(const std::vector<glm::dvec4> one_back, const std::vector<glm::dvec4> two_back, const int sides, const double closeness){
         std::vector<glm::dvec4> neighbors;
         //Step through the start of each ngon
         for(int i=0; i < one_back.size(); i+=3*sides){
@@ -52,16 +52,17 @@ namespace{
                 for(int j = i; j < i + 3*sides; j++){
                     if(k % 3 !=0 && (k+1) % 3 != 0){
                         glm::dvec4 newpoint = hypermath::reflect_planar_point(one_back[j], one_back[k], one_back[k+1]);
-                        //if(j==i && has(newpoint, two_back, 0.0005, sides)){
-                        //    goto already_has;
-                        //}
-                        //else {
+                        if(j==i && has(newpoint, two_back, closeness, sides)){
+                            goto already_has;
+                        }
+                        else {
                             neighbors.push_back(newpoint);
-                        //}
+                        }
                     }
                 }
+            already_has: { /*break out*/ }
+
             }
-        already_has: { /*break out of the inner two loops...*/ }
         }
         return neighbors;
     }
@@ -92,7 +93,7 @@ namespace tilings{
      * check for duplicates. Also so that it will be easy to generate the next round of neighbors having precise groupings of 
      * the last two generations. (one_back is where the work is done, two_back is where the overlap checking is done)
      */
-    mesh generate_tiling(const int sides, const int around_vertex, const int iterations){
+    mesh generate_tiling(const int sides, const int around_vertex, const int iterations, const double closeness){
         const double PI = 3.141592653589793238463;
         double radius = hypermath::radius_for_ngon((2*PI)/(double)around_vertex, sides);
         std::vector<std::vector<glm::dvec4>> generations;
@@ -115,9 +116,10 @@ namespace tilings{
         }
         //Generate each subsequent round of neighbors
         for(int i=2; i <= iterations; i++){
-            generations.push_back(generate_neighbors(generations.at(i-1), generations.at(i-2), sides));
+            generations.push_back(generate_neighbors(generations.at(i-1), generations.at(i-2), sides, closeness));
         }
         std::vector<glm::dvec4> processed = post_process(generations);
+        std::cout << processed.size() << "\n\n\n";
         //generate mesh from vector of triangles and return.
         return primitives::object(processed, generate_colors(processed, sides));
     }

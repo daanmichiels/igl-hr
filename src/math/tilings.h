@@ -9,7 +9,7 @@ namespace tilings{
       * \param Number of sides for the ngon to tile with, how many around each vertex, and the number of iterations to run
       * \return Mesh for the tiling
       */
-    mesh generate_tiling(const int sides, const int around_vertex, const int iterations);
+    mesh generate_tiling(const int sides, const int around_vertex, const int iterations, const double closeness);
 }
 
 #endif

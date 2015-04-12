@@ -96,17 +96,18 @@ namespace tilings{
     mesh generate_tiling(const int sides, const int around_vertex, const int iterations, const double closeness){
         const double PI = 3.141592653589793238463;
         double radius = hypermath::radius_for_ngon((2*PI)/(double)around_vertex, sides);
-        std::vector<std::vector<glm::dvec4>> generations;
+        std::vector< std::vector< glm::dvec4 >> generations;
         std::vector<glm::dvec4> gen0;
-
-        //Generate central ngon
         const double radians_between_vertices = 2*PI/sides;
+        
+        //Generate central ngon
         gen0.push_back(hypermath::exp0(glm::dvec4(0.0,0.0,0.0,0.0)));
         for(int i = 0; i <= sides; i++){
             double a = sin(i * radians_between_vertices);
             double b = cos(i * radians_between_vertices);
             gen0.push_back(hypermath::exp0(radius * glm::dvec4(a, 0, b, 0)));
         }
+        
         generations.push_back(fan_to_triangle(gen0));
 
         //generate first round of neighbors to ensure that we can reach back two steps
@@ -119,7 +120,6 @@ namespace tilings{
             generations.push_back(generate_neighbors(generations.at(i-1), generations.at(i-2), sides, closeness));
         }
         std::vector<glm::dvec4> processed = post_process(generations);
-        std::cout << processed.size() << "\n\n\n";
         //generate mesh from vector of triangles and return.
         return primitives::object(processed, generate_colors(processed, sides));
     }

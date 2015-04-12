@@ -4,7 +4,7 @@
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
-#include <iostream>
+#include "tilings.h"
 
 /*! \file Primitives */
 /** Anonymous namespace.
@@ -208,7 +208,7 @@ namespace primitives
      * \param A color vector
      * \return Line mesh
      */
-    mesh line(glm::dvec4 a, glm::dvec4 b, glm::dvec4 col)
+    mesh line(const glm::dvec4 a, const glm::dvec4 b, const glm::dvec4 col)
     {
         mesh result;
         result.vao = vao_from_pos_col({a,b}, {col,col});
@@ -222,7 +222,7 @@ namespace primitives
      * \param The radius for which to set the axes within
      * \return Axes mesh
      */
-    mesh axes(double radius)
+    mesh axes(const double radius)
     {
         mesh result;
         std::vector<glm::dvec4> pos;
@@ -255,7 +255,7 @@ namespace primitives
      * \param Spacing between the grid
      * \return Grid Mesh
      */
-    mesh grid(double grid_space)
+    mesh grid(const double grid_space)
     {
         mesh result;
         /* TODO: precalculate sizes */
@@ -305,7 +305,7 @@ namespace primitives
      * \param Three vectors for where to draw the triangle
      * \return Triangle mesh
      */
-    mesh triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c)
+    mesh triangle(const glm::dvec4 a, const glm::dvec4 b, const glm::dvec4 c)
     {
         mesh result;
         result.vao = vao_from_pos_col({a,b,c},{red,green,blue});
@@ -321,7 +321,7 @@ namespace primitives
      * \param The color of the rectangle
      * \return Rectangle mesh
      */
-    mesh rectangle(double width, double depth, glm::dvec4 color)
+    mesh rectangle(const double width, const double depth, const glm::dvec4 color)
     {
         double w = width / 2;
         double d = depth / 2;
@@ -343,7 +343,7 @@ namespace primitives
      * \param The color of the n-gon
      * \return n sided polygon inscribed in given radius.
      */
-    mesh circumscribed_ngon(int n, double radius, glm::dvec4 color)
+    mesh circumscribed_ngon(const int n, const double radius, const glm::dvec4 color)
     {
         const double PI = 3.141592653589793238463;
         double radians_between_vertices = 2*PI/n;
@@ -375,7 +375,7 @@ namespace primitives
      * \param number of sides as an int, and the radius to fit the ngon into.
      * \return The ngon as a mesh
      */
-    mesh ngon(int n, double radius){
+    mesh ngon(const int n, const double radius){
         const double PI = 3.141592653589793238463;
         double radians_between_vertices = 2*PI/n;
         std::vector<glm::dvec4> vertices;
@@ -418,7 +418,7 @@ namespace primitives
      * \param The radius within which to inscribe the tetrahedron
      * \return Tetrahedron mesh
     */
-    mesh tetrahedron(double radius)
+    mesh tetrahedron(const double radius)
     {
         glm::dvec4 a = radius * glm::dvec4(0,1,0,0);
         glm::dvec4 b = radius * glm::dvec4(-sqrt(2)/3,-1.0/3,-sqrt(2.0/3),0);
@@ -441,7 +441,7 @@ namespace primitives
      * \param Radius within which to inscribe the octahedron
      * \return Octahedron mesh.
      */
-    mesh octahedron(double radius)
+    mesh octahedron(const double radius)
     {
         glm::dvec4 a = hypermath::exp0(radius * glm::dvec4(0,0,1,0));
         glm::dvec4 b = hypermath::exp0(radius * glm::dvec4(0,1,0,0));
@@ -474,8 +474,11 @@ namespace primitives
         result.count = 24;
         return result;
     }
-
-    mesh object(std::vector<glm::dvec4> v)
+    /** \brief Creates an object made out of triangles, alternating each vertex between red, green, and blue
+     * \param One std::vector<glm::dvec4> of triangle vertices
+     * \return mesh of the object
+     */
+    mesh object(const std::vector<glm::dvec4> v)
     {
         std::vector<glm::dvec4> colors;
 
@@ -502,10 +505,23 @@ namespace primitives
         result.count = v.size();
         return result;
     }
-    
+
+    /** \brief Creates a generic object made out of triangles
+     * \param std::vector<glm::dvec4> of the triangle vertices, a std::vector<glm::dvec4> of the colors
+     * \return mesh of the object
+     */
+    mesh object(const std::vector<glm::dvec4> vertices, const std::vector<glm::dvec4> colors){
+        mesh result;
+        result.vao = vao_from_pos_col(vertices, colors);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = vertices.size();
+        return result;
+    }
+
     /** \brief Creates a subdivided triangle mesh, passing true to sierpinski makes a sierpinski subdivided triangle. 
      * See the comment for the subdivision algorithm for more information 
-     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)
+     * ***DO NOT MAKE DIVISIONS TOO HIGH (OVER 6)***
      * 
      * \param Three vertices for the triangle
      * \param The number of divisions to make
@@ -513,7 +529,7 @@ namespace primitives
      * \return Subdivided Triangle Mesh
      */
     
-    mesh subdivided_triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski)
+    mesh subdivided_triangle(const glm::dvec4 a, const glm::dvec4 b, const glm::dvec4 c, const int divisions, const bool sierpinski)
     {
         std::vector<glm::dvec4> triangle;
         triangle = subdivide_triangle_vector(a,b,c,divisions,sierpinski);
@@ -544,7 +560,7 @@ namespace primitives
      * \return Subdivided Octahedron Mesh
      */
 
-    mesh subdivided_octahedron(double radius, int divisions, bool sierpinski)
+    mesh subdivided_octahedron(const double radius, const int divisions, const bool sierpinski)
     {
         glm::dvec4 a = hypermath::exp0(radius * glm::dvec4(0,0,1,0));
         glm::dvec4 b = hypermath::exp0(radius * glm::dvec4(0,1,0,0));
@@ -632,7 +648,7 @@ namespace primitives
      * \param Boolean for whether to discard the middle.
      * \return Sphere Mesh
      */
-    mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski)
+    mesh sphere(const double radius, const int divisions, const glm::dvec4 col, const bool sierpinski)
     {
         glm::dvec4 a = glm::dvec4(0,0,1,0);
         glm::dvec4 b = glm::dvec4(0,1,0,0);

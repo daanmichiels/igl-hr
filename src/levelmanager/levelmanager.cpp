@@ -6,6 +6,7 @@
 #include "../math/hypermath.h"
 #include "../assetmanager/assetmanager.h"
 #include "../data/object.h"
+#include "../math/tilings.h"
 #include <cmath>
 
 Scene LevelManager::scene = Scene();
@@ -33,12 +34,6 @@ void LevelManager::shutdown() {
  * \return void
  */
 void LevelManager::load_initial_level() {
-
-	object* lucy = AssetManager::load_object("colorful");
-	scene.objects.push_back(lucy);
-
-    /*
-    //axes to give the user a feeling of where they are in the space.
     const double PI = 3.141592653589793238463;
 
     //-------------
@@ -50,6 +45,18 @@ void LevelManager::load_initial_level() {
 
     //-------------
 
+    mesh tile = tilings::generate_tiling(3, 12, 6, 1.5);
+    object* tiling = new object(tile);
+    scene.objects.push_back(tiling);
+
+	LogManager::log_info("Enjoy Your Pi", 2);
+
+    return;
+}
+
+void LevelManager::load_level_2(){
+    LogManager::log_info("No second level yet.", 2);
+    const double PI = 3.141592653589793238463;
     const double big_radius = hypermath::radius_for_ngon(PI/3, 12);
     mesh circ_gon = primitives::circumscribed_ngon(12, big_radius, glm::dvec4(.761, .137, .149, 1.0));
     object* circ_gon_ob = new object(circ_gon);
@@ -81,14 +88,5 @@ void LevelManager::load_initial_level() {
     object* eucl_circ_3 = new object(primitives::ngon(6, atanh(tanh(0.003)/cos(PI/6))));
     eucl_circ_3->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, 0.0000005, 0.0, 0.0))));
     scene.objects.push_back(eucl_circ_3);
-
-	LogManager::log_info("Enjoy Your Pi", 2);
-    */
-
-    return;
-}
-
-void LevelManager::load_level_2(){
-    LogManager::log_info("No second level yet.", 2);
 }
 

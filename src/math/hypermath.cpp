@@ -2,6 +2,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include <iostream>
+#include "glm/gtx/string_cast.hpp"
 
 /*! \file Hypermath */
 
@@ -11,7 +12,7 @@ namespace hypermath
      * \param Two glm dvec4's
      * \return Inner product as a double
      */
-    double dot(glm::dvec4 v, glm::dvec4 w)
+    double dot(const glm::dvec4 v, const glm::dvec4 w)
     {
         return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
     }
@@ -40,7 +41,7 @@ namespace hypermath
     */
     double dist(glm::dvec4 p1, glm::dvec4 p2)
     {
-        return acosh(-dot(p1,p2));
+        return glm::acosh(-dot(p1,p2));
     }
 
     /** \brief Exponential map
@@ -61,13 +62,13 @@ namespace hypermath
     }
 
     /** \brief Inverse of the exponential map
-     * \param Basepoint and targed glm dvec4's
+     * \param Basepoint and target glm dvec4's
      * \return One exponentiated glm dvec4
      */
     glm::dvec4 expinv(glm::dvec4 basepoint, glm::dvec4 target)
     {
         double r = dist(basepoint, target);
-        if(r==0)
+        if(r == 0)
         {
             return glm::dvec4(0,0,0,0);
         }
@@ -299,20 +300,12 @@ namespace hypermath
         p = q_origin * p;
         line_Q = q_origin * line_Q;
         line_R = q_origin * line_R;
-
         //Next take the inverse exponential map
         p = exp0inv(p);
         line_Q = exp0inv(line_Q);
         line_R = exp0inv(line_R);
-
-        //if we do not end up with line_Q at the origin, throw an error
-        if(line_Q != glm::dvec4(0.0, 0.0, 0.0, 0.0)){
-            return glm::dvec4(0.0, 0.0, 0.0, 0.0);
-        }
-
         //reflect about the line
         glm::dvec4 reflected_point = 2*(dot(p,line_R)/dot(line_R, line_R))*line_R - p;
-
         //put the new point back where it belongs
         reflected_point = exp0(reflected_point);
         reflected_point = q_origin_inv * reflected_point;

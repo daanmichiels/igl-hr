@@ -32,6 +32,8 @@ public:
     static int width;
     static int height;
     static bool fullscreen;
+    static bool cross_on;
+    static bool stereo;
     static OnOffAuto rift_input;
     static OnOffAuto rift_output;
     static std::vector<std::string> filenames;

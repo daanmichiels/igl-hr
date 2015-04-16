@@ -14,14 +14,15 @@ ovrHmd RiftManager::hmd = NULL;
  * \return True if rift is detected, false if the rift is not detected
  */
 bool RiftManager::startup() {
-	if(Configuration::rift_input == OnOffAuto::off) {
+	if(Configuration::rift_input == OnOffAuto::off && !Configuration::stereo) {
+		// we need an hmd is we're doing anything with the rift, or stereo rendering
 		rift_connected = false;
 	} else {
 		ovr_Initialize();
 		hmd = ovrHmd_Create(0);
 		if(!hmd) {
-            rift_connected = false;
-			if(Configuration::rift_input == OnOffAuto::on || Configuration::rift_output == OnOffAuto::on) {
+      rift_connected = false;
+			if(Configuration::rift_input == OnOffAuto::on || Configuration::rift_output == OnOffAuto::on || Configuration::stereo) {
 				LogManager::log_warning("No Rift detected. Using debug.", 1);
 				hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
 			} else {

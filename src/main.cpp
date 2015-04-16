@@ -53,6 +53,8 @@ int main(int argc, const char* argv[]) {
         return 0;
     }
 
+    LogManager::log_info(ovrHmd_GetString(RiftManager::hmd, OVR_KEY_USER, ""), 1);
+
     // start opengl, open a window
     if(RenderManager::startup()) {
         shutdowns.push_back(&(RenderManager::shutdown));

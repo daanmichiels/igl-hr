@@ -11,6 +11,7 @@ public:
     static void shutdown();
 
     static GLuint default_program;
+    static GLuint cross_program;
     static GLuint quad_program;
     static GLuint flag_program;
 

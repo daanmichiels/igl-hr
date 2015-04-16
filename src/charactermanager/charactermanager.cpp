@@ -8,8 +8,6 @@
 #include "glm/gtc/quaternion.hpp"
 #include "glm/ext.hpp"
 
-using namespace OVR;
-
 frame CharacterManager::feet = frame();
 bool CharacterManager::rift_input = Configuration::rift_input == OnOffAuto::on;
 bool CharacterManager::mouse_bound = false;

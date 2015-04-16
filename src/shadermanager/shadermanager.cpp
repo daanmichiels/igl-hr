@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 GLuint ShaderManager::default_program = 0;
+GLuint ShaderManager::cross_program = 0;
 GLuint ShaderManager::quad_program = 0;
 GLuint ShaderManager::flag_program = 0;
 
@@ -16,6 +17,8 @@ GLuint ShaderManager::flag_program = 0;
 bool ShaderManager::startup() {
     GLuint vertex;
     GLuint fragment;
+    GLuint cross_vertex;
+    GLuint cross_fragment;
     GLuint rift_vertex;
     GLuint rift_fragment;
     GLuint fragment_offset;
@@ -24,6 +27,12 @@ bool ShaderManager::startup() {
         return false;
     }
     if(!compile_shader(shader_sources["fragment"], GL_FRAGMENT_SHADER, fragment)) {
+        return false;
+    }
+    if(!compile_shader(shader_sources["cross_vertex"], GL_VERTEX_SHADER, cross_vertex)) {
+        return false;
+    }
+    if(!compile_shader(shader_sources["cross_fragment"], GL_FRAGMENT_SHADER, cross_fragment)) {
         return false;
     }
     if(!compile_shader(shader_sources["rift_vertex"], GL_VERTEX_SHADER, rift_vertex)) {
@@ -37,6 +46,9 @@ bool ShaderManager::startup() {
     }
 
     if(!link_program(vertex, fragment, default_program)) {
+        return false;
+    }
+    if(!link_program(cross_vertex, cross_fragment, cross_program)) {
         return false;
     }
     if(!link_program(rift_vertex, rift_fragment, quad_program)) {

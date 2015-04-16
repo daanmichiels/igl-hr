@@ -27,8 +27,6 @@
 #define OVR_OS_LINUX
 #endif
 
-using namespace OVR;
-
 int RenderManager::window_width = 100; // These don't matter: they get overwritten
 int RenderManager::window_height = 100;
 GLFWwindow* RenderManager::window = NULL;
@@ -72,7 +70,7 @@ bool RenderManager::startup() {
 
     calculate_projection();
 
-    if(rift_render) {
+    if(rift_render || Configuration::stereo) {
         create_eye_vaos(); //TODO: should we check for failure here?
 
         setup_rift_rendering();
@@ -114,9 +112,16 @@ void RenderManager::setup_rift_rendering()
     eyeres[1] = ovrHmd_GetFovTextureSize(hmd, ovrEye_Right, hmd->DefaultEyeFov[1], 1.0);
 
     /* and create a single render target texture to encompass both eyes */
-   fb_width = eyeres[0].w + eyeres[1].w;
-   fb_height = eyeres[0].h > eyeres[1].h ? eyeres[0].h : eyeres[1].h;
-   update_target(fb_width, fb_height);
+    fb_width = eyeres[0].w + eyeres[1].w;
+    fb_height = eyeres[0].h > eyeres[1].h ? eyeres[0].h : eyeres[1].h;
+
+    if (!rift_render) {
+        // if we're doing stereo but not rift rendering default to 1280x800
+        fb_width = 1280;
+        fb_height = 800;
+    }
+
+    update_target(fb_width, fb_height);
 
     /* fill in the ovrGLTexture structures that describe our render target texture */
     for(int i = 0; i < 2; i++) {
@@ -161,20 +166,18 @@ void RenderManager::setup_rift_rendering()
     }
 
     /* enable low-persistence display and dynamic prediction for lattency compensation */
-    hmd_caps = ovrHmdCap_LowPersistence | ovrHmdCap_DynamicPrediction;
+    hmd_caps = ovrHmdCaps::ovrHmdCap_LowPersistence | ovrHmdCaps::ovrHmdCap_DynamicPrediction;
     ovrHmd_SetEnabledCaps(hmd, hmd_caps);
   
     /* configure SDK-rendering and enable chromatic abberation correction, vignetting, and
      * timewrap, which shifts the image before drawing to counter any lattency between the call
      * to ovrHmd_GetEyePose and ovrHmd_EndFrame.
      */
-    distort_caps = ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp | ovrDistortionCap_Overdrive | ovrDistortionCap_Vignette;
+    distort_caps = ovrDistortionCaps::ovrDistortionCap_TimeWarp | ovrDistortionCaps::ovrDistortionCap_Overdrive | 
+        ovrDistortionCaps::ovrDistortionCap_Vignette;
     if(!ovrHmd_ConfigureRendering(hmd, &glcfg.Config, distort_caps, hmd->DefaultEyeFov, eye_rdesc)) {
         LogManager::log_error("Failed to configer distortion rendering");
     }
-
-    /* disable the health and safety warning */
-    ovrhmd_EnableHSWDisplaySDKRender(hmd, 0);
 }
 
 void RenderManager::update_target(int width, int height)
@@ -322,11 +325,11 @@ void RenderManager::render_mesh(mesh m)
  * \return void
  */
 void RenderManager::render() {
-    if(!rift_render) {
+    if(!rift_render && !Configuration::stereo) {
         glClearColor(0.5, 0.7, 0.8, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(ShaderManager::default_program);
+        glUseProgram(Configuration::cross_on ? ShaderManager::cross_program : ShaderManager::default_program);
         glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
         glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -349,7 +352,7 @@ void RenderManager::render() {
         ovrHmd_BeginFrame(hmd, 0);
 
         /* start drawing onto our texture render target */
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, rift_render ? framebuffer : 0);
         glClearColor(0.0, 0.2, 0.7, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -357,7 +360,7 @@ void RenderManager::render() {
         for(int i = 0; i < 2; i++) {
             ovrEyeType eye = hmd->EyeRenderOrder[i];
 
-            glUseProgram(ShaderManager::default_program);
+            glUseProgram(Configuration::cross_on ? ShaderManager::cross_program : ShaderManager::default_program);
 
             // draw on the correct side of the framebuffer
             glViewport(eye == ovrEye_Left ? 0 : fb_width / 2, 0, fb_width / 2, fb_height);
@@ -383,13 +386,18 @@ void RenderManager::render() {
             render_flags(view, projection_one_eye);
         }
 
-        /* after drawing both eyes into the texture render target, revert to drawing directly to the
-         * display, and we call ovrHmd_EndFrame, to let the Oculus SDK draw both images properly
-         * compensated for lens distortion and chromatic abberation onto the HMD screen.
-         */
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      
-        ovrHmd_EndFrame(hmd, pose, &fb_ovr_tex[0].Texture);
+        if (rift_render) {
+            /* after drawing both eyes into the texture render target, revert to drawing directly to the
+             * display, and we call ovrHmd_EndFrame, to let the Oculus SDK draw both images properly
+             * compensated for lens distortion and chromatic abberation onto the HMD screen.
+             */
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+          
+            ovrHmd_EndFrame(hmd, pose, &fb_ovr_tex[0].Texture);
+        }
+        else {
+            glfwSwapBuffers(window);
+        }
 
         /* workaround for the oculus sdk distortion renderer bug, which uses a shader
          * program, and doesn't restore the original binding when it's done.

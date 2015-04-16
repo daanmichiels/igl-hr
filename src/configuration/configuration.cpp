@@ -6,6 +6,8 @@
 int Configuration::width = 1200;
 int Configuration::height = 800;
 bool Configuration::fullscreen = false;
+bool Configuration::cross_on = false;
+bool Configuration::stereo = false;
 OnOffAuto Configuration::rift_input = OnOffAuto::automatic;
 OnOffAuto Configuration::rift_output = OnOffAuto::automatic;
 std::vector<std::string> Configuration::filenames = std::vector<std::string>();
@@ -40,6 +42,10 @@ void Configuration::configure(int argc, const char* argv[]) {
         } else if(strcmp(argv[i],"--no-rift") == 0) {
             Configuration::rift_input = OnOffAuto::off;
             Configuration::rift_output = OnOffAuto::off;
+        } else if(strcmp(argv[i],"--cross") == 0) {
+            Configuration::cross_on = true;
+        } else if(strcmp(argv[i],"--stereo") == 0) {
+            Configuration::stereo = true;
         } else {
             Configuration::filenames.push_back(std::string(argv[i]));
         }

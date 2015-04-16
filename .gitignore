@@ -19,4 +19,4 @@ $RECYCLE.BIN/
 doxygen/*
 !doxygen/.keep
 !resources/*.obj
-
+thirdparty/libovr/*

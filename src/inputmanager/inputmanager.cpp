@@ -85,14 +85,20 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode, int a
     if (key == GLFW_KEY_EQUAL && action == GLFW_PRESS) {
         // CharacterManager::scale(1.2);
         // RenderManager::handle_scale_change();
-        Configuration::ipd *= 1.2;
-        LogManager::log_info(std::to_string(Configuration::ipd), 2);
+        Configuration::shift += 0.01;
+        if (Configuration::shift > 1.0) {
+            Configuration::shift = 1.0;
+        }
+        LogManager::log_info(std::to_string(Configuration::shift), 2);
     }
     if (key == GLFW_KEY_MINUS && action == GLFW_PRESS) {
         // CharacterManager::scale(1.0/1.2);
         // RenderManager::handle_scale_change();
-        Configuration::ipd /= 1.2;
-        LogManager::log_info(std::to_string(Configuration::ipd), 2);
+        Configuration::shift -= 0.01;
+        if (Configuration::shift < 0.0) {
+            Configuration::shift = 0.0;
+        }
+        LogManager::log_info(std::to_string(Configuration::shift), 2);
     }
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
         LogicManager::add_flag();

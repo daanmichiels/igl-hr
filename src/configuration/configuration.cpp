@@ -12,6 +12,8 @@ OnOffAuto Configuration::rift_input = OnOffAuto::automatic;
 OnOffAuto Configuration::rift_output = OnOffAuto::automatic;
 std::vector<std::string> Configuration::filenames = std::vector<std::string>();
 
+double Configuration::shift = 0.28;
+
 const double Configuration::mouse_speed = 0.002; //in rad/pix
 const double Configuration::walking_speed = 1.8; //in m/s
 const double Configuration::running_speed = 4.8; //in m/s
@@ -46,6 +48,8 @@ void Configuration::configure(int argc, const char* argv[]) {
             Configuration::cross_on = true;
         } else if(strcmp(argv[i],"--stereo") == 0) {
             Configuration::stereo = true;
+        } else if(strcmp(argv[i],"--eyeshift") == 0) {
+            Configuration::shift = std::stod(argv[++i]);
         } else {
             Configuration::filenames.push_back(std::string(argv[i]));
         }

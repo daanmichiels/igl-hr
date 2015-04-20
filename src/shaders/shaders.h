@@ -5,7 +5,7 @@
 #include <map>
 
 std::map<std::string, std::string> shader_sources = {
-{"cross_fragment", "#version 330\n\nsmooth in vec3 theColor;\nin vec2 location;\n\nlayout(location = 0) out vec3 color;\n\nvoid main() {\n    color = (theColor);\n    if (location.x > 0 && location.y > 0) {\n      color = vec3(0,0,0);\n    }\n}\n"},
+{"cross_fragment", "#version 330\n\nsmooth in vec3 theColor;\nin vec2 location;\n\nlayout(location = 0) out vec3 color;\n\nvoid main() {\n    color = (theColor);\n    if (location.x > 0 && location.y < 0) {\n      color = vec3(0,0,0);\n    }\n}\n"},
 {"cross_vertex", "#version 330\n\nlayout (location = 0) in vec4 position;\nlayout (location = 1) in vec3 color;\n\nuniform mat4 projection;\nuniform mat4 modelview;\n\nsmooth out vec3 theColor;\nout vec2 location;\n\nvoid main()\n{\n    gl_Position = (projection * modelview * position);\n    location = gl_Position.xy;\n    theColor = color;\n}\n"},
 {"fragment", "#version 330\n\nsmooth in vec3 theColor;\n\nlayout(location = 0) out vec3 color;\n\nvoid main() {\n    color = (theColor);\n}\n"},
 {"fragment_offset", "#version 330\n\nsmooth in vec3 theColor;\nuniform vec3 theOffset;\n\nlayout(location = 0) out vec3 color;\n\nvoid main() {\n    color = clamp(theColor + theOffset, 0.0, 1.0);\n}\n"},

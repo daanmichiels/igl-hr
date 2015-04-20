@@ -29,6 +29,8 @@ public:
     static double ipd; //interpupillary distance in meters
     static const double eye_height; //in m
 
+    static double shift;
+
     static int width;
     static int height;
     static bool fullscreen;

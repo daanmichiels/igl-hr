@@ -128,9 +128,9 @@ void RenderManager::setup_rift_rendering()
         fb_ovr_tex[i].OGL.Header.API = ovrRenderAPI_OpenGL;
         fb_ovr_tex[i].OGL.Header.TextureSize.w = tex_width;
         fb_ovr_tex[i].OGL.Header.TextureSize.h = tex_height;
-        fb_ovr_tex[i].OGL.Header.RenderViewport.Pos.x = i == 0 ? 0 : fb_width / 2.0; // only field that differs between eyes
+        fb_ovr_tex[i].OGL.Header.RenderViewport.Pos.x = i == 0 ? 0 : ((1.0 + Configuration::shift) * (fb_width / 2.0)); // only field that differs between eyes
         fb_ovr_tex[i].OGL.Header.RenderViewport.Pos.y = 0;
-        fb_ovr_tex[i].OGL.Header.RenderViewport.Size.w = fb_width / 2.0;
+        fb_ovr_tex[i].OGL.Header.RenderViewport.Size.w = (fb_width / 2.0) * (1.0 - Configuration::shift);
         fb_ovr_tex[i].OGL.Header.RenderViewport.Size.h = fb_height;
         fb_ovr_tex[i].OGL.TexId = texture; /* both eyes will use the same texture id */
     }
@@ -346,6 +346,12 @@ void RenderManager::render() {
         glfwSwapBuffers(window);
     } 
     else {
+        ovrHSWDisplayState hswDisplayState;
+        ovrHmd_GetHSWDisplayState(hmd, &hswDisplayState);
+        if (hswDisplayState.Displayed) {
+            ovrHmd_DismissHSWDisplay(hmd);
+        }
+
         ovrPosef pose[2];
 
         /* the drawing starts with a call to ovrHmd_BeginFrame */
@@ -363,7 +369,7 @@ void RenderManager::render() {
             glUseProgram(Configuration::cross_on ? ShaderManager::cross_program : ShaderManager::default_program);
 
             // draw on the correct side of the framebuffer
-            glViewport(eye == ovrEye_Left ? 0 : fb_width / 2, 0, fb_width / 2, fb_height);
+            glViewport(eye == ovrEye_Left ? 0 : fb_width / 2, 0, (fb_width / 2), fb_height);
 
             //get the correct view from CharacterManager
             glm::dmat4 view = (eye == ovrEye_Left ? view_matrix_from_frame(CharacterManager::get_position_left_eye()) :

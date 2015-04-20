@@ -13,7 +13,6 @@ public:
 private:
     static void load_initial_level();
     static void load_level_2();
-    static std::vector<object *> parse_lvl(const std::string filename);
 };
 
 #endif

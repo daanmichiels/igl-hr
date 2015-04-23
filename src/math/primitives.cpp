@@ -1,9 +1,11 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include "glm/gtx/string_cast.hpp"
+#include "glm/gtx/transform.hpp"
 #include <iostream>
 #include "primitives.h"
 #include "hypermath.h"
+#include "../logmanager/logmanager.h"
 #include <iostream>
 
 /*! \file Primitives */
@@ -713,6 +715,74 @@ namespace primitives
         result.mode = GL_TRIANGLES;
         result.first = 0;
         result.count = normalized.size();
+        return result;
+    }
+
+    mesh tube(glm::dvec4 a, glm::dvec4 b, double radius)
+    {
+        glm::dvec3 up = glm::dvec3(0,1,0);
+        glm::dvec4 dir4 = hypermath::exp0inv(b) - hypermath::exp0inv(a);
+        glm::dvec3 dir = glm::dvec3(dir4[0], dir4[1], dir4[2]);
+
+        double angle = acos(glm::dot(glm::normalize(up), glm::normalize(dir)));
+        glm::dvec3 axis;
+
+        if (angle == 0.0) {
+            axis = up;
+        }
+        else {
+            axis = glm::normalize(glm::cross(up, dir));
+        }
+
+        int n = 10;
+
+        const double PI = 3.141592653589793238463;
+        double radians_between_vertices = 2*PI/n;
+        std::vector<glm::dvec4> vertices;
+        std::vector<glm::dvec4> col;
+
+        //Start in the center...
+        vertices.push_back(hypermath::exp0(glm::dvec4(0.0,0.0,0.0,0.0)));
+
+        LogManager::log_info(std::to_string(angle), 2);
+        
+        //...and work our way around the circle
+        for(int i = 0; i <= n; i++){
+            double x = sin(i * radians_between_vertices);
+            double y = cos(i * radians_between_vertices);
+
+            glm::dvec4 vertex = glm::dvec4(x, 0, y, 0);
+            vertex = glm::rotate(angle, axis) * vertex;
+            // vertex = hypermath::translation0(a) * vertex;
+
+            vertices.push_back(hypermath::exp0(vertex * radius));
+        }
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                std::cout << glm::rotate(angle, axis)[i][j] << ' ';
+            }
+            std::cout << std::endl;
+        }
+
+        //this is the slow way...
+        std::vector<glm::dvec4> converted_vertices;
+        for(int i=1; i < vertices.size() - 1; i++){
+            converted_vertices.push_back(vertices[0]);
+            converted_vertices.push_back(vertices[i]);
+            converted_vertices.push_back(vertices[i+1]);
+            //Random colors
+            col.push_back(glm::dvec4(((double) rand() / (RAND_MAX)), 0.0, ((double) (rand() % 25)) / (RAND_MAX), 1.0));
+            col.push_back(glm::dvec4(0.0, ((double) rand() / (RAND_MAX)), 0.0, 1.0));
+            col.push_back(glm::dvec4(0.0, ((double) (rand() % 50))/ (RAND_MAX), ((double) rand() / (RAND_MAX)), 1.0));
+        }
+
+
+        mesh result;
+        result.vao = vao_from_pos_col(converted_vertices, col);
+        result.mode = GL_TRIANGLES;
+        result.first = 0;
+        result.count = converted_vertices.size();
         return result;
     }
 }

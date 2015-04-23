@@ -6,6 +6,7 @@
 #include "../math/hypermath.h"
 #include "../assetmanager/assetmanager.h"
 #include "../data/object.h"
+#include "glm/gtx/transform.hpp"
 #include <cmath>
 
 Scene LevelManager::scene = Scene();
@@ -15,7 +16,8 @@ Scene LevelManager::scene = Scene();
  * \return boolean true
  */
 bool LevelManager::startup() {
-    load_initial_level();
+    // load_initial_level();
+    load_level_2();
     LogManager::log_info("LevelManager started.", 2);
     return true;
 }
@@ -99,9 +101,13 @@ void LevelManager::load_initial_level() {
 }
 
 void LevelManager::load_level_2(){
-    LogManager::log_info("Level Suzy.", 2);
-    object* suzy = AssetManager::load_object("resources/suzy.obj", false, .2);
-    suzy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
-    scene.objects.push_back(suzy);
+    // LogManager::log_info("Level Suzy.", 2);
+    // object* suzy = AssetManager::load_object("resources/suzy.obj", false, .2);
+    // suzy->transform(hypermath::translation0(glm::dvec4(0,0,-0.2,sqrt(1+0.04))));
+    // scene.objects.push_back(suzy);
+
+    mesh tube_base = primitives::tube(glm::dvec4(0,0,0,1), hypermath::exp0(glm::dvec4(0,1,0,0)), 0.001);
+    object* tube_base_ob = new object(tube_base);
+    scene.objects.push_back(tube_base_ob);
 }
 

@@ -2,7 +2,7 @@
 #include "riftmanager.h"
 #include "../logmanager/logmanager.h"
 #include "../configuration/configuration.h"
-#include "OVR.h"
+#include "OVR_CAPI.h"
 #include "../charactermanager/charactermanager.h"
 #include "../rendermanager/rendermanager.h"
 

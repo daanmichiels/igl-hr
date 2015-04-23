@@ -23,7 +23,8 @@ void frame::correct_roundoff()
 
     up = hypermath::normalize(up);
     right = right - hypermath::dot(right, up) * up;
-    right = hypermath::normalize(right);forward = forward - hypermath::dot(forward,right) * right - hypermath::dot(forward,up) * up;
+    right = hypermath::normalize(right);
+    forward = forward - hypermath::dot(forward,right) * right - hypermath::dot(forward,up) * up;
     forward = hypermath::normalize(forward);
 }
 

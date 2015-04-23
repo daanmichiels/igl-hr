@@ -4,7 +4,7 @@
 
 #include "../data/frame.h"
 #include "glm/glm.hpp"
-#include "OVR.h"
+#include "OVR_CAPI.h"
 
 class CharacterManager {
 public:

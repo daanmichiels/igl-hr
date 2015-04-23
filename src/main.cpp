@@ -1,4 +1,3 @@
-
 #include <vector>
 #include "init/init.h"
 #include "logmanager/logmanager.h"

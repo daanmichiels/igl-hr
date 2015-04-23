@@ -21,6 +21,7 @@ namespace primitives
     mesh subdivided_triangle(glm::dvec4 a, glm::dvec4 b, glm::dvec4 c, int divisions, bool sierpinski = false);
     mesh subdivided_octahedron(double radius, int divisions, bool sierpinski = false);
     mesh sphere(double radius, int divisions, glm::dvec4 col, bool sierpinski = false);
+    mesh tube(glm::dvec4 a, glm::dvec4 b, double radius);
 }
 
 #endif

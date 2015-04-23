@@ -157,7 +157,7 @@ void RenderManager::setup_rift_rendering()
     glcfg.OGL.Header.Multisample = 1;
 
     #ifdef OVR_OS_WIN32
-        glcfg.OGL.Window = GetActiveWindow();
+        glcfg.OGL.Window = glfwGetWin32Window(window);
         glcfg.OGL.DC = wglGetCurrentDC();
     #elif defined(OVR_OS_LINUX)
         glcfg.OGL.Disp = glXGetCurrentDisplay();
@@ -172,7 +172,7 @@ void RenderManager::setup_rift_rendering()
       * XXX: this doesn't work properly yet due to bugs in the oculus 0.4.1 sdk/driver
       */
         #ifdef WIN32
-            ovrHmd_AttachToWindow(hmd, glcfg.OGL.Window, 0, 0);
+            ovrHmd_AttachToWindow(hmd, glfwGetWin32Window(window), 0, 0);
         #elif defined(OVR_OS_LINUX)
             ovrHmd_AttachToWindow(hmd, (void*)glXGetCurrentDrawable(), 0, 0);
         #endif

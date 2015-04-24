@@ -2,6 +2,8 @@
 #ifndef INIT_H
 #define INIT_H
 
+#include "GL/glew.h"
+
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL
@@ -19,7 +21,6 @@
 #include <GLFW/glfw3native.h>
 #include <OVR_CAPI_GL.h>
 
-#include "GL/glew.h"
 #include "OVR_CAPI.h"
 
 class Init {

@@ -1,3 +1,6 @@
+
+#include <GL/glew.h>
+
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL
@@ -19,7 +22,6 @@
 #include "../logmanager/logmanager.h"
 #include "../rendermanager/rendermanager.h"
 #include "../configuration/configuration.h"
-#include <GL/glew.h>
 #include "glm/gtc/quaternion.hpp"
 #include "glm/ext.hpp"
 

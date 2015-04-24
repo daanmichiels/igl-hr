@@ -1,6 +1,7 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
 
+#include <GL/glew.h>
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL

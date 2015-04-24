@@ -1,3 +1,5 @@
+
+#include <GL/glew.h>
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL
@@ -18,7 +20,6 @@
 #include "../logmanager/logmanager.h"
 #include "shadermanager.h"
 #include "../shaders/shaders.h"
-#include <GL/glew.h>
 
 GLuint ShaderManager::default_program = 0;
 GLuint ShaderManager::cross_program = 0;

@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 
 #ifndef RENDERMANAGER_H
 #define RENDERMANAGER_H
@@ -24,7 +25,6 @@
 #include "../data/mesh.h"
 #include "OVR_CAPI.h"
 #include "OVR_CAPI_GL.h"
-#include <GL/glew.h>
 
 class RenderManager {
 public:

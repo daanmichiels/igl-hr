@@ -1,3 +1,5 @@
+
+#include <GL/glew.h>
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL
@@ -20,7 +22,6 @@
 #include "../charactermanager/charactermanager.h"
 #include "loopmanager.h"
 #include "../rendermanager/rendermanager.h"
-#include <GL/glew.h>
 
 FpsCounter LoopManager::fpscounter = FpsCounter();
 double LoopManager::t = 0.0;

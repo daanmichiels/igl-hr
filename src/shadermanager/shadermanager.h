@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 
 #ifndef SHADERMANAGER_H
 #define SHADERMANAGER_H
@@ -19,7 +20,6 @@
 #include <GLFW/glfw3native.h>
 #include <OVR_CAPI_GL.h>
 
-#include <GL/glew.h>
 
 class ShaderManager {
 public:

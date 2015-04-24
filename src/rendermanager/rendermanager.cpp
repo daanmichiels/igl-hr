@@ -1,7 +1,9 @@
+#include <GL/glew.h>
 #if defined(_WIN32)
  #define GLFW_EXPOSE_NATIVE_WIN32
  #define GLFW_EXPOSE_NATIVE_WGL
  #define OVR_OS_WIN32
+#include <windows.h>
 #elif defined(__APPLE__)
  #define GLFW_EXPOSE_NATIVE_COCOA
  #define GLFW_EXPOSE_NATIVE_NSGL
@@ -28,7 +30,6 @@
 #include "../strings.h"
 #include <iostream>
 #include <string>
-#include <GL/glew.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -99,25 +100,26 @@ bool RenderManager::startup() {
     return true;
 }
 
+void RenderManager::set_hmd(ovrHmd newHmd)
+{
+    hmd = newHmd;
+}
+
 // calculate projection or projection_one_eye depending on whether
 // rift-output is used
 void RenderManager::calculate_projection() {
     float fov = 1.2f; // TODO: set a sensible value
     float ratio = ((float) window_width) / window_height;
-    float near = 0.08 * CharacterManager::meter; // TODO: find sensible near and far planes
-    float far = 1000 * CharacterManager::meter;
+    float near_plane = 0.08f * CharacterManager::meter; // TODO: find sensible near and far planes
+    float far_plane = 1000 * CharacterManager::meter;
+
 
     if(rift_render) {
         ratio = ratio / 2.0;
-        projection_one_eye = glm::perspective(fov, ratio, near, far);
+        projection_one_eye = glm::perspective(fov, ratio, near_plane, far_plane);
     } else {
-        projection = glm::perspective(fov, ratio, near, far);
+        projection = glm::perspective(fov, ratio, near_plane, far_plane);
     }
-}
-
-void RenderManager::set_hmd(ovrHmd newHmd)
-{
-    hmd = newHmd;
 }
 
 void RenderManager::setup_rift_rendering()
@@ -191,7 +193,7 @@ void RenderManager::setup_rift_rendering()
     distort_caps = ovrDistortionCaps::ovrDistortionCap_TimeWarp | ovrDistortionCaps::ovrDistortionCap_Overdrive | 
         ovrDistortionCaps::ovrDistortionCap_Vignette;
     if(!ovrHmd_ConfigureRendering(hmd, &glcfg.Config, distort_caps, hmd->DefaultEyeFov, eye_rdesc)) {
-        LogManager::log_error("Failed to configer distortion rendering");
+        LogManager::log_error("Failed to configure distortion rendering");
     }
 }
 

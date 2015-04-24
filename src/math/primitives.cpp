@@ -65,7 +65,7 @@ namespace
         return vao;
     }
 
-    GLuint vao_from_pos_col_norm(char *data, size_t& data_size, \
+    GLuint vao_from_pos_col_norm(char * &data, size_t& data_size, \
                 std::vector<glm::dvec4> position, std::vector<glm::dvec4> color, \
                 std::vector<glm::dvec4> normal = std::vector<glm::dvec4>(), \
                 bool in_mem = false){
@@ -269,7 +269,6 @@ namespace primitives{
         std::vector<glm::dvec4> norm;
         norm.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
         norm.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
-        char *data = new char[0];
         result.vao = vao_from_pos_col_norm(result.data, result.data_size, {a,b}, {col,col});
         result.mode = GL_LINES;
         result.first = 0;
@@ -313,7 +312,7 @@ namespace primitives{
 
         int data_length = 0;
         result.vao = vao_from_pos_col_norm(result.data, result.data_size, pos, col, norm, true);
-        std::cout << "\n\n\nresult.data size: " << result.data_size << "\n";
+        result.in_ram = true;
         result.mode = GL_LINES;
         result.first = 0;
         result.count = 6;
@@ -369,8 +368,12 @@ namespace primitives{
                 norm.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
             }
         }
-
-        result.vao = vao_from_pos_col_norm(result.data, result.data_size, pos, col);
+        char* dat = NULL;
+        size_t size = 0;
+        result.vao = vao_from_pos_col_norm(dat, size, pos, col, norm, true);
+        result.data = dat;
+        result.data_size = size;
+        result.in_ram = true;
         result.mode = GL_LINES;
         result.first = 0;
         result.count = pos.size();

@@ -20,6 +20,7 @@ struct object
     object();
     object(const char filename[], bool converted, double scale);
     object(mesh object_mesh);
+    void write_file(std::string filename);
 };
 
 #endif /* OBJECT_H */

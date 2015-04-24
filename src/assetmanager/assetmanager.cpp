@@ -71,7 +71,7 @@ mesh AssetManager::mesh_from_data(float * data, int data_size, bool has_pos, boo
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    
+
     GLuint buffer_gl;
     glGenBuffers(1, &buffer_gl);
     glBindBuffer(GL_ARRAY_BUFFER, buffer_gl);
@@ -97,7 +97,7 @@ mesh AssetManager::mesh_from_data(float * data, int data_size, bool has_pos, boo
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    
+
     mesh m;
     m.vao = vao;
     m.mode = GL_TRIANGLES;
@@ -165,14 +165,14 @@ std::vector<object*> AssetManager::parse_lev(const std::string filename){
         }
         /* Check for .stl */
         else if(line.find(".stl") != -1){
-            LogManager::log_error("Currently only .hr and .obj files are supported. Please run the python converter to turn the .stl into a .hr file."); 
+            LogManager::log_error("Currently only .hr and .obj files are supported. Please run the python converter to turn the .stl into a .hr file.");
         }
         /* Handle comments */
         else if(line.find("#") != -1){
             if(iter_num == 0){
                 while(line.find("#")==0){
                     line = line.substr(1);
-                }                
+                }
                 int last_octothorpe = line.find("#");
                 if(last_octothorpe > 1){
                     line = line.substr(0, last_octothorpe);
@@ -194,5 +194,3 @@ std::vector<object*> AssetManager::parse_lev(const std::string filename){
     }
     return objects;
 }
-
-

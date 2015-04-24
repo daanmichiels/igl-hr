@@ -44,8 +44,9 @@ void LevelManager::load_initial_level() {
 
     mesh axe_mesh = primitives::axes(10.0);
     object* axes = new object(axe_mesh);
-    axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
-    scene.objects.push_back(axes);
+    //axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
+    //scene.objects.push_back(axes);
+    axes->write_file("axes_BAD");
 
     //-------------
 

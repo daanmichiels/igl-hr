@@ -9,6 +9,7 @@
 #include <cmath>
 #include "../math/primitives.h"
 #include "../math/hypermath.h"
+#include "../logmanager/logmanager.h"
 
 /** \brief Transform an object by a given 4x4 double transformation matrix
  * \param 4x4 double transformation matrix
@@ -96,7 +97,19 @@ object::object(const char filename[], bool converted, double scale)
 /** \brief Empty object constructor
  * \param void
  */
-object::object()
-{
+object::object(){
 
+}
+void object::write_file(std::string filename){
+    std::ofstream header("resources/" + filename + ".hr", std::ofstream::app);
+    header << "hr00pcn_";
+    header.close();
+
+    std::ofstream output("resources/" +filename + ".hr", std::ofstream::binary | std::ofstream::app);
+    std::cout << "\n\n" << sizeof(this->meshes.at(0).data) << "\n\n";
+    char *dat = this->meshes.at(0).data;
+    if(dat != NULL && this->meshes.at(0).in_ram){
+        output.write(dat, this->meshes.at(0).data_size);
+        LogManager::log_info("Wrote to resources/" + filename + ".hr", 2);
+    }
 }

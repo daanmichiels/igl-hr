@@ -77,14 +77,14 @@ bool RenderManager::startup() {
 void RenderManager::calculate_projection() {
     float fov = 1.2f; // TODO: set a sensible value
     float ratio = ((float) window_width) / window_height;
-    float near = 0.08 * CharacterManager::meter; // TODO: find sensible near and far planes
-    float far = 1000 * CharacterManager::meter;
+    float near_fov = 0.08 * CharacterManager::meter; // TODO: find sensible near and far planes
+    float far_fov = 1000 * CharacterManager::meter;
 
     if(rift_render) {
         ratio = ratio / 2.0;
-        projection_one_eye = glm::perspective(fov, ratio, near, far);
+        projection_one_eye = glm::perspective(fov, ratio, near_fov, far_fov);
     } else {
-        projection = glm::perspective(fov, ratio, near, far);
+        projection = glm::perspective(fov, ratio, near_fov, far_fov);
     }
 }
 

@@ -65,7 +65,7 @@ namespace
         return vao;
     }
 
-    GLuint vao_from_pos_col_norm(char * &data, size_t& data_size, \
+    GLuint vao_from_pos_col_norm(float * &data, size_t& data_size, \
                 std::vector<glm::dvec4> position, std::vector<glm::dvec4> color, \
                 std::vector<glm::dvec4> normal = std::vector<glm::dvec4>(), \
                 bool in_mem = false){
@@ -102,7 +102,15 @@ namespace
         }
         glBufferData(GL_ARRAY_BUFFER, sizeof(float)*12*size, vao_data, GL_STATIC_DRAW);
         if(in_mem){
-            data = (char*) vao_data;
+            // char *characters = (char*) vao_data;
+            // char *out = new char[sizeof(vao_data)*sizeof(float)/sizeof(char)];
+            // for(int i = 0; i < sizeof(out); i++){
+                // out[i] = *characters;
+                // characters++;
+            // }
+            // data = out;
+            /************************************************************************************************/
+            data = vao_data;
         }
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -259,7 +267,7 @@ namespace
 
 namespace primitives{
     /** \brief Create a line between two arbitrary points.
-     *  the line is uniformly colored
+     *  the line is uniformly colored. DO NOT WRITE THIS TO FILE.
      * \param Two position vectors (call exp0!)
      * \param A color vector
      * \return Line mesh
@@ -277,6 +285,7 @@ namespace primitives{
     }
 
     /** \brief Make a set of XYZ axes, colored red green and blue respectively, inside of a sphere of given radius
+     * DO NOT WRITE THIS TO FILE
      * \param The radius for which to set the axes within
      * \return Axes mesh
      */
@@ -310,16 +319,15 @@ namespace primitives{
         norm.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
 
 
-        int data_length = 0;
-        result.vao = vao_from_pos_col_norm(result.data, result.data_size, pos, col, norm, true);
-        result.in_ram = true;
-        result.mode = GL_LINES;
+        result.vao = vao_from_pos_col_norm(result.data, result.data_size, pos, col, norm);
+        result.mode = GL_TRIANGLES;
         result.first = 0;
         result.count = 6;
         return result;
     }
 
     /** \brief Create a grid mesh. X axis is red, Y axis is green, and Z axis is blue
+     * DO NOT WRITE THIS TO FILE
      * \param Spacing between the grid
      * \return Grid Mesh
      */
@@ -368,12 +376,7 @@ namespace primitives{
                 norm.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
             }
         }
-        char* dat = NULL;
-        size_t size = 0;
-        result.vao = vao_from_pos_col_norm(dat, size, pos, col, norm, true);
-        result.data = dat;
-        result.data_size = size;
-        result.in_ram = true;
+        result.vao = vao_from_pos_col_norm(result.data, result.data_size, pos, col, norm);
         result.mode = GL_LINES;
         result.first = 0;
         result.count = pos.size();
@@ -396,6 +399,7 @@ namespace primitives{
     }
 
     /** \brief Create a rectangle which lies in the xz-plane, and is centered at the origin. It's uniformly colored.
+     * DO NOT WRITE THIS TO FILE
      * \param The width of the rectangle
      * \param The depth of the rectangle
      * \param The color of the rectangle
@@ -419,6 +423,7 @@ namespace primitives{
         return result;
     }
     /** \brief Create a n sided polygon inside a circle of given radius.
+     * DO NOT WRITE THIS TO FILE
      * \param The number of sides to give the n-gon
      * \param The radius to inscribe the n-gon within
      * \param The color of the n-gon
@@ -496,6 +501,7 @@ namespace primitives{
      *It will be centered at (0,0,0,1) and one of its tips will
      *point in the positive y-direction (up).
      *It will have nice colors.
+     * DO NOT WRITE THIS TO FILE
      *
      * \param The radius within which to inscribe the tetrahedron
      * \return Tetrahedron mesh
@@ -592,9 +598,10 @@ namespace primitives{
      * \param std::vector<glm::dvec4> of the triangle vertices, a std::vector<glm::dvec4> of the colors
      * \return mesh of the object
      */
-    mesh object(const std::vector<glm::dvec4> vertices, const std::vector<glm::dvec4> colors){
+    mesh object(const std::vector<glm::dvec4> vertices, const std::vector<glm::dvec4> colors, const std::vector<glm::dvec4> norms, const bool in_ram){
         mesh result;
-        result.vao = vao_from_pos_col(vertices, colors);
+        result.vao = vao_from_pos_col_norm(result.data, result.data_size, vertices, colors, norms, in_ram);
+        result.in_ram = in_ram;
         result.mode = GL_TRIANGLES;
         result.first = 0;
         result.count = vertices.size();

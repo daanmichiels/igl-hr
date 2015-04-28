@@ -102,14 +102,6 @@ namespace
         }
         glBufferData(GL_ARRAY_BUFFER, sizeof(float)*12*size, vao_data, GL_STATIC_DRAW);
         if(in_mem){
-            // char *characters = (char*) vao_data;
-            // char *out = new char[sizeof(vao_data)*sizeof(float)/sizeof(char)];
-            // for(int i = 0; i < sizeof(out); i++){
-                // out[i] = *characters;
-                // characters++;
-            // }
-            // data = out;
-            /************************************************************************************************/
             data = vao_data;
         }
         glEnableVertexAttribArray(0);

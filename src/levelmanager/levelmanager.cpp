@@ -40,7 +40,7 @@ void LevelManager::shutdown() {
  * \return void
  */
 void LevelManager::load_initial_level() {
-    //-------------
+    //------------- Example writing a tiling to file.
 
     //mesh axe_mesh = tilings::generate_tiling(5, 4, 5, 1.675, true);
     //object* axes = new object(axe_mesh);

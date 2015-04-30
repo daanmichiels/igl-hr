@@ -9,10 +9,12 @@ uniform mat4 modelview;
 
 smooth out vec3 theColor;
 smooth out vec4 theNormal;
+smooth out vec4 thePosition;
 
 void main()
 {
     gl_Position = (projection * modelview * position);
+	thePosition = gl_Position;
     theColor = color;
 	theNormal = normal;
 }

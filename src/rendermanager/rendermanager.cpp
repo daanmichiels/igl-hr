@@ -167,6 +167,8 @@ void RenderManager::render_flags(glm::dmat4 modelview, glm::mat4 projection) {
 void RenderManager::render_object(object o, glm::dmat4 modelview) {
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "modelview"), 1, GL_FALSE, glm::value_ptr((glm::mat4)modelview));
+	frame eyes = CharacterManager::get_position_eyes();
+	glUniform4fv(glGetUniformLocation(ShaderManager::default_program, "camera"), 1, glm::value_ptr(glm::vec4(eyes.pos.x, eyes.pos.y, eyes.pos.z, eyes.pos.w) ));
 
     for(mesh m : o.meshes)
     {

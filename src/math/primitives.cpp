@@ -70,8 +70,12 @@ namespace
                 std::vector<glm::dvec4> normal = std::vector<glm::dvec4>(), \
                 bool in_mem = false){
         size_t size = position.size();
+        bool normals_included = true;
         assert(color.size() == size);
         if(normal.size() < size){
+            if(normal.size() == 0){
+                normals_included = false;
+            }
             for(int i=normal.size(); i < size; i++){
                 normal.push_back(glm::dvec4(0.0, 0.0, 0.0, 0.0));
             }
@@ -106,12 +110,16 @@ namespace
         }
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
+        if(normals_included){
+            glEnableVertexAttribArray(2);
+        }
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 12*sizeof(GL_FLOAT), 0);
         glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12*sizeof(GL_FLOAT), \
                                 (void*)(4*sizeof(GL_FLOAT)));
+        if(normals_included){
         glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 12*sizeof(GL_FLOAT), \
                                 (void*)(8*sizeof(GL_FLOAT)));
+        }
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 

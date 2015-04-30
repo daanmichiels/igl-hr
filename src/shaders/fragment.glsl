@@ -18,6 +18,9 @@ const float surfaceAmb = 0.5;
 layout(location = 0) out vec3 color;
 
 void main() {
+	color = theColor;
+	/*
+	
 	float intensity;
 	
 	vec4 norm = normalize(theNormal);
@@ -29,8 +32,9 @@ void main() {
 	
 	intensity = surfaceAmb*ambient + surfaceDiff*(lamp*theNormal)*diffuse + surfaceSpec*pow((optimal*camera),shine)*specular;
 	color = intensity*theColor;
+	*/
 }
-
+/*
 double dot(vec4 v, vec4 w) {
 	return v.x*w.x + v.y*w.y + v.z*w.z - v.w*w.w;
 }
@@ -59,3 +63,4 @@ vec4 expinv(vec4 basepoint, vec4 target) {
 	vec4 u = target - cosh(r)*basepoint;
 	return (r/sinh(r))*u;
 }
+*/

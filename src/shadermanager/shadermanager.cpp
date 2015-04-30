@@ -23,9 +23,11 @@ bool ShaderManager::startup() {
     if(!compile_shader(shader_sources["vertex"], GL_VERTEX_SHADER, vertex)) {
         return false;
     }
+	LogManager::log_info("He's alive Jim.", 2);
     if(!compile_shader(shader_sources["fragment"], GL_FRAGMENT_SHADER, fragment)) {
         return false;
     }
+	LogManager::log_info("He's dead Jim.", 2);
     if(!compile_shader(shader_sources["rift_vertex"], GL_VERTEX_SHADER, rift_vertex)) {
         return false;
     }
@@ -109,8 +111,8 @@ bool ShaderManager::compile_shader(std::string source, GLenum shader_type, GLuin
     if(!compiled)
     {
         // For simplicity, we only print the first 200 characters of the error.
-        char error[200];
-        glGetShaderInfoLog(shader, 200, NULL, error);
+        char error[8000];
+        glGetShaderInfoLog(shader, 8000, NULL, error);
         LogManager::log_error(std::string("Shader compilation failed: ") + error);
         shader = 0;
         return false;

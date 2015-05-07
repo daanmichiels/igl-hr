@@ -14,7 +14,7 @@ smooth out vec4 thePosition;
 void main()
 {
     gl_Position = (projection * modelview * position);
-	thePosition = gl_Position;
+	thePosition = position;
     theColor = color;
 	theNormal = normal;
 }

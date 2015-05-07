@@ -23,8 +23,8 @@ Scene LevelManager::scene = Scene();
  * \return boolean true
  */
 bool LevelManager::startup() {
-    // load_initial_level();
-    load_level_2();
+    load_initial_level();
+    //load_level_2();
     LogManager::log_info("LevelManager started.", 2);
     return true;
 }

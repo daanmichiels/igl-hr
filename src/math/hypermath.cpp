@@ -1,6 +1,8 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/string_cast.hpp"
+#include "../logmanager/logmanager.h"
 #include <iostream>
 #include "glm/gtx/string_cast.hpp"
 
@@ -319,31 +321,36 @@ namespace hypermath
      */
     glm::dvec4 d_exp0(const glm::dvec4 v, const glm::dvec4 n){
         glm::dmat4 output;
-
+		
+		double r = sqrt(pow(v.x,2) + pow(v.y,2) + pow(v.z,2));
+		
         //set first column according to mathematica notebook
-        output[0][0] = sin(1.0) * (pow(v.w, 2) - pow(v.y,2) - pow(v.z,2)) - pow(v.x,2) * cos(1.0);
-        output[1][0] = v.x * v.y * (sin(1.0) - cos(1.0));
-        output[2][0] = v.x * v.z * (sin(1.0) - cos(1.0));
-        output[3][0] = v.x * (v.w * (sin(1.0)-cos(1.0)) + sin(1.0));
+        output[0][0] = (r*( pow(v.x,2) )*cosh(r)+( pow(v.y,2) + pow(v.z,2) )*sinh(r))/( pow(r,3) );
+        output[1][0] = v.x*v.y*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[2][0] = v.x*v.z*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[3][0] = (v.x*sinh(r))/(r);
 
         //set second column similarly
-        output[0][1] = v.x * v.y * (sin(1.0) - cos(1.0));
-        output[1][1] = sin(1.0) * (pow(v.w, 2) - pow(v.x, 2) - pow(v.z, 2)) - pow(v.y, 2)*cos(1.0);
-        output[2][1] = v.y * v.z * (sin(1.0) - cos(1.0));
-        output[3][1] = v.y * (v.w * (sin(1.0) - cos(1.0)) + sin(1.0));
+        output[0][1] = v.x*v.y*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[1][1] = (r*( pow(v.y,2) )*cosh(r)+( pow(v.x,2) + pow(v.z,2) )*sinh(r))/( pow(r,3) );
+        output[2][1] = v.y*v.z*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[3][1] = (v.y*sinh(r))/(r);
 
         //set third column
-        output[0][2] = v.x * v.z * (sin(1.0) - cos(1.0));
-        output[1][2] = v.y * v.z * (sin(1.0) - cos(1.0));
-        output[2][2] = sin(1.0) * (pow(v.w, 2) - pow(v.x, 2) - pow(v.y, 2)) - pow(v.z, 2)*cos(1.0);
-        output[3][2] = v.z * (v.w * (sin(1.0) - cos(1.0)) + sin(1.0));
+        output[0][2] = v.x*v.z*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[1][2] = v.y*v.z*(((cosh(r))/( pow(r,2) ))-((sinh(r))/( pow(r,3) )));
+        output[2][2] = (r*(pow(v.z,2))*cosh(r)+(pow(v.x,2)+pow(v.y,2))*sinh(r))/( pow(r,3) );
+        output[3][2] = (v.z*sinh(r))/(r);
 
         //set fourth column
-        output[0][3] = v.w * v.x * (cos(1.0)-sin(1.0));
-        output[1][3] = v.w * v.y * (cos(1.0)-sin(1.0));
-        output[2][3] = v.w * v.z * (cos(1.0)-sin(1.0));
-        output[3][3] = -1 * sin(1.0) * (pow(v.w,3) - v.w * (pow(v.x,2) + pow(v.y, 2) + pow(v.z,2)) + pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2) ) + pow(v.w, 2) * cos(1.0);
-        return output * n;
+        output[0][3] = 0;
+        output[1][3] = 0;
+        output[2][3] = 0;
+        output[3][3] = 0;
+		
+		LogManager::log_info(glm::to_string(output), 2);
+		
+        return n*output;
     }
 }
 

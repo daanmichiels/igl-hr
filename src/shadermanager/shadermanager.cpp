@@ -22,7 +22,6 @@
 #include "../shaders/shaders.h"
 
 GLuint ShaderManager::default_program = 0;
-GLuint ShaderManager::cross_program = 0;
 GLuint ShaderManager::quad_program = 0;
 GLuint ShaderManager::flag_program = 0;
 
@@ -33,8 +32,6 @@ GLuint ShaderManager::flag_program = 0;
 bool ShaderManager::startup() {
     GLuint vertex;
     GLuint fragment;
-    GLuint cross_vertex;
-    GLuint cross_fragment;
     GLuint rift_vertex;
     GLuint rift_fragment;
     GLuint fragment_offset;
@@ -43,12 +40,6 @@ bool ShaderManager::startup() {
         return false;
     }
     if(!compile_shader(shader_sources["fragment"], GL_FRAGMENT_SHADER, fragment)) {
-        return false;
-    }
-    if(!compile_shader(shader_sources["cross_vertex"], GL_VERTEX_SHADER, cross_vertex)) {
-        return false;
-    }
-    if(!compile_shader(shader_sources["cross_fragment"], GL_FRAGMENT_SHADER, cross_fragment)) {
         return false;
     }
     if(!compile_shader(shader_sources["rift_vertex"], GL_VERTEX_SHADER, rift_vertex)) {
@@ -62,9 +53,6 @@ bool ShaderManager::startup() {
     }
 
     if(!link_program(vertex, fragment, default_program)) {
-        return false;
-    }
-    if(!link_program(cross_vertex, cross_fragment, cross_program)) {
         return false;
     }
     if(!link_program(rift_vertex, rift_fragment, quad_program)) {
@@ -137,8 +125,8 @@ bool ShaderManager::compile_shader(std::string source, GLenum shader_type, GLuin
     if(!compiled)
     {
         // For simplicity, we only print the first 200 characters of the error.
-        char error[200];
-        glGetShaderInfoLog(shader, 200, NULL, error);
+        char error[8000];
+        glGetShaderInfoLog(shader, 8000, NULL, error);
         LogManager::log_error(std::string("Shader compilation failed: ") + error);
         shader = 0;
         return false;

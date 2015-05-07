@@ -319,6 +319,8 @@ void RenderManager::render_flags(glm::dmat4 modelview, glm::mat4 projection) {
 void RenderManager::render_object(object o, glm::dmat4 modelview) {
     modelview = modelview * o.transformation;
     glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "modelview"), 1, GL_FALSE, glm::value_ptr((glm::mat4)modelview));
+	frame eyes = CharacterManager::get_position_eyes();
+	glUniform4fv(glGetUniformLocation(ShaderManager::default_program, "camera"), 1, glm::value_ptr(glm::vec4(eyes.pos.x, eyes.pos.y, eyes.pos.z, eyes.pos.w) ));
 
     for(mesh m : o.meshes)
     {
@@ -346,7 +348,7 @@ void RenderManager::render() {
         glClearColor(0.5, 0.7, 0.8, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(Configuration::cross_on ? ShaderManager::cross_program : ShaderManager::default_program);
+        glUseProgram(ShaderManager::default_program);
         glm::dmat4 view = view_matrix_from_frame(CharacterManager::get_position_eyes());
         glUniformMatrix4fv(glGetUniformLocation(ShaderManager::default_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -383,7 +385,7 @@ void RenderManager::render() {
         for(int i = 0; i < 2; i++) {
             ovrEyeType eye = hmd->EyeRenderOrder[i];
 
-            glUseProgram(Configuration::cross_on ? ShaderManager::cross_program : ShaderManager::default_program);
+            glUseProgram(ShaderManager::default_program);
 
             // draw on the correct side of the framebuffer
             glViewport(eye == ovrEye_Left ? 0 : fb_width / 2, 0, (fb_width / 2), fb_height);

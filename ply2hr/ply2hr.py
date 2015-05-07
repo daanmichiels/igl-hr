@@ -2,7 +2,6 @@ import sys
 import os
 import math
 import numpy
-from array import array
 from plyfile import PlyData, PlyElement
 
 # ----------- HYPERMATH ------------
@@ -10,17 +9,36 @@ from plyfile import PlyData, PlyElement
 ORIGIN = numpy.array([0,0,0,1])
 
 def dot(v, w):
-    return v[0]*w[0] + v[1]*w[1] + v[2]*w[2] - v[3]*w[3]
+	return v[0]*w[0] + v[1]*w[1] + v[2]*w[2] - v[3]*w[3]
 
 def length(v):
-    return math.sqrt(dot(v,v))
+	return math.sqrt(dot(v,v))
 
-def exp0(v):
-    r = length(v)
-    if r==0:
-        return ORIGIN
-    return math.cosh(r) * ORIGIN + (math.sinh(r)/r) * v
-
+def exp(pos, dir):
+	r = length(dir)
+	if r==0:
+		return pos
+	return math.cosh(r) * pos + (math.sinh(r)/r) * dir
+	
+def exp0(dir):
+	return exp(ORIGIN, dir)
+	
+def dexp0(v, n):
+	x = v[0]
+	y = v[1]
+	z = v[2]
+	r = math.sqrt(x**2 + y**2 + z**2)
+	output = numpy.matrix(
+			[[   (r*(x**2)*math.cosh(r)+(y**2+z**2)*math.sinh(r))/(r**3)    ,   x*y*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   x*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   0   ], 
+			 [   x*y*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))      ,   (r*(y**2)*math.cosh(r)+(x**2+z**2)*math.sinh(r))/(r**3)   ,   y*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   0   ], 
+			 [   x*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))      ,   y*z*(((math.cosh(r))/(r**2))-((math.sinh(r))/(r**3)))     ,   (r*(z**2)*math.cosh(r)+(x**2+y**2)*math.sinh(r))/(r**3)   ,   0   ], 
+			 [   (x*math.sinh(r))/(r)                                       ,   (y*math.sinh(r))/(r)                                      ,   (z*math.sinh(r))/(r)                                      ,   0   ]]
+	)
+	a = numpy.matrix(n).reshape((4,1))
+	result = output * a
+	result = numpy.array(result).ravel()
+	return result
+	
 # ----------------------------------
 
 if len(sys.argv) < 2:
@@ -71,7 +89,7 @@ def process_vertex(j):
     processed_vertex = []
     vdata = plydata['vertex'].data[j]
     if has_pos:
-        pos = numpy.array([vdata['x'], vdata['y'], vdata['z'], 0.0])
+        pos = numpy.array([vdata['x'], vdata['y'], vdata['z'], 1.0])
         pos = scale * pos
         pos = exp0(pos)
         processed_vertex.extend(pos)
@@ -85,7 +103,7 @@ def process_vertex(j):
     return processed_vertex
 
 # Now fill up a buffer with all the data we want in the output file
-data = array('f', [])
+data = []
 for i in range(nrfaces):
     thisface = plydata['face'].data[i]
     vertexindices = thisface[0]
@@ -95,20 +113,4 @@ for i in range(nrfaces):
     for j in range(3):
         data.extend(process_vertex(vertexindices[j]))
 
-# Write to the file
-# We start with a short header
-hr = open(savefile, "wb")
-hr.write("hr00")
-hr.write("p" if has_pos else "_")
-hr.write("c" if has_col else "_")
-hr.write("n" if has_nor else "_")
-hr.write("_") #could be used for an extra attribute, like texture coordinates
-
-# Now the data
-data.tofile(hr)
-
-# Done
-print("")
-print(str(8 + data.itemsize * len(data)) + " bytes written.")
-
-
+print(len(data))

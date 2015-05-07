@@ -27,7 +27,7 @@ namespace{
         return false;
     }
     //make the first round of neighbors
-    //(Reflect the ngon about each of it's sides)
+    //(Reflect the ngon about each of its sides)
     //Assumes gen0 is passed and is setup to use GL_TRIANGLES
     std::vector<glm::dvec4> generate_first_neighbors(const std::vector<glm::dvec4> gen0){
         std::vector<glm::dvec4> neighbors;

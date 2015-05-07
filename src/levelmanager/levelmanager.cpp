@@ -23,6 +23,11 @@ Scene LevelManager::scene = Scene();
  * \return boolean true
  */
 bool LevelManager::startup() {
+    /* mesh axe_mesh = tilings::generate_tiling(4, 10, 8, 0.85);
+    object* axes = new object(axe_mesh);
+    axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
+    scene.objects.push_back(axes);
+    */
     load_initial_level();
     //load_level_2();
     LogManager::log_info("LevelManager started.", 2);

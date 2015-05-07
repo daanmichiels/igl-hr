@@ -99,7 +99,7 @@ def process_vertex(j):
         processed_vertex.extend(col)
     if has_nor:
         nor = numpy.array([vdata['nx'], vdata['ny'], vdata['nz'], 0.0])
-        #TODO: apply dexp0
+        nor = dexp0(pos, nor) #is pos in scope?
         processed_vertex.extend(nor)
     return processed_vertex
 

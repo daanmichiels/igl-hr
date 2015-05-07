@@ -41,16 +41,15 @@ void LevelManager::shutdown() {
  */
 void LevelManager::load_initial_level() {
     //------------- Example writing a tiling to file.
-
-    //mesh axe_mesh = tilings::generate_tiling(5, 4, 5, 1.675, true);
-    //object* axes = new object(axe_mesh);
-    //axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
-    //scene.objects.push_back(axes);
-    //axes->write_file("5-4_tiling");
+    mesh axe_mesh = tilings::generate_tiling(4, 10, 8, 0.85, true);
+    object* axes = new object(axe_mesh);
+    axes->transform(hypermath::translation0(hypermath::exp0(glm::dvec4(0.0, -0.097, 0.0, 0.0))));
+    scene.objects.push_back(axes);
+    axes->write_file("4-10Tiling");
 
     //-------------
 
-    load_level("Level1");
+    // load_level("Level1");
     return;
 }
 

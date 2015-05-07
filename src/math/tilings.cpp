@@ -17,7 +17,7 @@ namespace{
         return out;
     }
 
-    //broken function, will drastically decrease the geometry on the screen when implemented.
+
     bool has(const glm::dvec4 center, const std::vector<glm::dvec4> two_back, const double closeness, const int sides){
         for(int i=0; i<two_back.size(); i+=3*sides){
             if(hypermath::dist(center, two_back[i]) < closeness){
@@ -52,7 +52,7 @@ namespace{
                 for(int j = i; j < i + 3*sides; j++){
                     if(k % 3 !=0 && (k+1) % 3 != 0){
                         glm::dvec4 newpoint = hypermath::reflect_planar_point(one_back[j], one_back[k], one_back[k+1]);
-                        if(j==i && has(newpoint, two_back, closeness, sides)){
+                        if(j % 3*i == 0 && has(newpoint, two_back, closeness, sides)){
                             goto already_has;
                         }
                         else {
@@ -61,7 +61,6 @@ namespace{
                     }
                 }
             already_has: { /*break out*/ }
-
             }
         }
         return neighbors;
